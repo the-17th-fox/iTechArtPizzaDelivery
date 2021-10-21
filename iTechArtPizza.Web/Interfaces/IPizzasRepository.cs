@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using iTechArtPizza.Web.Entities;
+using iTechArtPizzaDelivery.Web.Entities;
 
-namespace iTechArtPizza.Web.Interfaces
+namespace iTechArtPizzaDelivery.Web.Interfaces
 {
     interface IPizzasRepository
     {
         public List<Pizza> GetPizzasInfo();
-        public List<Pizza> GetPizzasTitles();
+        public Pizza FindPizzaById(ulong id);
         public void PostPizza(string name, string description);
     }
 }

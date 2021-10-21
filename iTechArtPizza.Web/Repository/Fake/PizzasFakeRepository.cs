@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using iTechArtPizza.Web.Entities;
-using iTechArtPizza.Web.Interfaces;
+using iTechArtPizzaDelivery.Web.Entities;
+using iTechArtPizzaDelivery.Web.Interfaces;
 
-namespace iTechArtPizza.Web.Repository.Fake
+namespace iTechArtPizzaDelivery.Web.Repository.Fake
 {
     public class PizzasFakeRepository : IPizzasRepository
     {
@@ -43,9 +43,18 @@ namespace iTechArtPizza.Web.Repository.Fake
 
         public List<Pizza> GetPizzasInfo() => _pizzas;
 
-        public List<Pizza> GetPizzasTitles()
+        public Pizza FindPizzaById(ulong id)
         {
-            throw new NotImplementedException();
+            //var lookingPizza = from pizza in _pizzas
+            //                   where (pizza.Id == id)
+            //                   select pizza;
+
+            foreach (Pizza pizza in _pizzas)
+            {
+                if (pizza.Id == id)
+                    return pizza;
+            }
+            return null;
         }
 
         public void PostPizza(string name, string description)

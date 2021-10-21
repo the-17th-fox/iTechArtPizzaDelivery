@@ -1,13 +1,13 @@
-﻿using iTechArtPizza.Web.Entities;
+﻿using iTechArtPizzaDelivery.Web.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using iTechArtPizza.Web.Repository.Fake;
+using iTechArtPizzaDelivery.Web.Repository.Fake;
 
-namespace iTechArtPizza.Web.Controllers
+namespace iTechArtPizzaDelivery.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -15,15 +15,15 @@ namespace iTechArtPizza.Web.Controllers
     {
         private readonly PizzasFakeRepository _pizzasFakeRepository = new PizzasFakeRepository();
 
+        [Route("all")]
         [HttpGet]
         public List<Pizza> GetPizzasInfo() => _pizzasFakeRepository.GetPizzasInfo();
 
-        [HttpPost("{title}${description}")]
+        [Route("{id}")]
+        [HttpGet]
+        public Pizza FindPizzaById(ulong id) => _pizzasFakeRepository.FindPizzaById(id);
+
+        [HttpPost("{name}&{description}")]
         public void PostPizza(string name, string description) => _pizzasFakeRepository.PostPizza(name, description);
-
-        //[HttpGet]
-        //public List<Pizza> GetPizzasTitles() => _pizzasFakeRepository.GetPizzasTitles();
-
-
     }
 }
