@@ -5,19 +5,19 @@ using System.Threading.Tasks;
 
 namespace iTechArtPizza.Web.Entities
 {
-    public class Pizza
+    public class PromoCode
     {
         public ulong Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        //public List<Ingredient> Ingredients { get; set; }
-        //public /*Image*/ Image { get; set; }
+        public float DiscountAmount { get; set; }
 
-        public Pizza(ulong id, string name, string description)
+        public PromoCode(ulong id, string title, string description, float discountAmount)
         {
             Id = id;
-            Name = name;
+            Name = title;
             Description = description;
+            DiscountAmount = discountAmount;
         }
     }
 }

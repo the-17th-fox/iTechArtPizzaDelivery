@@ -15,28 +15,28 @@ namespace iTechArtPizza.Web.Repository.Fake
             new Pizza
                 (
                     id: 0,
-                    title: "Banana Pizza",
+                    name: "Banana Pizza",
                     description: "This is a Banana pizza"
                 ),
 
                     new Pizza
                 (
                     id: 1,
-                    title: "Tomato Pizza",
+                    name: "Tomato Pizza",
                     description: "This is a Tomato pizza"
                 ),
 
                     new Pizza
                 (
                     id: 2,
-                    title: "Cheese Pizza",
+                    name: "Cheese Pizza",
                     description: "This is a Cheese pizza"
                 ),
 
                     new Pizza
                 (
                     id: 3,
-                    title: "Apple Pizza",
+                    name: "Apple Pizza",
                     description: "This is an Apple pizza"
                 ),
         };
@@ -48,14 +48,14 @@ namespace iTechArtPizza.Web.Repository.Fake
             throw new NotImplementedException();
         }
 
-        public void PostPizza(string title, string description)
+        public void PostPizza(string name, string description)
         {
             _pizzas.Add
             (
                 new Pizza
                 (
                     id: (ulong)_pizzas.Count, // List length is equal to the next pizzas's ID
-                    title: title,
+                    name: name,
                     description: description
                 )
             );

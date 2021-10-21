@@ -18,10 +18,12 @@ namespace iTechArtPizza.Web.Controllers
         [HttpGet]
         public List<Pizza> GetPizzasInfo() => _pizzasFakeRepository.GetPizzasInfo();
 
+        [HttpPost("{title}${description}")]
+        public void PostPizza(string name, string description) => _pizzasFakeRepository.PostPizza(name, description);
+
         //[HttpGet]
         //public List<Pizza> GetPizzasTitles() => _pizzasFakeRepository.GetPizzasTitles();
 
-        [HttpPost("{title}${description}")]
-        public void PostPizza(string title, string description) => _pizzasFakeRepository.PostPizza(title, description);
+
     }
 }

@@ -10,6 +10,6 @@ namespace iTechArtPizza.Web.Interfaces
     {
         public List<Pizza> GetPizzasInfo();
         public List<Pizza> GetPizzasTitles();
-        public void PostPizza(string title, string description);
+        public void PostPizza(string name, string description);
     }
 }
