@@ -16,10 +16,12 @@ namespace iTechArtPizza.Web.Controllers
         private readonly PizzasFakeRepository _pizzasFakeRepository = new PizzasFakeRepository();
 
         [HttpGet]
-        public List<Pizza> GetAll()
-        {
-            //return null;
-            return _pizzasFakeRepository.GetAll();
-        }
+        public List<Pizza> GetPizzasInfo() => _pizzasFakeRepository.GetPizzasInfo();
+
+        //[HttpGet]
+        //public List<Pizza> GetPizzasTitles() => _pizzasFakeRepository.GetPizzasTitles();
+
+        [HttpPost("{title}${description}")]
+        public void PostPizza(string title, string description) => _pizzasFakeRepository.PostPizza(title, description);
     }
 }

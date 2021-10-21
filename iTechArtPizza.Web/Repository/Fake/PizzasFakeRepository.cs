@@ -9,46 +9,56 @@ namespace iTechArtPizza.Web.Repository.Fake
 {
     public class PizzasFakeRepository : IPizzasRepository
     {
-
-        private List<Pizza> CreatePizzasList()
+        // Default pizzas list
+        private static List<Pizza> _pizzas = new List<Pizza> 
         {
-            ulong newId = 0;
-
-            return new List<Pizza>
-            {
-                new Pizza
+            new Pizza
                 (
-                    id: newId++,
+                    id: 0,
                     title: "Banana Pizza",
                     description: "This is a Banana pizza"
                 ),
 
                     new Pizza
                 (
-                    id: newId++,
+                    id: 1,
                     title: "Tomato Pizza",
                     description: "This is a Tomato pizza"
                 ),
 
                     new Pizza
                 (
-                    id: newId++,
+                    id: 2,
                     title: "Cheese Pizza",
                     description: "This is a Cheese pizza"
                 ),
 
                     new Pizza
                 (
-                    id: newId++,
+                    id: 3,
                     title: "Apple Pizza",
                     description: "This is an Apple pizza"
                 ),
-            };
+        };
+
+        public List<Pizza> GetPizzasInfo() => _pizzas;
+
+        public List<Pizza> GetPizzasTitles()
+        {
+            throw new NotImplementedException();
         }
 
-        public List<Pizza> GetAll()
+        public void PostPizza(string title, string description)
         {
-            return CreatePizzasList();
+            _pizzas.Add
+            (
+                new Pizza
+                (
+                    id: (ulong)_pizzas.Count, // List length is equal to the next pizzas's ID
+                    title: title,
+                    description: description
+                )
+            );
         }
     }
 }

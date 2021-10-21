@@ -8,6 +8,8 @@ namespace iTechArtPizza.Web.Interfaces
 {
     interface IPizzasRepository
     {
-        public List<Pizza> GetAll();
+        public List<Pizza> GetPizzasInfo();
+        public List<Pizza> GetPizzasTitles();
+        public void PostPizza(string title, string description);
     }
 }
