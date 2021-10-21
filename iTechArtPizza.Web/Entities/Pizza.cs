@@ -5,26 +5,16 @@ using System.Threading.Tasks;
 
 namespace iTechArtPizza.Web.Entities
 {
+    // ?: Each ID increases by 1 after every page reload
     public class Pizza
-    {
-     
-        public long ID
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-                _nextID++;
-            }
-        }
-        private long _id;
-        private static long _nextID;
+    { 
+        public ulong Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
 
-        public Pizza(string title, string description)
+        public Pizza(ulong id, string title, string description)
         {
-            ID = _nextID;
+            Id = id;
             Title = title;
             Description = description;
         }

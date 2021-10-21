@@ -13,12 +13,13 @@ namespace iTechArtPizza.Web.Controllers
     [ApiController]
     public class PizzasController : ControllerBase
     {
-        private readonly PizzasFakeRepository pizzasFakeRepository = new PizzasFakeRepository();
+        private readonly PizzasFakeRepository _pizzasFakeRepository = new PizzasFakeRepository();
 
         [HttpGet]
         public List<Pizza> GetAll()
         {
-            return pizzasFakeRepository.GetAll();
+            //return null;
+            return _pizzasFakeRepository.GetAll();
         }
     }
 }
