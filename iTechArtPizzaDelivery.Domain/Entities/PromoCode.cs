@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace iTechArtPizza.Web.Entities
+namespace iTechArtPizzaDelivery.Domain.Entities
 {
     public class PromoCode
     {

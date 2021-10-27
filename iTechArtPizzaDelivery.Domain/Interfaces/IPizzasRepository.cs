@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using iTechArtPizzaDelivery.Web.Entities;
+using iTechArtPizzaDelivery.Domain.Entities;
 
-namespace iTechArtPizzaDelivery.Web.Interfaces
+namespace iTechArtPizzaDelivery.Domain.Interfaces
 {
-    interface IPizzasRepository
+    public interface IPizzasRepository
     {
         public List<Pizza> GetPizzasInfo();
         public Pizza FindPizzaById(ulong id);
