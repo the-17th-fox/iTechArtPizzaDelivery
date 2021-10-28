@@ -7,17 +7,17 @@ namespace iTechArtPizzaDelivery.Domain.Entities
 {
     public class Pizza
     {
-        public ulong Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public List<Ingredient> Ingredients { get; set; } // For refactoring
-        //public /*Image*/ Image { get; set; }
-
-        public Pizza(ulong id, string name, string description)
+        public Pizza(int pizzaID, string name, string description)
         {
-            Id = id;
+            PizzaID = pizzaID;
             Name = name;
             Description = description;
         }
+
+        public int PizzaID { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        //public /*Image*/ Image { get; set; }
+
     }
 }

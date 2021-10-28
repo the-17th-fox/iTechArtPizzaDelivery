@@ -7,21 +7,19 @@ namespace iTechArtPizzaDelivery.Domain.Entities
 {
     public class User
     {
-        public ulong Id { get; set; }
-        public string Name { get; set; }
-        public List<Pizza> Cart { get; set; } // For refactoring
-        public string Addres { get; set; }
-        public string PhoneNumber { get; set; }
-        public bool HasAdminRights { get; set; }
-
-        public User(ulong id, string name, List<Pizza> cart = null, string addres = null, string phoneNumber = null, bool hasAdminRights = false)
+        public User(int userID, string name, string phoneNumber, bool hasAdminRights)
         {
-            Id = id;
+            UserID = userID;
             Name = name;
-            Cart = cart;
-            Addres = addres;
             PhoneNumber = phoneNumber;
             HasAdminRights = hasAdminRights;
         }
+
+        public int UserID { get; set; }
+        public string Name { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool HasAdminRights { get; set; }
+
+        
     }
 }

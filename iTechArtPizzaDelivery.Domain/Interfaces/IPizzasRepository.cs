@@ -8,8 +8,8 @@ namespace iTechArtPizzaDelivery.Domain.Interfaces
 {
     public interface IPizzasRepository
     {
-        public List<Pizza> GetPizzasInfo();
-        public Pizza FindPizzaById(ulong id);
+        public List<Pizza> GetAllPizzas();
+        public Pizza FindPizzaById(int id);
         public void PostPizza(string name, string description);
     }
 }

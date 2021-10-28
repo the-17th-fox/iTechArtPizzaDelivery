@@ -10,7 +10,7 @@ namespace iTechArtPizzaDelivery.Domain.Services
     public interface IPizzasService
     {
         public List<Pizza> GetAll();
-        public Pizza FindById(ulong id);
+        public Pizza FindById(int id);
         public void Post(string name, string description);
     }
 }

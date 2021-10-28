@@ -21,7 +21,7 @@ namespace iTechArtPizzaDelivery.Domain.Services
             return _pizzasRepository.GetAllPizzas();
         }
 
-        public Pizza FindById(ulong id)
+        public Pizza FindById(int id)
         {
             return _pizzasRepository.FindPizzaById(id);
         }

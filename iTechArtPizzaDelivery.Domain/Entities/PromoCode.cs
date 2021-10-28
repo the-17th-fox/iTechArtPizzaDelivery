@@ -7,17 +7,19 @@ namespace iTechArtPizzaDelivery.Domain.Entities
 {
     public class PromoCode
     {
-        public ulong Id { get; set; }
+        public PromoCode(int promoCodeID, string name, string description, float discountAmount)
+        {
+            PromoCodeID = promoCodeID;
+            Name = name;
+            Description = description;
+            DiscountAmount = discountAmount;
+        }
+
+        public int PromoCodeID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public float DiscountAmount { get; set; }
 
-        public PromoCode(ulong id, string title, string description, float discountAmount)
-        {
-            Id = id;
-            Name = title;
-            Description = description;
-            DiscountAmount = discountAmount;
-        }
+        
     }
 }
