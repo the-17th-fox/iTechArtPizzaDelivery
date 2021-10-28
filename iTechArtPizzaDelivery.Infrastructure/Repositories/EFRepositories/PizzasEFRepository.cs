@@ -15,16 +15,25 @@ namespace iTechArtPizzaDelivery.Infrastructure.Repositories.EFRepositories
 
         public PizzasEFRepository (PizzaDeliveryContext context) => this.context = context;
 
-        public Pizza FindPizzaById(ulong id)
+        public Pizza FindPizzaById(int id)
         {
-            throw new NotImplementedException();
+            Pizza lookedPizza = (from pizza in context.Pizzas
+                                 where (pizza.PizzaID == id)
+                                 select pizza).FirstOrDefault();
+            return lookedPizza;
         }
 
         public List<Pizza> GetAllPizzas() => context.Pizzas.ToList();
 
         public void PostPizza(string name, string description)
         {
-            throw new NotImplementedException();
+            //context.Pizzas.Add(new Pizza
+            //    (
+            //        pizzaID: (ulong)context.Pizzas.Count(),
+            //        name: name,
+            //        description: description
+            //    ));
+            //TODO: Add post method
         }
     }
 }
