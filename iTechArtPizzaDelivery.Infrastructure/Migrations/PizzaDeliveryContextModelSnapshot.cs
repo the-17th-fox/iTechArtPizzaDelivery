@@ -20,7 +20,7 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
 
             modelBuilder.Entity("iTechArtPizzaDelivery.Domain.Entities.Ingredient", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<decimal>("IngredientID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(20,0)")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
@@ -28,22 +28,17 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("PizzaId")
-                        .HasColumnType("decimal(20,0)");
-
                     b.Property<float>("PricePerUnit")
                         .HasColumnType("real");
 
-                    b.HasKey("Id");
+                    b.HasKey("IngredientID");
 
-                    b.HasIndex("PizzaId");
-
-                    b.ToTable("Ingredient");
+                    b.ToTable("Ingredients");
                 });
 
             modelBuilder.Entity("iTechArtPizzaDelivery.Domain.Entities.Pizza", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<decimal>("PizzaID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(20,0)")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
@@ -54,21 +49,51 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("PizzaID");
 
                     b.ToTable("Pizzas");
                 });
 
-            modelBuilder.Entity("iTechArtPizzaDelivery.Domain.Entities.Ingredient", b =>
+            modelBuilder.Entity("iTechArtPizzaDelivery.Domain.Entities.PromoCode", b =>
                 {
-                    b.HasOne("iTechArtPizzaDelivery.Domain.Entities.Pizza", null)
-                        .WithMany("Ingredients")
-                        .HasForeignKey("PizzaId");
+                    b.Property<decimal>("PromoCodeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(20,0)")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("DiscountAmount")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PromoCodeID");
+
+                    b.ToTable("PromoCodes");
                 });
 
-            modelBuilder.Entity("iTechArtPizzaDelivery.Domain.Entities.Pizza", b =>
+            modelBuilder.Entity("iTechArtPizzaDelivery.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Ingredients");
+                    b.Property<decimal>("UserID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(20,0)")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.None);
+
+                    b.Property<bool>("HasAdminRights")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserID");
+
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }
