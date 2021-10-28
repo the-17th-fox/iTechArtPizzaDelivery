@@ -1,3 +1,7 @@
+using iTechArtPizzaDelivery.Domain.Interfaces;
+using iTechArtPizzaDelivery.Domain.Services;
+using iTechArtPizzaDelivery.Infrastructure.Context;
+using iTechArtPizzaDelivery.Infrastructure.Repositories.EFRepositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace iTechArtPizza.Web
+namespace iTechArtPizzaDelivery.Domain
 {
     public class Startup
     {
@@ -26,11 +30,18 @@ namespace iTechArtPizza.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //DOMAIN
+            services.AddScoped<IPizzasService, PizzasService>();
+
+            //INFRASTRUCTURE
+            services.AddScoped<IPizzasRepository, PizzasEFRepository>();
+
+            services.AddDbContext<PizzaDeliveryContext>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "iTechArtPizza.Web", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "iTechArtPizzaDelivery", Version = "v1" });
             });
         }
 
@@ -47,8 +58,6 @@ namespace iTechArtPizza.Web
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
