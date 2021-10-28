@@ -10,6 +10,7 @@ namespace iTechArtPizzaDelivery.Infrastructure.Context
 {
     public class PizzaDeliveryContext : DbContext
     {
+        private const string _connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=myDataBase;Trusted_Connection = True;";
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
@@ -17,7 +18,7 @@ namespace iTechArtPizzaDelivery.Infrastructure.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.UseSqlServer(_connectionString);
         }
 
     }
