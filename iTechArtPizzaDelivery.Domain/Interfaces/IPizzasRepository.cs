@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using iTechArtPizzaDelivery.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace iTechArtPizzaDelivery.Domain.Interfaces
 {
     public interface IPizzasRepository
     {
-        public List<Pizza> GetAllPizzas();
-        public Pizza FindPizzaById(int id);
-        public void PostPizza(string name, string description);
+        public Task<List<Pizza>> GetPizzas();
+        public Task<Pizza> GetPizzaById(int id);
+        public Task<Pizza> CreatePizza(Pizza pizza);
     }
 }

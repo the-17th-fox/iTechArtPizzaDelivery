@@ -1,6 +1,7 @@
 ﻿using iTechArtPizzaDelivery.Domain.Entities;
 using iTechArtPizzaDelivery.Domain.Interfaces;
 using iTechArtPizzaDelivery.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,29 +12,32 @@ namespace iTechArtPizzaDelivery.Infrastructure.Repositories.EFRepositories
 {
     public class PizzasEFRepository : IPizzasRepository
     {
-        private readonly PizzaDeliveryContext context;
+        private readonly PizzaDeliveryContext _dbContext;
+        public PizzasEFRepository(PizzaDeliveryContext context) => this._dbContext = context;
 
-        public PizzasEFRepository (PizzaDeliveryContext context) => this.context = context;
 
-        public Pizza FindPizzaById(int id)
+        public async Task<List<Pizza>> GetPizzas()
         {
-            Pizza lookedPizza = (from pizza in context.Pizzas
-                                 where (pizza.PizzaID == id)
-                                 select pizza).FirstOrDefault();
-            return lookedPizza;
+            return await _dbContext.Pizzas.ToListAsync();
         }
 
-        public List<Pizza> GetAllPizzas() => context.Pizzas.ToList();
-
-        public void PostPizza(string name, string description)
+        public async Task<Pizza> GetPizzaById(int id)
         {
-            //context.Pizzas.Add(new Pizza
-            //    (
-            //        pizzaID: (ulong)context.Pizzas.Count(),
-            //        name: name,
-            //        description: description
-            //    ));
-            //TODO: Add post method
+            try
+            {
+                return await _dbContext.Pizzas
+                .FirstAsync(p => p.PizzaID == id);
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
+        }
+
+        public async Task<Pizza> CreatePizza(Pizza pizza)
+        {
+            throw new NotImplementedException();
         }
     }
 }
