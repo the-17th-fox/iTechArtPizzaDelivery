@@ -16,19 +16,10 @@ namespace iTechArtPizzaDelivery.Domain.Services
             _pizzasRepository = context;
         }
 
-        public List<Pizza> GetAll()
-        {
-            return _pizzasRepository.GetAllPizzas();
-        }
+        public async Task<List<Pizza>> GetPizzas() => await _pizzasRepository.GetPizzas();
 
-        public Pizza FindById(int id)
-        {
-            return _pizzasRepository.FindPizzaById(id);
-        }
+        public async Task<Pizza> GetPizzaById(int id) => await _pizzasRepository.GetPizzaById(id);
 
-        public void Post(string name, string description)
-        {
-            _pizzasRepository.PostPizza(name, description);
-        }
+        public async Task<Pizza> CreatePizza(Pizza pizza) => await _pizzasRepository.CreatePizza(pizza);
     }
 }
