@@ -15,22 +15,31 @@ namespace iTechArtPizzaDelivery.Domain.Controllers
     [ApiController]
     public class PizzasController : ControllerBase
     {
-        private readonly IPizzasRepository _repository;
+        private readonly IPizzasRepository _pizzasRepository;
 
         public PizzasController(IPizzasRepository repository)
         {
-            _repository = repository;
+            _pizzasRepository = repository;
         }
 
         [Route("all")]
         [HttpGet]
-        public List<Pizza> GetAllPizzas() => _repository.GetAllPizzas();
+        public async Task<List<Pizza>> GetAllPizzas()
+        {
+            return await _pizzasRepository.GetPizzas();
+        }
 
         [Route("{id}")]
         [HttpGet]
-        public Pizza FindPizzaById(int id) => _repository.FindPizzaById(id);
+        public async Task<Pizza> GetPizzaById(int id)
+        {
+            return await _pizzasRepository.GetPizzaById(id);
+        }
 
-        [HttpPost("{name}&{description}")]
-        public void PostPizza(string name, string description) => _repository.PostPizza(name, description);
+        [HttpPost/*("{name}&{description}")*/]
+        public async Task<ActionResult> AddNewPizza(Pizza pizza)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
