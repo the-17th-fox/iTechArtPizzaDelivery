@@ -37,7 +37,9 @@ namespace iTechArtPizzaDelivery.Infrastructure.Repositories.EFRepositories
 
         public async Task<Pizza> CreatePizza(Pizza pizza)
         {
-            throw new NotImplementedException();
+            var newPizza = await _dbContext.Pizzas.AddAsync(pizza);
+            await _dbContext.SaveChangesAsync();
+            return newPizza.Entity;
         }
     }
 }

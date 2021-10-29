@@ -36,10 +36,24 @@ namespace iTechArtPizzaDelivery.Domain.Controllers
             return await _pizzasRepository.GetPizzaById(id);
         }
 
-        [HttpPost/*("{name}&{description}")*/]
+        [HttpPost]
         public async Task<ActionResult> AddNewPizza(Pizza pizza)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //Pizza newPizza = new Pizza(20, name, description);
+                if (pizza == null)
+                    return BadRequest();
+
+                Pizza newPizza = await _pizzasRepository.CreatePizza(pizza);
+
+                return CreatedAtAction(nameof(GetAllPizzas), new { id = pizza.PizzaID }, newPizza);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error while adding pizza");
+            }
         }
     }
 }
