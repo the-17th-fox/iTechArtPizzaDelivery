@@ -24,20 +24,20 @@ namespace iTechArtPizzaDelivery.Domain.Controllers
 
         [Route("all")]
         [HttpGet]
-        public async Task<List<Pizza>> GetAllPizzas()
+        public async Task<List<Pizza>> GetAllPizzasAsync()
         {
-            return await _pizzasRepository.GetPizzas();
+            return await _pizzasRepository.GetPizzasAsync();
         }
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<Pizza> GetPizzaById(int id)
+        public async Task<Pizza> GetPizzaByIdAsync(int id)
         {
-            return await _pizzasRepository.GetPizzaById(id);
+            return await _pizzasRepository.GetPizzaByIdAsync(id);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddNewPizza(Pizza pizza)
+        public async Task<ActionResult> CreatePizzaAsync(Pizza pizza)
         {
             try
             {
@@ -45,9 +45,9 @@ namespace iTechArtPizzaDelivery.Domain.Controllers
                 if (pizza == null)
                     return BadRequest();
 
-                Pizza newPizza = await _pizzasRepository.CreatePizza(pizza);
+                Pizza newPizza = await _pizzasRepository.CreatePizzaAsync(pizza);
 
-                return CreatedAtAction(nameof(GetAllPizzas), new { id = pizza.PizzaID }, newPizza);
+                return CreatedAtAction(nameof(GetAllPizzasAsync), new { id = pizza.PizzaID }, newPizza);
             }
             catch (Exception)
             {

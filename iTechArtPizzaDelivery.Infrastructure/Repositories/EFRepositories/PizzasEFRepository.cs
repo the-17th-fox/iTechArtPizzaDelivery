@@ -16,12 +16,12 @@ namespace iTechArtPizzaDelivery.Infrastructure.Repositories.EFRepositories
         public PizzasEFRepository(PizzaDeliveryContext context) => this._dbContext = context;
 
 
-        public async Task<List<Pizza>> GetPizzas()
+        public async Task<List<Pizza>> GetPizzasAsync()
         {
             return await _dbContext.Pizzas.ToListAsync();
         }
 
-        public async Task<Pizza> GetPizzaById(int id)
+        public async Task<Pizza> GetPizzaByIdAsync(int id)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace iTechArtPizzaDelivery.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task<Pizza> CreatePizza(Pizza pizza)
+        public async Task<Pizza> CreatePizzaAsync(Pizza pizza)
         {
             var newPizza = await _dbContext.Pizzas.AddAsync(pizza);
             await _dbContext.SaveChangesAsync();
