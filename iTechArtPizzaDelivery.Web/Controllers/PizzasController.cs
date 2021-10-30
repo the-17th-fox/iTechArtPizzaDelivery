@@ -22,6 +22,7 @@ namespace iTechArtPizzaDelivery.Domain.Controllers
             _pizzasRepository = repository;
         }
 
+        [ActionName(nameof(GetAllPizzasAsync))]
         [Route("all")]
         [HttpGet]
         public async Task<List<Pizza>> GetAllPizzasAsync()
@@ -41,7 +42,6 @@ namespace iTechArtPizzaDelivery.Domain.Controllers
         {
             try
             {
-                //Pizza newPizza = new Pizza(20, name, description);
                 if (pizza == null)
                     return BadRequest();
 
