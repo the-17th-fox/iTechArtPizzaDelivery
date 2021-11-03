@@ -10,7 +10,8 @@ namespace iTechArtPizzaDelivery.Domain.Services
     public interface IPizzasService
     {
         public Task<List<Pizza>> GetPizzasAsync();
-        public Task<Pizza> GetPizzaByIdAsync(int id);
-        public Task<Pizza> CreatePizzaAsync(Pizza pizza);
+        public Task<Pizza> GetPizzaAsync(int id);
+        public Task<Pizza> AddPizzaAsync(string name, string description);
+        public Task<Pizza> RemovePizzaAsync(int id);
     }
 }
