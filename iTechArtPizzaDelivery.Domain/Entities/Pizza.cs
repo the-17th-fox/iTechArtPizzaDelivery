@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace iTechArtPizzaDelivery.Domain.Entities
+namespace PD.Domain.Entities
 {
     public class Pizza
     {
@@ -16,6 +16,9 @@ namespace iTechArtPizzaDelivery.Domain.Entities
         public string Name { get; set; }
 
         public string Description { get; set; }
+
+        [BindRequired]
+        public List<Ingredient> Ingredients { get; set; }
 
         //public /*Image*/ Image { get; set; }
 
