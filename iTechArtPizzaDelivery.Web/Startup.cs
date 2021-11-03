@@ -1,7 +1,7 @@
-using iTechArtPizzaDelivery.Domain.Interfaces;
-using iTechArtPizzaDelivery.Domain.Services;
-using iTechArtPizzaDelivery.Infrastructure.Context;
-using iTechArtPizzaDelivery.Infrastructure.Repositories.EFRepositories;
+using PD.Domain.Interfaces;
+using PD.Domain.Services;
+using PD.Infrastructure.Context;
+using PD.Infrastructure.Repositories.EFRepositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace iTechArtPizzaDelivery.Domain
+namespace PD.Domain
 {
     public class Startup
     {
@@ -32,9 +32,11 @@ namespace iTechArtPizzaDelivery.Domain
         {
             //DOMAIN
             services.AddScoped<IPizzasService, PizzasService>();
+            services.AddScoped<IIngredientsService, IngredientsService>();
 
             //INFRASTRUCTURE
             services.AddScoped<IPizzasRepository, PizzasEFRepository>();
+            services.AddScoped<IIngredientsRepository, IngredientsEFRepository>();
 
             services.AddDbContext<PizzaDeliveryContext>();
 
