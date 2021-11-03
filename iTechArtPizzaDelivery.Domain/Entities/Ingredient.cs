@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace iTechArtPizzaDelivery.Domain.Entities
+namespace PD.Domain.Entities
 {
     public class Ingredient
     {
@@ -14,8 +14,5 @@ namespace iTechArtPizzaDelivery.Domain.Entities
 
         [BindRequired]
         public string Name { get; set; }
-
-        [BindRequired]
-        public float PricePerUnit { get; set; }
     }
 }

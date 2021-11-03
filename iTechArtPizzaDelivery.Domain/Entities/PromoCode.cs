@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace iTechArtPizzaDelivery.Domain.Entities
+namespace PD.Domain.Entities
 {
     public class PromoCode
     {
