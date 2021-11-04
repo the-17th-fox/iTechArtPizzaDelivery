@@ -7,23 +7,11 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Ingredients",
-                columns: table => new
-                {
-                    IngredientID = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PricePerUnit = table.Column<float>(type: "real", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.IngredientID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Pizzas",
                 columns: table => new
                 {
-                    PizzaID = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    PizzaID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -36,7 +24,8 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
                 name: "PromoCodes",
                 columns: table => new
                 {
-                    PromoCodeID = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    PromoCodeID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DiscountAmount = table.Column<float>(type: "real", nullable: false)
@@ -50,15 +39,40 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserID = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    UserID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HasAdminRights = table.Column<bool>(type: "bit", nullable: false)
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserID);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    IngredientID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PizzaID = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => x.IngredientID);
+                    table.ForeignKey(
+                        name: "FK_Ingredients_Pizzas_PizzaID",
+                        column: x => x.PizzaID,
+                        principalTable: "Pizzas",
+                        principalColumn: "PizzaID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ingredients_PizzaID",
+                table: "Ingredients",
+                column: "PizzaID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -67,13 +81,13 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
                 name: "Ingredients");
 
             migrationBuilder.DropTable(
-                name: "Pizzas");
-
-            migrationBuilder.DropTable(
                 name: "PromoCodes");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Pizzas");
         }
     }
 }
