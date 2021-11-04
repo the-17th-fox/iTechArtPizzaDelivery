@@ -1,4 +1,4 @@
-﻿using iTechArtPizzaDelivery.Domain.Entities;
+﻿using PD.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace iTechArtPizzaDelivery.Infrastructure.Context
+namespace PD.Infrastructure.Context
 {
     public class PizzaDeliveryContext : DbContext
     {

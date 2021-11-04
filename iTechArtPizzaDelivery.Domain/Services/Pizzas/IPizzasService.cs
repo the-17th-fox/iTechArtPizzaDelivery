@@ -1,13 +1,13 @@
-﻿using System;
+﻿using PD.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using PD.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
 
-namespace PD.Domain.Interfaces
+namespace PD.Domain.Services
 {
-    public interface IPizzasRepository
+    public interface IPizzasService
     {
         public Task<List<Pizza>> GetPizzasAsync();
         public Task<Pizza> GetPizzaAsync(int id);
