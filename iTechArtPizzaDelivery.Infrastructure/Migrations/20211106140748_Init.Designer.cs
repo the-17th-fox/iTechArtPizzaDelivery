@@ -10,7 +10,7 @@ using PD.Infrastructure.Context;
 namespace iTechArtPizzaDelivery.Infrastructure.Migrations
 {
     [DbContext(typeof(PizzaDeliveryContext))]
-    [Migration("20211103211630_Init")]
+    [Migration("20211106140748_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
