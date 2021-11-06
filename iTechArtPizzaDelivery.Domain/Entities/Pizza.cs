@@ -18,7 +18,7 @@ namespace PD.Domain.Entities
         public string Description { get; set; }
 
         [BindRequired]
-        public List<Ingredient> Ingredients { get; set; }
+        public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
 
         //public /*Image*/ Image { get; set; }
 
