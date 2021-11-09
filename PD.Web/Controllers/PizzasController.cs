@@ -34,54 +34,28 @@ namespace PD.Domain.Controllers
         [HttpPost]
         public async Task<ActionResult> AddPizzaAsync(string name, string description)
         {
-            try
-            {
-                Pizza newPizza = await _pizzasService.AddPizzaAsync(name, description);
+            Pizza newPizza = await _pizzasService.AddPizzaAsync(name, description);
 
-                return CreatedAtAction(nameof(GetAllPizzasAsync), 
-                    new { id = newPizza.PizzaID }, newPizza);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest,
-                "Error while adding pizza");
-            }
+            return CreatedAtAction(nameof(GetAllPizzasAsync),
+                new { id = newPizza.PizzaID }, newPizza);
         }
 
         [HttpPut]
         public async Task<ActionResult> AddIngredientToPizza(int ingredientId, int pizzaId)
         {
             Pizza pizza = await _pizzasService.AddIngredientToPizzaAsync(ingredientId, pizzaId);
-            try
-            {
-                
 
-                return CreatedAtAction(nameof(GetAllPizzasAsync), 
+            return CreatedAtAction(nameof(GetAllPizzasAsync),
                     new { id = pizza.PizzaID }, pizza);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest,
-                                "Error while adding Ingredient to Pizza");
-            }
         }
 
         [HttpDelete]
         public async Task<ActionResult> DeletePizzaAsync(int id)
         {
             Pizza pizzaToRemove = await _pizzasService.DeletePizzaAsync(id);
-            try
-            {
-                
 
-                return CreatedAtAction(nameof(GetAllPizzasAsync), 
+            return CreatedAtAction(nameof(GetAllPizzasAsync),
                     new { id = pizzaToRemove.PizzaID }, pizzaToRemove);
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status400BadRequest, 
-                    "Error while removing pizza");
-            }
         }
     }
 }

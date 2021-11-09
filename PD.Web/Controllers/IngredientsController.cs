@@ -13,10 +13,6 @@ namespace iTechArtIngredientDelivery.Web.Controllers
     [ApiController]
     public class IngredientsController : Controller
     {
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
         private readonly IIngredientsService _ingredientsService;
         public IngredientsController(IIngredientsService ingredientsService) => _ingredientsService = ingredientsService;
 
@@ -31,33 +27,17 @@ namespace iTechArtIngredientDelivery.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> AddIngredientAsync(string name)
         {
-            try
-            {
-                Ingredient newIngredient = await _ingredientsService.AddIngredientAsync(name);
+            Ingredient newIngredient = await _ingredientsService.AddIngredientAsync(name);
 
-                return CreatedAtAction(nameof(GetAllIngredientsAsync), new { id = newIngredient.IngredientID }, newIngredient);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status400BadRequest,
-                "Error while adding Ingredient");
-            }
+            return CreatedAtAction(nameof(GetAllIngredientsAsync), new { id = newIngredient.IngredientID }, newIngredient);
         }
 
         [HttpDelete]
         public async Task<ActionResult> DeleteIngredientAsync(int id)
         {
-            try
-            {
-                Ingredient IngredientToRemove = await _ingredientsService.DeleteIngredientAsync(id);
+            Ingredient IngredientToRemove = await _ingredientsService.DeleteIngredientAsync(id);
 
-                return CreatedAtAction(nameof(GetAllIngredientsAsync), new { id = IngredientToRemove.IngredientID }, IngredientToRemove);
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status400BadRequest,
-                    "Error while removing Ingredient");
-            }
+            return CreatedAtAction(nameof(GetAllIngredientsAsync), new { id = IngredientToRemove.IngredientID }, IngredientToRemove);
         }
     }
 }
