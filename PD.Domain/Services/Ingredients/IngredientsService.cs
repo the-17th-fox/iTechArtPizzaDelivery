@@ -13,13 +13,7 @@ namespace PD.Domain.Services
         private readonly IIngredientsRepository _repository;
         public IngredientsService(IIngredientsRepository repository) => _repository = repository;
 
-        public async Task<Ingredient> AddIngredientAsync(string name)
-        {
-            if (name == null)
-                return null;
-
-            return await _repository.AddIngredientAsync(name);
-        }
+        public async Task<Ingredient> AddIngredientAsync(string name) => await _repository.AddIngredientAsync(name);
 
         public async Task<Ingredient> DeleteIngredientAsync(int id) => await _repository.DeleteIngredientAsync(id);
 

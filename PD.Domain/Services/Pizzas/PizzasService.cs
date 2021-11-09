@@ -17,16 +17,7 @@ namespace PD.Domain.Services
 
         public async Task<Pizza> GetPizzaAsync(int id) => await _repository.GetPizzaAsync(id);
 
-        public async Task<Pizza> AddPizzaAsync(string name, string description)
-        {
-            if (name == null)
-                return null;
-
-            if (description == null)
-                description = "";
-
-            return await _repository.AddPizzaAsync(name, description);
-        }
+        public async Task<Pizza> AddPizzaAsync(string name, string description) => await _repository.AddPizzaAsync(name, description);
 
         public async Task<Pizza> DeletePizzaAsync(int id) => await _repository.DeletePizzaAsync(id);
 
