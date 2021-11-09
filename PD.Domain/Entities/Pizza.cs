@@ -12,12 +12,10 @@ namespace PD.Domain.Entities
         [Key]
         public int PizzaID { get; set; }
 
-        [BindRequired]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        [BindRequired]
         public List<Ingredient> Ingredients { get; set; } = new List<Ingredient>();
 
         //public /*Image*/ Image { get; set; }

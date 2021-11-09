@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Entities
 {
-    public class User
+    public class Ingredient
     {
         [Key]
-        public int UserID { get; set; }
-        
-        [BindRequired]
-        public string Name { get; set; }
+        public int IngredientID { get; set; }
 
-        public string PhoneNumber { get; set; }
+        public string Name { get; set; }
     }
 }

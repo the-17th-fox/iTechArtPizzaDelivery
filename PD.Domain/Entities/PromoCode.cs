@@ -12,12 +12,10 @@ namespace PD.Domain.Entities
         [Key]
         public int PromoCodeID { get; set; }
 
-        [BindRequired]
         public string Name { get; set; }
 
         public string Description { get; set; }
 
-        [BindRequired]
         public float DiscountAmount { get; set; }
     }
 }
