@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PD.Infrastructure.Context;
 
-namespace iTechArtPizzaDelivery.Infrastructure.Migrations
+namespace PD.Infrastructure.Migrations
 {
     [DbContext(typeof(PizzaDeliveryContext))]
     partial class PizzaDeliveryContextModelSnapshot : ModelSnapshot
@@ -37,6 +37,30 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
                     b.HasIndex("PizzaID");
 
                     b.ToTable("Ingredients");
+                });
+
+            modelBuilder.Entity("PD.Domain.Entities.Order", b =>
+                {
+                    b.Property<int>("OrderID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PizzaID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PromoCodeID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderID");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("PD.Domain.Entities.Pizza", b =>

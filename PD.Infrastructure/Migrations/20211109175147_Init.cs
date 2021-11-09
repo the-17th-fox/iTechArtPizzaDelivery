@@ -1,11 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace iTechArtPizzaDelivery.Infrastructure.Migrations
+namespace PD.Infrastructure.Migrations
 {
     public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    Adress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PromoCodeID = table.Column<int>(type: "int", nullable: false),
+                    PizzaID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Pizzas",
                 columns: table => new
@@ -79,6 +95,9 @@ namespace iTechArtPizzaDelivery.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Ingredients");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "PromoCodes");
