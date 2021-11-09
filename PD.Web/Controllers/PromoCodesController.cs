@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 namespace PD.Web.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class PromoCodesController : Controller
     {
         // TODO: Ask what it is
