@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTechArtPizzaDelivery.Web", "iTechArtPizzaDelivery.Web\iTechArtPizzaDelivery.Web.csproj", "{9B443B32-6528-48D5-908D-2817C7784A25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PD.Web", "PD.Web\PD.Web.csproj", "{9B443B32-6528-48D5-908D-2817C7784A25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTechArtPizzaDelivery.Domain", "iTechArtPizzaDelivery.Domain\iTechArtPizzaDelivery.Domain.csproj", "{F57042FA-81B8-4820-BDC8-8CCF44833EDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PD.Domain", "PD.Domain\PD.Domain.csproj", "{F57042FA-81B8-4820-BDC8-8CCF44833EDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iTechArtPizzaDelivery.Infrastructure", "iTechArtPizzaDelivery.Infrastructure\iTechArtPizzaDelivery.Infrastructure.csproj", "{1EF8BF10-9392-4563-8554-EEF48D4B8C48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PD.Infrastructure", "PD.Infrastructure\PD.Infrastructure.csproj", "{1EF8BF10-9392-4563-8554-EEF48D4B8C48}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

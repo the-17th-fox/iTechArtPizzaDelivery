@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\iTechArtPizzaDelivery.Domain\iTechArtPizzaDelivery.Domain.csproj" />
-    <ProjectReference Include="..\iTechArtPizzaDelivery.Infrastructure\iTechArtPizzaDelivery.Infrastructure.csproj" />
+    <ProjectReference Include="..\PD.Domain\PD.Domain.csproj" />
+    <ProjectReference Include="..\PD.Infrastructure\PD.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
