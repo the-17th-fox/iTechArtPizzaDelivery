@@ -13,14 +13,16 @@ namespace PD.Domain.Services
         private readonly IPizzasRepository _repository;
         public PizzasService(IPizzasRepository repository) => _repository = repository;
 
-        public async Task<List<Pizza>> GetPizzasAsync() => await _repository.GetPizzasAsync();
+        public async Task<List<Pizza>> GetAllAsync() => await _repository.GetAllAsync();
 
-        public async Task<Pizza> GetPizzaAsync(int id) => await _repository.GetPizzaAsync(id);
+        public async Task<Pizza> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
 
-        public async Task<Pizza> AddPizzaAsync(string name, string description) => await _repository.AddPizzaAsync(name, description);
+        public async Task<Pizza> AddAsync(string name, string description) 
+            => await _repository.AddAsync(name, description);
 
-        public async Task<Pizza> DeletePizzaAsync(int id) => await _repository.DeletePizzaAsync(id);
+        public async Task<Pizza> DeleteAsync(int id) => await _repository.DeleteAsync(id);
 
-        public async Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId) => await _repository.AddIngredientToPizzaAsync(ingredientId, pizzaId);
+        public async Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId) 
+            => await _repository.AddIngredientToPizzaAsync(ingredientId, pizzaId);
     }
 }
