@@ -10,9 +10,9 @@ namespace PD.Domain.Interfaces
 {
     public interface IOrdersRepository
     {
-        public Task<List<Order>> GetOrdersAsync();
-        public Task<Order> GetOrderAsync(int id);
-        public Task<Order> AddOrderAsync(int userId, int pizzaId, string adress, int? promoCodeId = null);
-        public Task<Order> DeleteOrderAsync(int id);
+        public Task<List<Order>> GetAllAsync();
+        public Task<Order> GetByIdAsync(int id);
+        public Task<Order> AddAsync(int userId, int pizzaId, string adress, int? promoCodeId = null);
+        public Task<Order> DeleteAsync(int id);
     }
 }

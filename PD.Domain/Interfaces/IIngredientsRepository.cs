@@ -9,9 +9,9 @@ namespace PD.Domain.Interfaces
 {
     public interface IIngredientsRepository
     {
-        public Task<List<Ingredient>> GetIngredientsAsync();
-        public Task<Ingredient> GetIngredientAsync(int id);
-        public Task<Ingredient> AddIngredientAsync(string name);
-        public Task<Ingredient> DeleteIngredientAsync(int id);
+        public Task<List<Ingredient>> GetAllAsync();
+        public Task<Ingredient> GetByIdAsync(int id);
+        public Task<Ingredient> AddAsync(string name);
+        public Task<Ingredient> DeleteAsync(int id);
     }
 }

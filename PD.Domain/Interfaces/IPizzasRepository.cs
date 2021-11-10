@@ -9,10 +9,10 @@ namespace PD.Domain.Interfaces
 {
     public interface IPizzasRepository
     {
-        public Task<List<Pizza>> GetPizzasAsync();
-        public Task<Pizza> GetPizzaAsync(int id);
-        public Task<Pizza> AddPizzaAsync(string name, string description);
-        public Task<Pizza> DeletePizzaAsync(int id);
+        public Task<List<Pizza>> GetAllAsync();
+        public Task<Pizza> GetByIdAsync(int id);
+        public Task<Pizza> AddAsync(string name, string description);
+        public Task<Pizza> DeleteAsync(int id);
         public Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId);
     }
 }
