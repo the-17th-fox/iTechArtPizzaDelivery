@@ -14,20 +14,20 @@ namespace iTechArtIngredientDelivery.Web.Controllers
     public class IngredientsController : Controller
     {
         private readonly IIngredientsService _ingredientsService;
-        public IngredientsController(IIngredientsService ingredientsService) => _ingredientsService = ingredientsService;
+        public IngredientsController(IIngredientsService service) => _ingredientsService = service;
 
         [ActionName(nameof(GetAllIngredientsAsync))]
         [HttpGet]
-        public async Task<List<Ingredient>> GetAllIngredientsAsync() => await _ingredientsService.GetIngredientsAsync();
+        public async Task<List<Ingredient>> GetAllIngredientsAsync() => await _ingredientsService.GetAllAsync();
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<Ingredient> GetIngredientAsync(int id) => await _ingredientsService.GetIngredientAsync(id);
+        public async Task<Ingredient> GetIngredientAsync(int id) => await _ingredientsService.GetByIdAsync(id);
 
         [HttpPost]
         public async Task<ActionResult> AddIngredientAsync(string name)
         {
-            Ingredient newIngredient = await _ingredientsService.AddIngredientAsync(name);
+            Ingredient newIngredient = await _ingredientsService.AddAsync(name);
 
             return CreatedAtAction(nameof(GetAllIngredientsAsync), new { id = newIngredient.IngredientID }, newIngredient);
         }
@@ -35,7 +35,7 @@ namespace iTechArtIngredientDelivery.Web.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteIngredientAsync(int id)
         {
-            Ingredient IngredientToRemove = await _ingredientsService.DeleteIngredientAsync(id);
+            Ingredient IngredientToRemove = await _ingredientsService.DeleteAsync(id);
 
             return CreatedAtAction(nameof(GetAllIngredientsAsync), new { id = IngredientToRemove.IngredientID }, IngredientToRemove);
         }

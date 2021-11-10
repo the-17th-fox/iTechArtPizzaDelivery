@@ -18,23 +18,23 @@ namespace PD.Domain.Controllers
     public class PizzasController : ControllerBase
     {		
         private readonly IPizzasService _pizzasService;
-        public PizzasController(IPizzasService pizzasService)
+        public PizzasController(IPizzasService service)
         {
-            _pizzasService = pizzasService;
+            _pizzasService = service;
         }
 
         [ActionName(nameof(GetAllPizzasAsync))]
         [HttpGet]
-        public async Task<List<Pizza>> GetAllPizzasAsync() => await _pizzasService.GetPizzasAsync();
+        public async Task<List<Pizza>> GetAllPizzasAsync() => await _pizzasService.GetAllAsync();
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<Pizza> GetPizzaAsync(int id) => await _pizzasService.GetPizzaAsync(id);
+        public async Task<Pizza> GetPizzaAsync(int id) => await _pizzasService.GetByIdAsync(id);
 
         [HttpPost]
         public async Task<ActionResult> AddPizzaAsync(string name, string description)
         {
-            Pizza newPizza = await _pizzasService.AddPizzaAsync(name, description);
+            Pizza newPizza = await _pizzasService.AddAsync(name, description);
 
             return CreatedAtAction(nameof(GetAllPizzasAsync),
                 new { id = newPizza.PizzaID }, newPizza);
@@ -52,7 +52,7 @@ namespace PD.Domain.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeletePizzaAsync(int id)
         {
-            Pizza pizzaToRemove = await _pizzasService.DeletePizzaAsync(id);
+            Pizza pizzaToRemove = await _pizzasService.DeleteAsync(id);
 
             return CreatedAtAction(nameof(GetAllPizzasAsync),
                     new { id = pizzaToRemove.PizzaID }, pizzaToRemove);

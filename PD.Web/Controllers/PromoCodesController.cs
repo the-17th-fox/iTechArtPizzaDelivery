@@ -18,21 +18,21 @@ namespace PD.Web.Controllers
         //    return View();
         //}
 
-        private readonly IPromoCodesService _PromoCodesService;
-        public PromoCodesController(IPromoCodesService PromoCodesService) => _PromoCodesService = PromoCodesService;
+        private readonly IPromoCodesService _promoCodesService;
+        public PromoCodesController(IPromoCodesService service) => _promoCodesService = service;
 
         [ActionName(nameof(GetAllPromoCodesAsync))]
         [HttpGet]
-        public async Task<List<PromoCode>> GetAllPromoCodesAsync() => await _PromoCodesService.GetPromoCodesAsync();
+        public async Task<List<PromoCode>> GetAllPromoCodesAsync() => await _promoCodesService.GetAllAsync();
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<PromoCode> GetPromoCodeAsync(int id) => await _PromoCodesService.GetPromoCodeAsync(id);
+        public async Task<PromoCode> GetPromoCodeAsync(int id) => await _promoCodesService.GetByIdAsync(id);
 
         [HttpPost]
         public async Task<ActionResult> AddPromoCodeAsync(string name, string description, float discountAmount)
         {
-            PromoCode newPromoCode = await _PromoCodesService.AddPromoCodeAsync(name, description, discountAmount);
+            PromoCode newPromoCode = await _promoCodesService.AddAsync(name, description, discountAmount);
 
             return CreatedAtAction(nameof(GetAllPromoCodesAsync), new { id = newPromoCode.PromoCodeID }, newPromoCode);
         }
@@ -40,7 +40,7 @@ namespace PD.Web.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeletePromoCodeAsync(int id)
         {
-            PromoCode PromoCodeToRemove = await _PromoCodesService.DeletePromoCodeAsync(id);
+            PromoCode PromoCodeToRemove = await _promoCodesService.DeleteAsync(id);
 
             return CreatedAtAction(nameof(GetAllPromoCodesAsync), new { id = PromoCodeToRemove.PromoCodeID }, PromoCodeToRemove);
         }

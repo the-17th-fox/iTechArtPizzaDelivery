@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
+using PD.Domain.Services;
 using PD.Domain.Services.Orders;
 using System;
 using System.Collections.Generic;
@@ -18,20 +19,20 @@ namespace PD.Web.Controllers
         //}
 
         private readonly IOrdersService _ordersService;
-        public OrdersController(IOrdersService ordersService) => _ordersService = ordersService;
+        public OrdersController(IOrdersService service) => _ordersService = service;
 
         [ActionName(nameof(GetAllOrdersAsync))]
         [HttpGet]
-        public async Task<List<Order>> GetAllOrdersAsync() => await _ordersService.GetOrdersAsync();
+        public async Task<List<Order>> GetAllOrdersAsync() => await _ordersService.GetAllAsync();
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<Order> GetOrderAsync(int id) => await _ordersService.GetOrderAsync(id);
+        public async Task<Order> GetOrderAsync(int id) => await _ordersService.GetByIdAsync(id);
 
         [HttpPost]
         public async Task<ActionResult> AddOrderAsync(int userId, int pizzaId, string adress, int? promoCodeId = null)
         {
-            Order newOrder = await _ordersService.AddOrderAsync(userId, pizzaId, adress, promoCodeId);
+            Order newOrder = await _ordersService.AddAsync(userId, pizzaId, adress, promoCodeId);
 
             return CreatedAtAction(nameof(GetAllOrdersAsync), new { id = newOrder.OrderID }, newOrder);
         }
@@ -39,7 +40,7 @@ namespace PD.Web.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteOrderAsync(int id)
         {
-            Order OrderToRemove = await _ordersService.DeleteOrderAsync(id);
+            Order OrderToRemove = await _ordersService.DeleteAsync(id);
 
             return CreatedAtAction(nameof(GetAllOrdersAsync), new { id = OrderToRemove.OrderID }, OrderToRemove);
         }
