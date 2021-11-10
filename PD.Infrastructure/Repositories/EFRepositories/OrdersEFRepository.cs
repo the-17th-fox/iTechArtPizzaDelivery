@@ -15,7 +15,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public OrdersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Order> AddOrderAsync(int userId, int pizzaId, string adress, int? promoCodeId = null)
+        public async Task<Order> AddAsync(int userId, int pizzaId, string adress, int? promoCodeId = null)
         {
             var newOrder = _dbContext.Orders
                 .Add(new Order
@@ -30,7 +30,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return newOrder.Entity;
         }
 
-        public async Task<Order> DeleteOrderAsync(int id)
+        public async Task<Order> DeleteAsync(int id)
         {
             Order orderToRemove = await _dbContext.Orders.FindAsync(id);
             _dbContext.Orders.Remove(orderToRemove);
@@ -39,8 +39,8 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return orderToRemove;
         }
 
-        public async Task<Order> GetOrderAsync(int id) => await _dbContext.Orders.FindAsync(id);
+        public async Task<Order> GetByIdAsync(int id) => await _dbContext.Orders.FindAsync(id);
 
-        public async Task<List<Order>> GetOrdersAsync() => await _dbContext.Orders.ToListAsync();
+        public async Task<List<Order>> GetAllAsync() => await _dbContext.Orders.ToListAsync();
     }
 }

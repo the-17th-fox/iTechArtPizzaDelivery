@@ -15,14 +15,14 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PizzasEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<List<Pizza>> GetPizzasAsync()
+        public async Task<List<Pizza>> GetAllAsync()
         {
             return await _dbContext.Pizzas
-                .Include(pizza => pizza.Ingredients)
+                .Include(p => p.Ingredients)
                 .ToListAsync();
         }
 
-        public async Task<Pizza> GetPizzaAsync(int id)
+        public async Task<Pizza> GetByIdAsync(int id)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
             
-        public async Task<Pizza> AddPizzaAsync(string name, string description)
+        public async Task<Pizza> AddAsync(string name, string description)
         {
             var newPizza = _dbContext.Pizzas
                 .Add(new Pizza
@@ -49,7 +49,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return newPizza.Entity;
         }
 
-        public async Task<Pizza> DeletePizzaAsync(int id)
+        public async Task<Pizza> DeleteAsync(int id)
         {
             Pizza pizzaToRemove = await _dbContext.Pizzas
                 .FindAsync(id);

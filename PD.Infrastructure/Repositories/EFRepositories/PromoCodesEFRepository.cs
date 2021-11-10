@@ -15,7 +15,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PromoCodesEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<PromoCode> AddPromoCodeAsync(string name, string description, float discountAmount)
+        public async Task<PromoCode> AddAsync(string name, string description, float discountAmount)
         {
             var PromoCode = _dbContext.PromoCodes
                 .Add(new PromoCode
@@ -29,7 +29,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return PromoCode.Entity;
         }
 
-        public async Task<PromoCode> DeletePromoCodeAsync(int id)
+        public async Task<PromoCode> DeleteAsync(int id)
         {
             PromoCode promoCodeToDelete = await _dbContext.PromoCodes
                 .FindAsync(id);
@@ -41,8 +41,8 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return promoCodeToDelete;
         }
 
-        public async Task<PromoCode> GetPromoCodeAsync(int id) => await _dbContext.PromoCodes.FindAsync(id);
+        public async Task<PromoCode> GetByIdAsync(int id) => await _dbContext.PromoCodes.FindAsync(id);
 
-        public async Task<List<PromoCode>> GetPromoCodesAsync() => await _dbContext.PromoCodes.ToListAsync();
+        public async Task<List<PromoCode>> GetAllAsync() => await _dbContext.PromoCodes.ToListAsync();
     }
 }
