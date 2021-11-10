@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Services
 {
-    class PromoCodesService : IPromoCodesService
+    public class PromoCodesService : IPromoCodesService
     {
         private readonly IPromoCodesRepository _repository;
         public PromoCodesService(IPromoCodesRepository repository) => _repository = repository;
