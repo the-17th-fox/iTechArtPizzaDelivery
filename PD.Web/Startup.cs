@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PD.Domain.Services.Orders;
 
 namespace PD.Domain
 {
@@ -33,10 +34,16 @@ namespace PD.Domain
             //DOMAIN
             services.AddScoped<IPizzasService, PizzasService>();
             services.AddScoped<IIngredientsService, IngredientsService>();
+            services.AddScoped<IOrdersService, OrdersService>();
+            services.AddScoped<IPromoCodesService, PromoCodesService>();
+            services.AddScoped<IUsersService, UsersService>();
 
             //INFRASTRUCTURE
             services.AddScoped<IPizzasRepository, PizzasEFRepository>();
             services.AddScoped<IIngredientsRepository, IngredientsEFRepository>();
+            services.AddScoped<IOrdersRepository, OrdersEFRepository>();
+            services.AddScoped<IPromoCodesRepository, PromoCodesEFRepository>();
+            services.AddScoped<IUsersRepository, UsersEFRepository>();
 
             services.AddDbContext<PizzaDeliveryContext>();
 
