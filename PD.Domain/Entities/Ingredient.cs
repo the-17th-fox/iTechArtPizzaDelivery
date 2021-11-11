@@ -10,8 +10,9 @@ namespace PD.Domain.Entities
     public class Ingredient
     {
         [Key]
-        public int IngredientID { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
+        public List<Pizza> Pizzas { get; set; } = new List<Pizza>();
     }
 }
