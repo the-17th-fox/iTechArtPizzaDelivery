@@ -10,7 +10,7 @@ namespace PD.Domain.Entities
     public class Pizza
     {
         [Key]
-        public int PizzaID { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
 
