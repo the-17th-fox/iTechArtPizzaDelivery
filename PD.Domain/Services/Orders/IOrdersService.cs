@@ -11,7 +11,8 @@ namespace PD.Domain.Services
     {
         public Task<List<Order>> GetAllAsync();
         public Task<Order> GetByIdAsync(int id);
-        public Task<Order> AddAsync(int userId, int pizzaId, string adress, int? promoCodeId = null);
+        public Task<Order> AddAsync(int userId, string adress, int? promoCodeId = null);
+        public Task<Order> AddPizzaToOrder(int pizzaId, int orderId);
         public Task<Order> DeleteAsync(int id);
     }
 }
