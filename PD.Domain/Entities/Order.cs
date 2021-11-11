@@ -10,10 +10,11 @@ namespace PD.Domain.Entities
     public class Order
     {
         [Key]
-        public int OrderID { get; set; }
-        public int UserID { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int? PromoCodeId { get; set; }
+        public List<Pizza> Pizzas { get; set; }
         public string Adress { get; set; }
-        public int? PromoCodeID { get; set; }
-        public int PizzaID { get; set; }
+        public bool IsPaid { get; set; } = false;
     }
 }
