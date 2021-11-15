@@ -12,8 +12,18 @@ namespace PD.Domain.Interfaces
     {
         public Task<List<Order>> GetAllAsync();
         public Task<Order> GetByIdAsync(int id);
-        public Task<Order> AddAsync(int userId, string adress, int? promoCodeId = null);
-        public Task<Order> AddPizzaToOrder(int pizzaId, int orderId);
+        public Task<Order> AddAsync(int userId);
         public Task<Order> DeleteAsync(int id);
+
+        public Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId);
+        public Task<Order> RemovePizzaFromOrderAsync(int pizzaId, int orderId);
+
+        public Task<Order> AddPromoCodeToOrderAsync(int promoCodeId, int orderId);
+        public Task<Order> RemovePromoCodeFromOrderAsync(int promoCodeId, int orderId);
+
+        public Task<Order> AddAdressToOrderAsync(string adress, int orderId);
+        public Task<Order> RemoveAdressFromOrderAsync(string adress, int orderId);
+
+        // TODO: Add status change
     }
 }

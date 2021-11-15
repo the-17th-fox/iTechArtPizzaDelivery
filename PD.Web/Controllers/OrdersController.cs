@@ -15,33 +15,91 @@ namespace PD.Web.Controllers
         private readonly IOrdersService _ordersService;
         public OrdersController(IOrdersService service) => _ordersService = service;
 
-        [ActionName(nameof(GetAllOrdersAsync))]
+        [ActionName(nameof(GetAllAsync))]
         [HttpGet]
-        public async Task<List<Order>> GetAllOrdersAsync() => await _ordersService.GetAllAsync();
+        public async Task<List<Order>> GetAllAsync() => await _ordersService.GetAllAsync();
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<Order> GetOrderAsync(int id) => await _ordersService.GetByIdAsync(id);
+        public async Task<Order> GetByIdAsync(int id) => await _ordersService.GetByIdAsync(id);
 
         [HttpPost]
-        public async Task<ActionResult> AddOrderAsync(int userId, string adress, int? promoCodeId = null)
+        public async Task<ActionResult> AddAsync(int userId)
         {
-            Order newOrder = await _ordersService.AddAsync(userId, adress, promoCodeId);
-            return CreatedAtAction(nameof(GetAllOrdersAsync), new { id = newOrder.Id }, newOrder);
+            Order newOrder = await _ordersService.AddAsync(userId);
+            return CreatedAtAction(nameof(GetAllAsync), 
+                new { id = newOrder.Id }, newOrder);
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteOrderAsync(int id)
+        public async Task<ActionResult> DeleteAsync(int id)
         {
             Order OrderToRemove = await _ordersService.DeleteAsync(id);
-            return CreatedAtAction(nameof(GetAllOrdersAsync), new { id = OrderToRemove.Id }, OrderToRemove);
+            return CreatedAtAction(nameof(GetAllAsync), 
+                new { id = OrderToRemove.Id }, OrderToRemove);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> AddPizzaToOrder(int pizzaId, int orderId)
+        [Route("api/[controller]/[action]")]
+        [HttpPut()]
+        public async Task<ActionResult> AddPizzaToOrderAsync(int pizzaId, int orderId)
         {
-            Order order = await _ordersService.AddPizzaToOrder(pizzaId, orderId);
-            return CreatedAtAction(nameof(GetAllOrdersAsync), new { id = order.Id }, order);
+            Order order = await _ordersService.AddPizzaToOrderAsync(pizzaId, orderId);
+            return CreatedAtAction(nameof(GetAllAsync), new { id = order.Id }, order);
+        }
+
+        [Route("api/[controller]/[action]")]
+        [HttpPut()]
+        public async Task<ActionResult> RemovePizzaFromOrderAsync(int pizzaId, int orderId)
+        {
+            Order order = await _ordersService
+                .RemovePizzaFromOrderAsync(pizzaId, orderId);
+
+            return CreatedAtAction(nameof(GetAllAsync), 
+                new { id = order.Id }, order);
+        }
+
+        [Route("api/[controller]/[action]")]
+        [HttpPut()]
+        public async Task<ActionResult> AddPromoCodeToOrderAsync(int promoCodeId, int orderId)
+        {
+            Order order = await _ordersService
+                .AddPromoCodeToOrderAsync(promoCodeId, orderId);
+
+            return CreatedAtAction(nameof(GetAllAsync),
+                new { id = order.Id }, order);
+        }
+
+        [Route("api/[controller]/[action]")]
+        [HttpPut()]
+        public async Task<ActionResult> RemovePromoCodeFromOrderAsync(int promoCodeId, int orderId)
+        {
+            Order order = await _ordersService
+                .RemovePromoCodeFromOrderAsync(promoCodeId, orderId);
+
+            return CreatedAtAction(nameof(GetAllAsync),
+                new { id = order.Id }, order);
+        }
+
+        [Route("api/[controller]/[action]")]
+        [HttpPut()]
+        public async Task<ActionResult> AddAdressToOrderAsync(string adress, int orderId)
+        {
+            Order order = await _ordersService
+                .AddAdressToOrderAsync(adress, orderId);
+
+            return CreatedAtAction(nameof(GetAllAsync),
+                new { id = order.Id }, order);
+        }
+
+        [Route("api/[controller]/[action]")]
+        [HttpPut()]
+        public async Task<ActionResult> RemoveAdressFromOrderAsync(string adress, int orderId)
+        {
+            Order order = await _ordersService
+                .RemoveAdressFromOrderAsync(adress, orderId);
+
+            return CreatedAtAction(nameof(GetAllAsync),
+                new { id = order.Id }, order);
         }
     }
 }
