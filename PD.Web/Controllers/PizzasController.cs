@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using PD.Web.Models;
 
 namespace PD.Domain.Controllers
 {
@@ -18,18 +20,29 @@ namespace PD.Domain.Controllers
     public class PizzasController : ControllerBase
     {		
         private readonly IPizzasService _pizzasService;
-        public PizzasController(IPizzasService service)
+        private readonly IMapper _mapper;
+
+        public PizzasController(IPizzasService service, IMapper mapper)
         {
             _pizzasService = service;
+            _mapper = mapper;
         }
 
         [ActionName(nameof(GetAllAsync))]
         [HttpGet]
-        public async Task<List<Pizza>> GetAllAsync() => await _pizzasService.GetAllAsync();
+        public async Task<List<PizzaViewModel>> GetAllAsync()
+        {
+            return _mapper.Map<List<PizzaViewModel>>
+                (await _pizzasService.GetAllAsync());
+        }
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<Pizza> GetPizzaAsync(int id) => await _pizzasService.GetByIdAsync(id);
+        public async Task<DetailPizzaViewModel> GetByIdAsync(int id)
+        {
+            return _mapper.Map<DetailPizzaViewModel>
+                (await _pizzasService.GetByIdAsync(id));
+        }
 
         [HttpPost]
         public async Task<ActionResult> AddAsync(string name, string description)
