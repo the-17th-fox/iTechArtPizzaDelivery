@@ -24,5 +24,8 @@ namespace PD.Domain.Services
 
         public async Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId) 
             => await _repository.AddIngredientToPizzaAsync(ingredientId, pizzaId);
+
+        public async Task<Pizza> RemoveIngredientFromPizza(int ingredientId, int pizzaId)
+            => await _repository.RemoveIngredientFromPizza(ingredientId, pizzaId);
     }
 }

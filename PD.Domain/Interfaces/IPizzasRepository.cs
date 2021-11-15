@@ -14,5 +14,6 @@ namespace PD.Domain.Interfaces
         public Task<Pizza> AddAsync(string name, string description);
         public Task<Pizza> DeleteAsync(int id);
         public Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId);
+        public Task<Pizza> RemoveIngredientFromPizza(int ingredientId, int pizzaId);
     }
 }
