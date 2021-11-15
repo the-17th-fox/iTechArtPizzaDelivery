@@ -10,7 +10,7 @@ using PD.Infrastructure.Context;
 namespace PD.Infrastructure.Migrations
 {
     [DbContext(typeof(PizzaDeliveryContext))]
-    [Migration("20211111132628_Init")]
+    [Migration("20211112180609_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,6 +34,21 @@ namespace PD.Infrastructure.Migrations
                     b.HasIndex("PizzasId");
 
                     b.ToTable("IngredientPizza");
+                });
+
+            modelBuilder.Entity("OrderPizza", b =>
+                {
+                    b.Property<int>("OrdersId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PizzasId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrdersId", "PizzasId");
+
+                    b.HasIndex("PizzasId");
+
+                    b.ToTable("OrderPizza");
                 });
 
             modelBuilder.Entity("PD.Domain.Entities.Ingredient", b =>
@@ -72,6 +87,10 @@ namespace PD.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PromoCodeId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Orders");
                 });
 
@@ -88,19 +107,14 @@ namespace PD.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("Pizzas");
                 });
 
             modelBuilder.Entity("PD.Domain.Entities.PromoCode", b =>
                 {
-                    b.Property<int>("PromoCodeId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -114,7 +128,7 @@ namespace PD.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PromoCodeId");
+                    b.HasKey("Id");
 
                     b.ToTable("PromoCodes");
                 });
@@ -129,10 +143,15 @@ namespace PD.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Users");
                 });
@@ -152,16 +171,50 @@ namespace PD.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PD.Domain.Entities.Pizza", b =>
+            modelBuilder.Entity("OrderPizza", b =>
                 {
                     b.HasOne("PD.Domain.Entities.Order", null)
-                        .WithMany("Pizzas")
-                        .HasForeignKey("OrderId");
+                        .WithMany()
+                        .HasForeignKey("OrdersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PD.Domain.Entities.Pizza", null)
+                        .WithMany()
+                        .HasForeignKey("PizzasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PD.Domain.Entities.Order", b =>
                 {
-                    b.Navigation("Pizzas");
+                    b.HasOne("PD.Domain.Entities.PromoCode", "PromoCode")
+                        .WithMany("Orders")
+                        .HasForeignKey("PromoCodeId");
+
+                    b.HasOne("PD.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PromoCode");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PD.Domain.Entities.User", b =>
+                {
+                    b.HasOne("PD.Domain.Entities.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId");
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("PD.Domain.Entities.PromoCode", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
