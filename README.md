@@ -1,5 +1,6 @@
 # iTechArtPizza
 This is where iTechArt | Students Labs project will be.
 
+![Pizza Delivery Database schema](https://user-images.githubusercontent.com/82900624/141327414-77b99d05-12ce-46f1-bacb-af61f2ac3d96.png)
 
-![Pizza Delivery Database schema](https://user-images.githubusercontent.com/82900624/140290407-cc4cf345-9796-4380-a486-4b1cacbbb907.png)
+
