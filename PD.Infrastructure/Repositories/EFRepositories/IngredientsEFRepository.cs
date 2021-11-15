@@ -19,7 +19,8 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             var newIngredient = _dbContext.Ingredients.Add(new Ingredient
             {
-                Name = name
+                Name = name,
+                Pizzas = new List<Pizza>()
             });
 
             await _dbContext.SaveChangesAsync();
@@ -36,19 +37,13 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return ingredientToRemove;
         }
 
-        public async Task<Ingredient> GetByIdAsync(int id)
-        {
-            try
-            {
-                return await _dbContext.Ingredients
-                            .FirstAsync(i => i.IngredientID == id);
-            }
-            catch (Exception)
-            { 
-                return null;
-            }
-        }
+        public async Task<Ingredient> GetByIdAsync(int id) => await _dbContext.Ingredients.FindAsync(id);
 
-        public async Task<List<Ingredient>> GetAllAsync() => await _dbContext.Ingredients.ToListAsync();
+        public async Task<List<Ingredient>> GetAllAsync()
+        {
+            return await _dbContext.Ingredients
+                .Include(i => i.Pizzas)
+                .ToListAsync();
+        }
     }
 }
