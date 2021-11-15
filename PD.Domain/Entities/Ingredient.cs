@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PD.Domain.Entities
@@ -11,8 +12,7 @@ namespace PD.Domain.Entities
     {
         [Key]
         public int Id { get; set; }
-
         public string Name { get; set; }
-        public List<Pizza> Pizzas { get; set; } = new List<Pizza>();
+        public List<Pizza> Pizzas { get; set; }
     }
 }

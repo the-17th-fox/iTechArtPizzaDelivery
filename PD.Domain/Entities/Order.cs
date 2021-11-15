@@ -12,7 +12,7 @@ namespace PD.Domain.Entities
     {
         [Key]
         public int Id { get; set; }
-        public virtual List<Pizza> Pizzas { get; set; }
+        public List<Pizza> Pizzas { get; set; }
         public string Adress { get; set; }
         public bool IsPaid { get; set; } = false;
 

@@ -14,6 +14,6 @@ namespace PD.Domain.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public float DiscountAmount { get; set; }
-        public virtual List<Order> Orders { get; set; } = new List<Order>();
+        public List<Order> Orders { get; set; }
     }
 }
