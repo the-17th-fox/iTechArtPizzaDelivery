@@ -10,17 +10,13 @@ namespace PD.Infrastructure.Context
 {
     public class PizzaDeliveryContext : DbContext
     {
-        private const string _connectionString = @"Server=(localdb)\MSSQLLocalDB;Database=myDataBase;Trusted_Connection = True;";
+        public PizzaDeliveryContext(DbContextOptions<PizzaDeliveryContext> options) : base(options)
+        { }
+
         public DbSet<Pizza> Pizzas { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
         public DbSet<Order> Orders { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-        }
-
     }
 }

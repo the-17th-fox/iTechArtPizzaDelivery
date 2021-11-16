@@ -17,17 +17,17 @@ using System.Threading.Tasks;
 using PD.Domain.Entities;
 using Microsoft.OpenApi.Models;
 using PD.Web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace PD.Domain
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -46,9 +46,10 @@ namespace PD.Domain
             services.AddScoped<IPromoCodesRepository, PromoCodesEFRepository>();
             services.AddScoped<IUsersRepository, UsersEFRepository>();
 
-            services.AddDbContext<PizzaDeliveryContext>();
-
             services.AddAutoMapper(typeof(PizzaProfile));
+
+            services.AddDbContext<PizzaDeliveryContext>
+                (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
