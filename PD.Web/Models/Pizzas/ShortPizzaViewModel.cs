@@ -8,7 +8,7 @@ namespace PD.Web.Models
     /// <summary>
     /// GetAll
     /// </summary>
-    public class PizzaViewModel
+    public class ShortPizzaViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
