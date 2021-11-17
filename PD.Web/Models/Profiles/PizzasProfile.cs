@@ -7,26 +7,39 @@ using AutoMapper;
 
 namespace PD.Web.Models
 {
-    public class PizzaProfile : Profile
+    public class PizzasProfile : Profile
     {
-        public PizzaProfile()
+        public PizzasProfile()
         {
-            CreateMap<Pizza, DetailPizzaViewModel>() // GetAll
+            CreateMap<Pizza, PizzaViewModel>() // Detailed pizza's info
                 .ForMember(p => p.Id,                           
                     option => option.MapFrom(src => src.Id)) // ID
+
                 .ForMember(p => p.Name,
                     option => option.MapFrom(src => src.Name)) // NAME
+
                 .ForMember(p => p.Description,
                     option => option.MapFrom(src => src.Description)) // DESCRIPTION
+
                 .ForMember(p => p.Ingredients,
                     option => option.MapFrom(src => src.Ingredients)); // INGREDIENTS list
 
-            CreateMap<Pizza, PizzaViewModel>() // GetById
+
+            CreateMap<Pizza, ShortPizzaViewModel>() // Short piece of information about a pizza
                 .ForMember(p => p.Id, 
                     option => option.MapFrom(src => src.Id)) // ID
+
                 .ForMember(p => p.Name,
                     option => option.MapFrom(src => src.Name)); // NAME
-        }
 
+
+            CreateMap<Pizza, AddPizzaViewModel>() // Information that's used by AddMethod
+                .ForMember(p => p.Name,
+                    option => option.MapFrom(src => src.Name)) // NAME
+                
+                .ForMember(p => p.Description,
+                    option => option.MapFrom(src => src.Name)); // DESCRIPTION
+
+        }
     }
 }
