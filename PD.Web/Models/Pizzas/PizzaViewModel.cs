@@ -10,11 +10,11 @@ namespace PD.Web.Models
     /// <summary>
     /// GetById
     /// </summary>
-    public class DetailPizzaViewModel
+    public class PizzaViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<Ingredient> Ingredients { get; set; }
+        public List<ShortIngredientViewModel> Ingredients { get; set; } = new List<ShortIngredientViewModel>();
     }
 }
