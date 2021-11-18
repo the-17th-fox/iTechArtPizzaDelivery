@@ -14,10 +14,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PD.Domain.Entities;
 using Microsoft.OpenApi.Models;
-using PD.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using PD.Web.Models.Profiles;
 
 namespace PD.Domain
 {
@@ -46,8 +45,14 @@ namespace PD.Domain
             services.AddScoped<IPromoCodesRepository, PromoCodesEFRepository>();
             services.AddScoped<IUsersRepository, UsersEFRepository>();
 
-            services.AddAutoMapper(typeof(PizzasProfile), typeof(IngredientsProfile));
+            //AUTOMAPPER PROFILES
+            services.AddAutoMapper(
+                typeof(PizzasProfile), 
+                typeof(IngredientsProfile), 
+                typeof(OrdersProfile)
+                );
 
+            //DBCONTEXT SETTINGS
             services.AddDbContext<PizzaDeliveryContext>
                 (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
 
