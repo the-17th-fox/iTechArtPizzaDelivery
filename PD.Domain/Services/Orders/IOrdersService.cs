@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Services
 {
-    public interface IOrdersService
+    public interface IOrdersService : IBaseService<Order>
     {
-        public Task<List<Order>> GetAllAsync();
-        public Task<Order> GetByIdAsync(int id);
-        public Task<Order> AddAsync(int userId);
-        public Task<Order> DeleteAsync(int id);
-
         public Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId);
         public Task<Order> RemovePizzaFromOrderAsync(int pizzaId, int orderId);
 

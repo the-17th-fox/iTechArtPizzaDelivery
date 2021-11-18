@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Services
 {
-    public interface IIngredientsService
+    public interface IIngredientsService : IBaseService<Ingredient>
     {
-        public Task<List<Ingredient>> GetAllAsync();
-        public Task<Ingredient> GetByIdAsync(int id);
-        public Task<Ingredient> AddAsync(string name);
-        public Task<Ingredient> DeleteAsync(int id);
+        // Temporally blank
     }
 }
