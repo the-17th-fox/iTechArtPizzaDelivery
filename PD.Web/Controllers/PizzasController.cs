@@ -32,10 +32,10 @@ namespace PD.Domain.Controllers
         [ActionName(nameof(GetAllAsync))]
         [Route("[action]")]
         [HttpGet]
-        public async Task<List<PizzaViewModel>> GetAllAsync()
+        public async Task<List<ShortPizzaViewModel>> GetAllAsync()
         {
             List<Pizza> pizzas = await _pizzasService.GetAllAsync();
-            return _mapper.Map<List<PizzaViewModel>>(pizzas);
+            return _mapper.Map<List<ShortPizzaViewModel>>(pizzas);
         }
 
         [Route("{id}")]
@@ -63,13 +63,20 @@ namespace PD.Domain.Controllers
             return _mapper.Map<ShortPizzaViewModel>(pizzaToRemove);
         }
 
-        // TODO: Add iID and pID to route according to the presentation
         [Route("[action]")]
         [HttpPut()]
-        public async Task<ShortPizzaViewModel> AddIngredientToPizza(int ingredientId, int pizzaId)
+        public async Task<IngredientsInPizzaViewModel> AddIngredientToPizza(int ingredientId, int pizzaId)
         {
             Pizza pizza = await _pizzasService.AddIngredientToPizzaAsync(ingredientId, pizzaId);
-            return _mapper.Map<ShortPizzaViewModel>(pizza);
+            return _mapper.Map<IngredientsInPizzaViewModel>(pizza);
+        }
+
+        [Route("[action]")]
+        [HttpPut()]
+        public async Task<IngredientsInPizzaViewModel> RemoveIngredientFromPizza(int ingredientId, int pizzaId)
+        {
+            Pizza pizza = await _pizzasService.RemoveIngredientFromPizza(ingredientId, pizzaId);
+            return _mapper.Map<IngredientsInPizzaViewModel>(pizza);
         }
     }
 }
