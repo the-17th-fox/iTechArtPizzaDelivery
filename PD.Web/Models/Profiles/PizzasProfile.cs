@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 
-namespace PD.Web.Models
+namespace PD.Web.Models.Profiles
 {
     public class PizzasProfile : Profile
     {
@@ -41,6 +41,15 @@ namespace PD.Web.Models
 
                 .ForMember(p => p.Description,
                     option => option.MapFrom(src => src.Description)) // DESCRIPTION
+                .ReverseMap();
+
+
+            CreateMap<Pizza, IngredientsInPizzaViewModel>() // Information that's used by AddMethod
+                .ForMember(p => p.Id,
+                    option => option.MapFrom(src => src.Id)) // NAME
+
+                .ForMember(p => p.Ingredients,
+                    option => option.MapFrom(src => src.Ingredients)) // INGREDIENTS
                 .ReverseMap();
         }
     }
