@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
 using PD.Domain.Services;
+using PD.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,30 +16,46 @@ namespace iTechArtIngredientDelivery.Web.Controllers
     public class IngredientsController : Controller
     {
         private readonly IIngredientsService _ingredientsService;
-        public IngredientsController(IIngredientsService service) => _ingredientsService = service;
+        private readonly IMapper _mapper;
+        public IngredientsController(IIngredientsService service, IMapper mapper)
+        {
+            _ingredientsService = service;
+            _mapper = mapper;
+        }
 
-        [ActionName(nameof(GetAllIngredientsAsync))]
+
+        [Route("[action]")]
+        [ActionName(nameof(GetAllAsync))]
         [HttpGet]
-        public async Task<List<Ingredient>> GetAllIngredientsAsync() => await _ingredientsService.GetAllAsync();
+        public async Task<List<ShortIngredientViewModel>> GetAllAsync()
+        {
+            List<Ingredient> ingredients = await _ingredientsService.GetAllAsync();
+            return _mapper.Map<List<ShortIngredientViewModel>>(ingredients);
+        }
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<Ingredient> GetIngredientAsync(int id) => await _ingredientsService.GetByIdAsync(id);
-
-        [HttpPost]
-        public async Task<ActionResult> AddIngredientAsync(string name)
+        public async Task<IngredientViewModel> GetAsync(int id)
         {
-            Ingredient newIngredient = await _ingredientsService.AddAsync(name);
-
-            return CreatedAtAction(nameof(GetAllIngredientsAsync), new { id = newIngredient.IngredientID }, newIngredient);
+            Ingredient ingredient = await _ingredientsService.GetByIdAsync(id);
+            return _mapper.Map<IngredientViewModel>(ingredient);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> DeleteIngredientAsync(int id)
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<ShortIngredientViewModel> AddAsync(AddIngredientViewModel ingredientModel)
         {
-            Ingredient IngredientToRemove = await _ingredientsService.DeleteAsync(id);
+            Ingredient newIngredient = _mapper.Map<AddIngredientViewModel, Ingredient>(ingredientModel);
+            await _ingredientsService.AddAsync(newIngredient);
+            return _mapper.Map<ShortIngredientViewModel>(newIngredient);
+        }
 
-            return CreatedAtAction(nameof(GetAllIngredientsAsync), new { id = IngredientToRemove.IngredientID }, IngredientToRemove);
+        [Route("[action]/{id}")]
+        [HttpDelete]
+        public async Task<ShortIngredientViewModel> DeleteAsync(int id)
+        {
+            Ingredient ingredientToRemove = await _ingredientsService.DeleteAsync(id);
+            return _mapper.Map<ShortIngredientViewModel>(ingredientToRemove);
         }
     }
 }
