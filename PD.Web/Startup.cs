@@ -46,7 +46,7 @@ namespace PD.Domain
             services.AddScoped<IPromoCodesRepository, PromoCodesEFRepository>();
             services.AddScoped<IUsersRepository, UsersEFRepository>();
 
-            services.AddAutoMapper(typeof(PizzaProfile));
+            services.AddAutoMapper(typeof(PizzasProfile), typeof(IngredientsProfile));
 
             services.AddDbContext<PizzaDeliveryContext>
                 (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
