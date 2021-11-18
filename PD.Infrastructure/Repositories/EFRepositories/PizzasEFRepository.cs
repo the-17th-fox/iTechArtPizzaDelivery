@@ -53,10 +53,14 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId)
         {
             Pizza pizza = await _dbContext.Pizzas
-                .FindAsync(pizzaId);
+                .Include(p => p.Ingredients)
+                .Where(p => p.Id == pizzaId)
+                .FirstAsync();
 
             Ingredient ingredient = await _dbContext.Ingredients
-                .FindAsync(ingredientId);
+                .Include(i => i.Pizzas)
+                .Where(i => i.Id == ingredientId)
+                .FirstAsync();
 
             pizza.Ingredients.Add(ingredient);
 
