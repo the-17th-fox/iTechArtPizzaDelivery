@@ -15,14 +15,9 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public OrdersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Order> AddAsync(int userId)
+        public async Task<Order> AddAsync(Order order)
         {
-            var newOrder = _dbContext.Orders
-                .Add(new Order
-                {
-                    UserId = userId,
-                    Pizzas = new List<Pizza>()
-                });
+            var newOrder = _dbContext.Orders.Add(order);
 
             await _dbContext.SaveChangesAsync();
             return newOrder.Entity;

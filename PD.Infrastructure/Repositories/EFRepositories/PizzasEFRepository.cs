@@ -30,15 +30,9 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .FirstAsync();
         }
 
-        public async Task<Pizza> AddAsync(string name, string description)
+        public async Task<Pizza> AddAsync(Pizza entity)
         {
-            var newPizza = _dbContext.Pizzas
-                .Add(new Pizza
-                {
-                    Name = name,
-                    Description = description,
-                    Ingredients = new List<Ingredient>()
-                });
+            var newPizza = _dbContext.Pizzas.Add(entity);
 
             await _dbContext.SaveChangesAsync();
             return newPizza.Entity;

@@ -15,15 +15,9 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PromoCodesEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<PromoCode> AddAsync(string name, string description, float discountAmount)
+        public async Task<PromoCode> AddAsync(PromoCode entity)
         {
-            var PromoCode = _dbContext.PromoCodes
-                .Add(new PromoCode
-                {
-                    Name = name,
-                    Description = description,
-                    DiscountAmount = discountAmount
-                });
+            var PromoCode = _dbContext.PromoCodes.Add(entity);
 
             await _dbContext.SaveChangesAsync();
             return PromoCode.Entity;
