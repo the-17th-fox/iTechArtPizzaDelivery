@@ -13,18 +13,6 @@ namespace PD.Domain.Services
         private readonly IOrdersRepository _repository;
         public OrdersService(IOrdersRepository repository) => _repository = repository;
 
-        public async Task<Order> AddAsync(int userId) 
-            => await _repository.AddAsync(userId);
-
-        public async Task<Order> DeleteAsync(int id) 
-            => await _repository.DeleteAsync(id);
-        public async Task<Order> GetByIdAsync(int id) 
-            => await _repository.GetByIdAsync(id);
-
-        public async Task<List<Order>> GetAllAsync() 
-            => await _repository.GetAllAsync();
-
-
         public async Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId)
             => await _repository.AddPizzaToOrderAsync(pizzaId, orderId);
 
@@ -42,5 +30,13 @@ namespace PD.Domain.Services
 
         public async Task<Order> RemoveAdressFromOrderAsync(string adress, int orderId)
             => await _repository.RemoveAdressFromOrderAsync(adress, orderId);
+
+        public async Task<List<Order>> GetAllAsync() => await _repository.GetAllAsync();
+
+        public async Task<Order> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
+
+        public async Task<Order> AddAsync(Order entity) => await _repository.AddAsync(entity);
+
+        public async Task<Order> DeleteAsync(int id) => await _repository.DeleteAsync(id);
     }
 }
