@@ -28,8 +28,9 @@ namespace PD.Domain.Controllers
             _mapper = mapper;
         }
 
+
         [ActionName(nameof(GetAllAsync))]
-        [Route("/all")]
+        [Route("[action]")]
         [HttpGet]
         public async Task<List<PizzaViewModel>> GetAllAsync()
         {
@@ -45,7 +46,7 @@ namespace PD.Domain.Controllers
             return _mapper.Map<PizzaViewModel>(pizza);
         }
 
-        [Route("api/[controller]/[action]")]
+        [Route("[action]")]
         [HttpPost]
         public async Task<ShortPizzaViewModel> AddAsync(AddPizzaViewModel pizzaModel)
         {
@@ -54,6 +55,7 @@ namespace PD.Domain.Controllers
             return _mapper.Map<ShortPizzaViewModel>(pizzaToAdd);
         }
 
+        [Route("[action]/{id}")]
         [HttpDelete]
         public async Task<ShortPizzaViewModel> DeleteAsync(int id)
         {
@@ -61,7 +63,8 @@ namespace PD.Domain.Controllers
             return _mapper.Map<ShortPizzaViewModel>(pizzaToRemove);
         }
 
-        [Route("api/[controller]/[action]")]
+        // TODO: Add iID and pID to route according to the presentation
+        [Route("[action]")]
         [HttpPut()]
         public async Task<ShortPizzaViewModel> AddIngredientToPizza(int ingredientId, int pizzaId)
         {
