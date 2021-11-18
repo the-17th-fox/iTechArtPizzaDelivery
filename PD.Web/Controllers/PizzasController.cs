@@ -29,47 +29,44 @@ namespace PD.Domain.Controllers
         }
 
         [ActionName(nameof(GetAllAsync))]
+        [Route("/all")]
         [HttpGet]
         public async Task<List<PizzaViewModel>> GetAllAsync()
         {
-            return _mapper.Map<List<PizzaViewModel>>
-                (await _pizzasService.GetAllAsync());
+            List<Pizza> pizzas = await _pizzasService.GetAllAsync();
+            return _mapper.Map<List<PizzaViewModel>>(pizzas);
         }
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<DetailPizzaViewModel> GetByIdAsync(int id)
+        public async Task<PizzaViewModel> GetByIdAsync(int id)
         {
-            return _mapper.Map<DetailPizzaViewModel>
-                (await _pizzasService.GetByIdAsync(id));
+            Pizza pizza = await _pizzasService.GetByIdAsync(id);
+            return _mapper.Map<PizzaViewModel>(pizza);
         }
 
+        [Route("api/[controller]/[action]")]
         [HttpPost]
-        public async Task<ActionResult> AddAsync(string name, string description)
+        public async Task<ShortPizzaViewModel> AddAsync(AddPizzaViewModel pizzaModel)
         {
-            Pizza newPizza = await _pizzasService.AddAsync(name, description);
-
-            return CreatedAtAction(nameof(GetAllAsync),
-                new { id = newPizza.Id }, newPizza);
+            Pizza pizzaToAdd = _mapper.Map<AddPizzaViewModel, Pizza>(pizzaModel);
+            await _pizzasService.AddAsync(pizzaToAdd);
+            return _mapper.Map<ShortPizzaViewModel>(pizzaToAdd);
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteAsync(int id)
+        public async Task<ShortPizzaViewModel> DeleteAsync(int id)
         {
             Pizza pizzaToRemove = await _pizzasService.DeleteAsync(id);
-
-            return CreatedAtAction(nameof(GetAllAsync),
-                    new { id = pizzaToRemove.Id }, pizzaToRemove);
+            return _mapper.Map<ShortPizzaViewModel>(pizzaToRemove);
         }
 
         [Route("api/[controller]/[action]")]
         [HttpPut()]
-        public async Task<ActionResult> AddIngredientToPizza(int ingredientId, int pizzaId)
+        public async Task<ShortPizzaViewModel> AddIngredientToPizza(int ingredientId, int pizzaId)
         {
             Pizza pizza = await _pizzasService.AddIngredientToPizzaAsync(ingredientId, pizzaId);
-
-            return CreatedAtAction(nameof(GetAllAsync),
-                    new { id = pizza.Id }, pizza);
+            return _mapper.Map<ShortPizzaViewModel>(pizza);
         }
     }
 }
