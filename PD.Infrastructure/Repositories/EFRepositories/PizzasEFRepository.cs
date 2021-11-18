@@ -71,10 +71,14 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Pizza> RemoveIngredientFromPizza(int ingredientId, int pizzaId)
         {
             Pizza pizza = await _dbContext.Pizzas
-                .FindAsync(pizzaId);
+                .Include(p => p.Ingredients)
+                .Where(p => p.Id == pizzaId)
+                .FirstAsync();
 
-            Ingredient ingredient = pizza.Ingredients
-                .Find(i => i.Id == ingredientId);
+            Ingredient ingredient = await _dbContext.Ingredients
+                .Include(i => i.Pizzas)
+                .Where(i => i.Id == ingredientId)
+                .FirstAsync();
 
             pizza.Ingredients.Remove(ingredient);
 

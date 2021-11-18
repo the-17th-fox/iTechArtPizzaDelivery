@@ -23,10 +23,17 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return newOrder.Entity;
         }
 
-        public async Task<Order> AddPizzaToOrder(int pizzaId, int orderId)
+        public async Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId)
         {
-            Pizza pizza = await _dbContext.Pizzas.FindAsync(pizzaId);
-            Order order = await _dbContext.Orders.FindAsync(orderId);
+            Pizza pizza = await _dbContext.Pizzas
+                .Include(i => i.Orders)
+                .Where(i => i.Id == pizzaId)
+                .FirstAsync();
+
+            Order order = await _dbContext.Orders
+                .Include(i => i.Pizzas)
+                .Where(i => i.Id == orderId)
+                .FirstAsync();
 
             order.Pizzas.Add(pizza);
 
@@ -34,13 +41,19 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> RemovePizzaFromOrder(int pizzaId, int orderId)
+        public async Task<Order> RemovePizzaFromOrderAsync(int pizzaId, int orderId)
         {
-            Order order = await _dbContext.Orders.FindAsync(orderId);
+            Pizza pizza = await _dbContext.Pizzas
+                .Include(i => i.Orders)
+                .Where(i => i.Id == pizzaId)
+                .FirstAsync();
 
-            order.Pizzas.Remove(
-                order.Pizzas.Find(p => p.Id == pizzaId)
-                );
+            Order order = await _dbContext.Orders
+                .Include(i => i.Pizzas)
+                .Where(i => i.Id == orderId)
+                .FirstAsync();
+
+            order.Pizzas.Remove(pizza);
 
             await _dbContext.SaveChangesAsync();
             return order;
@@ -55,51 +68,40 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return orderToRemove;
         }
 
-        public async Task<Order> GetByIdAsync(int id) 
-            => await _dbContext.Orders.FindAsync(id);
-
-        public async Task<List<Order>> GetAllAsync() 
-            => await _dbContext.Orders.ToListAsync();
-
-        public async Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId)
+        public async Task<Order> GetByIdAsync(int id)
         {
-            Pizza pizza = await _dbContext.Pizzas.FindAsync(pizzaId);
-            Order order = await _dbContext.Orders.FindAsync(orderId);
-
-            order.Pizzas.Add(pizza);
-
-            await _dbContext.SaveChangesAsync();
-            return order;
+            return await _dbContext.Orders
+                .Include(o => o.Pizzas)
+                .Where(o => o.Id == id)
+                .FirstAsync();
         }
 
-        public async Task<Order> RemovePizzaFromOrderAsync(int pizzaId, int orderId)
+        public async Task<List<Order>> GetAllAsync()
         {
-            Order order = await _dbContext.Orders.FindAsync(orderId);
-
-            order.Pizzas.Remove(
-                order.Pizzas.Find(p => p.Id == pizzaId)
-                );
-
-            await _dbContext.SaveChangesAsync();
-
-            return order;
+            return await _dbContext.Orders
+                .Include(o => o.Pizzas)
+                .ToListAsync();
         }
 
         public async Task<Order> AddPromoCodeToOrderAsync(int promoCodeId, int orderId)
-        {
+        { 
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
-            order.PromoCodeId = promoCodeId;
+            PromoCode promoCode = await _dbContext.PromoCodes.FindAsync(promoCodeId);
+
+            order.PromoCode = promoCode;
             await _dbContext.SaveChangesAsync();
 
             return order;
         }
 
-        public async Task<Order> RemovePromoCodeFromOrderAsync(int promoCodeId, int orderId)
-        {
+        public async Task<Order> RemovePromoCodeFromOrderAsync(int orderId)
+        {   
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
-            order.PromoCodeId = null;
+            PromoCode promoCode = order.PromoCode;
+
+            // TODO: Impelement removing of promocode
             await _dbContext.SaveChangesAsync();
 
             return order;
@@ -115,7 +117,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> RemoveAdressFromOrderAsync(string adress, int orderId)
+        public async Task<Order> RemoveAdressFromOrderAsync(int orderId)
         {
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
