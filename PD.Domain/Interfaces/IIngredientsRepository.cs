@@ -7,11 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PD.Domain.Interfaces
 {
-    public interface IIngredientsRepository
+    public interface IIngredientsRepository : IBaseRepository<Ingredient>
     {
-        public Task<List<Ingredient>> GetAllAsync();
-        public Task<Ingredient> GetByIdAsync(int id);
-        public Task<Ingredient> AddAsync(string name);
-        public Task<Ingredient> DeleteAsync(int id);
+        // Temporally blank
     }
 }

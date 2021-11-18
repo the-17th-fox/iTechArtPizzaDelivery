@@ -8,13 +8,8 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Interfaces
 {
-    public interface IOrdersRepository
+    public interface IOrdersRepository : IBaseRepository<Order>
     {
-        public Task<List<Order>> GetAllAsync();
-        public Task<Order> GetByIdAsync(int id);
-        public Task<Order> AddAsync(int userId);
-        public Task<Order> DeleteAsync(int id);
-
         public Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId);
         public Task<Order> RemovePizzaFromOrderAsync(int pizzaId, int orderId);
 
