@@ -18,4 +18,8 @@
     <ProjectReference Include="..\PD.Infrastructure\PD.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\PromoCodes\" />
+  </ItemGroup>
+
 </Project>

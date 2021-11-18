@@ -14,22 +14,34 @@ namespace PD.Domain.Services
         public OrdersService(IOrdersRepository repository) => _repository = repository;
 
         public async Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId)
-            => await _repository.AddPizzaToOrderAsync(pizzaId, orderId);
+        {
+            return await _repository.AddPizzaToOrderAsync(pizzaId, orderId);
+        }
 
         public async Task<Order> RemovePizzaFromOrderAsync(int pizzaId, int orderId)
-            => await _repository.RemovePromoCodeFromOrderAsync(pizzaId, orderId);
+        {
+            return await _repository.RemovePizzaFromOrderAsync(pizzaId, orderId);
+        }
 
         public async Task<Order> AddPromoCodeToOrderAsync(int promoCodeId, int orderId)
-            => await _repository.AddPromoCodeToOrderAsync(promoCodeId, orderId);
+        {
+            return await _repository.AddPromoCodeToOrderAsync(promoCodeId, orderId);
+        }
 
-        public async Task<Order> RemovePromoCodeFromOrderAsync(int promoCodeId, int orderId)
-            => await _repository.RemovePromoCodeFromOrderAsync(promoCodeId, orderId);
+        public async Task<Order> RemovePromoCodeFromOrderAsync(int orderId)
+        {
+            return await _repository.RemovePromoCodeFromOrderAsync(orderId);
+        }
 
         public async Task<Order> AddAdressToOrderAsync(string adress, int orderId)
-            => await _repository.AddAdressToOrderAsync(adress, orderId);
+        {
+            return await _repository.AddAdressToOrderAsync(adress, orderId);
+        }
 
-        public async Task<Order> RemoveAdressFromOrderAsync(string adress, int orderId)
-            => await _repository.RemoveAdressFromOrderAsync(adress, orderId);
+        public async Task<Order> RemoveAdressFromOrderAsync(int orderId)
+        {
+            return await _repository.RemoveAdressFromOrderAsync(orderId);
+        }
 
         public async Task<List<Order>> GetAllAsync() => await _repository.GetAllAsync();
 
