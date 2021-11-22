@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
-using PD.Infrastructure.Context;
+using PD.Infrastructure.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -101,7 +101,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
 
             PromoCode promoCode = order.PromoCode;
 
-            // TODO: Impelement removing of promocode
+            promoCode.Orders.Remove(order);
             await _dbContext.SaveChangesAsync();
 
             return order;

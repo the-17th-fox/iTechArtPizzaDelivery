@@ -1,6 +1,6 @@
 using PD.Domain.Interfaces;
 using PD.Domain.Services;
-using PD.Infrastructure.Context;
+using PD.Infrastructure.Contexts;
 using PD.Infrastructure.Repositories.EFRepositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using PD.Web.Models.Profiles;
+using PD.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace PD.Domain
 {
@@ -56,6 +58,19 @@ namespace PD.Domain
             services.AddDbContext<PizzaDeliveryContext>
                 (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
 
+            services.AddDbContext<UsersContext>
+                (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
+
+            //IDENTITY SERVICES AND OPTIONS
+            services.AddIdentity<User, IdentityRole>(opts => {
+                opts.Password.RequiredLength = 5; 
+                opts.Password.RequireNonAlphanumeric = false; 
+                opts.Password.RequireLowercase = false; 
+                opts.Password.RequireUppercase = false; 
+                opts.Password.RequireDigit = false; 
+            })
+                .AddEntityFrameworkStores<UsersContext>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -73,9 +88,14 @@ namespace PD.Domain
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "iTechArtPizza.Web v1"));
             }
 
+            app.UseDeveloperExceptionPage();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
