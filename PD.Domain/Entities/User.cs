@@ -5,16 +5,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace PD.Domain.Entities
 {
-    public class User
+    public class User : IdentityUser<int>
     {
-        [Key]
-        public int Id { get; set; }
         public string Name { get; set; }
-        public string PhoneNumber { get; set; }
-
         public int? OrderId { get; set; }
         [ForeignKey("OrderId")]
         public Order Order { get; set; }
