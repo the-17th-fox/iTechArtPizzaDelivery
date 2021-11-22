@@ -1,7 +1,7 @@
 ﻿using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Services;
-using PD.Infrastructure.Context;
+using PD.Infrastructure.Contexts;
 using PD.Infrastructure.Repositories.EFRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +30,7 @@ namespace PD.Domain.Controllers
 
 
         [ActionName(nameof(GetAllAsync))]
-        [Route("[action]")]
+        [Route("all")]
         [HttpGet]
         public async Task<List<ShortPizzaViewModel>> GetAllAsync()
         {
@@ -48,9 +48,9 @@ namespace PD.Domain.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<ShortPizzaViewModel> AddAsync(AddPizzaViewModel pizzaModel)
+        public async Task<ShortPizzaViewModel> AddAsync(AddPizzaModel pizzaModel)
         {
-            Pizza pizzaToAdd = _mapper.Map<AddPizzaViewModel, Pizza>(pizzaModel);
+            Pizza pizzaToAdd = _mapper.Map<AddPizzaModel, Pizza>(pizzaModel);
             await _pizzasService.AddAsync(pizzaToAdd);
             return _mapper.Map<ShortPizzaViewModel>(pizzaToAdd);
         }
@@ -71,7 +71,8 @@ namespace PD.Domain.Controllers
             return _mapper.Map<IngredientsInPizzaViewModel>(pizza);
         }
 
-        [Route("[action]")]
+        [Route("[action]/pizza_id={pizzaId}" +
+            "&ingredient_id={ingredientId}")]
         [HttpPut()]
         public async Task<IngredientsInPizzaViewModel> RemoveIngredientFromPizza(int ingredientId, int pizzaId)
         {
