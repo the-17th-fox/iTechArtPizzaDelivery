@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Services
 {
-    public interface IPizzasService
+    public interface IPizzasService : IBaseService<Pizza>
     {
-        public Task<List<Pizza>> GetPizzasAsync();
-        public Task<Pizza> GetPizzaAsync(int id);
-        public Task<Pizza> AddPizzaAsync(string name, string description);
-        public Task<Pizza> DeletePizzaAsync(int id);
         public Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId);
+        public Task<Pizza> RemoveIngredientFromPizza(int ingredientId, int pizzaId);
     }
 }

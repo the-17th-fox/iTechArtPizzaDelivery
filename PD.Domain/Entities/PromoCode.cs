@@ -10,12 +10,10 @@ namespace PD.Domain.Entities
     public class PromoCode
     {
         [Key]
-        public int PromoCodeID { get; set; }
-
+        public int Id { get; set; }
         public string Name { get; set; }
-
         public string Description { get; set; }
-
         public float DiscountAmount { get; set; }
+        public List<Order> Orders { get; set; }
     }
 }

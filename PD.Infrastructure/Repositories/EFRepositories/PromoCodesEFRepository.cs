@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PD.Infrastructure.Context;
+using PD.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
@@ -15,21 +15,15 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PromoCodesEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<PromoCode> AddPromoCodeAsync(string name, string description, float discountAmount)
+        public async Task<PromoCode> AddAsync(PromoCode entity)
         {
-            var PromoCode = _dbContext.PromoCodes
-                .Add(new PromoCode
-                {
-                    Name = name,
-                    Description = description,
-                    DiscountAmount = discountAmount
-                });
+            var PromoCode = _dbContext.PromoCodes.Add(entity);
 
             await _dbContext.SaveChangesAsync();
             return PromoCode.Entity;
         }
 
-        public async Task<PromoCode> DeletePromoCodeAsync(int id)
+        public async Task<PromoCode> DeleteAsync(int id)
         {
             PromoCode promoCodeToDelete = await _dbContext.PromoCodes
                 .FindAsync(id);
@@ -41,8 +35,12 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return promoCodeToDelete;
         }
 
-        public async Task<PromoCode> GetPromoCodeAsync(int id) => await _dbContext.PromoCodes.FindAsync(id);
+        public async Task<PromoCode> GetByIdAsync(int id)
+        {
+            PromoCode promoCode = await _dbContext.PromoCodes.FindAsync(id);
+            return promoCode; 
+        }
 
-        public async Task<List<PromoCode>> GetPromoCodesAsync() => await _dbContext.PromoCodes.ToListAsync();
+        public async Task<List<PromoCode>> GetAllAsync() => await _dbContext.PromoCodes.ToListAsync();
     }
 }

@@ -15,41 +15,30 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PizzasEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<List<Pizza>> GetPizzasAsync()
+        public async Task<List<Pizza>> GetAllAsync()
         {
             return await _dbContext.Pizzas
-                .Include(pizza => pizza.Ingredients)
+                .Include(p => p.Ingredients)
                 .ToListAsync();
         }
 
-        public async Task<Pizza> GetPizzaAsync(int id)
+        public async Task<Pizza> GetByIdAsync(int id)
         {
-            try
-            {
-                return await _dbContext.Pizzas
-                            .FirstAsync(p => p.PizzaID == id);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return await _dbContext.Pizzas
+                .Include(p => p.Ingredients)
+                .Where(p => p.Id == id)
+                .FirstAsync();
         }
-            
-        public async Task<Pizza> AddPizzaAsync(string name, string description)
+
+        public async Task<Pizza> AddAsync(Pizza entity)
         {
-            var newPizza = _dbContext.Pizzas
-                .Add(new Pizza
-            {
-                Name = name,
-                Description = description,
-                Ingredients = new List<Ingredient>()
-            });
+            var newPizza = _dbContext.Pizzas.Add(entity);
 
             await _dbContext.SaveChangesAsync();
             return newPizza.Entity;
         }
 
-        public async Task<Pizza> DeletePizzaAsync(int id)
+        public async Task<Pizza> DeleteAsync(int id)
         {
             Pizza pizzaToRemove = await _dbContext.Pizzas
                 .FindAsync(id);
@@ -64,12 +53,34 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId)
         {
             Pizza pizza = await _dbContext.Pizzas
-                .FindAsync(pizzaId);
+                .Include(p => p.Ingredients)
+                .Where(p => p.Id == pizzaId)
+                .FirstAsync();
 
             Ingredient ingredient = await _dbContext.Ingredients
-                .FindAsync(ingredientId);
+                .Include(i => i.Pizzas)
+                .Where(i => i.Id == ingredientId)
+                .FirstAsync();
 
             pizza.Ingredients.Add(ingredient);
+
+            await _dbContext.SaveChangesAsync();
+            return pizza;
+        }
+
+        public async Task<Pizza> RemoveIngredientFromPizza(int ingredientId, int pizzaId)
+        {
+            Pizza pizza = await _dbContext.Pizzas
+                .Include(p => p.Ingredients)
+                .Where(p => p.Id == pizzaId)
+                .FirstAsync();
+
+            Ingredient ingredient = await _dbContext.Ingredients
+                .Include(i => i.Pizzas)
+                .Where(i => i.Id == ingredientId)
+                .FirstAsync();
+
+            pizza.Ingredients.Remove(ingredient);
 
             await _dbContext.SaveChangesAsync();
             return pizza;

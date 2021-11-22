@@ -15,18 +15,15 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public IngredientsEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Ingredient> AddIngredientAsync(string name)
+        public async Task<Ingredient> AddAsync(Ingredient entity)
         {
-            var newIngredient = _dbContext.Ingredients.Add(new Ingredient
-            {
-                Name = name
-            });
+            var newIngredient = _dbContext.Ingredients.Add(entity);
 
             await _dbContext.SaveChangesAsync();
             return newIngredient.Entity;
         }
 
-        public async Task<Ingredient> DeleteIngredientAsync(int id)
+        public async Task<Ingredient> DeleteAsync(int id)
         {
             Ingredient ingredientToRemove = await _dbContext.Ingredients.FindAsync(id);
 
@@ -36,19 +33,13 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return ingredientToRemove;
         }
 
-        public async Task<Ingredient> GetIngredientAsync(int id)
-        {
-            try
-            {
-                return await _dbContext.Ingredients
-                            .FirstAsync(i => i.IngredientID == id);
-            }
-            catch (Exception)
-            { 
-                return null;
-            }
-        }
+        public async Task<Ingredient> GetByIdAsync(int id) => await _dbContext.Ingredients.FindAsync(id);
 
-        public async Task<List<Ingredient>> GetIngredientsAsync() => await _dbContext.Ingredients.ToListAsync();
+        public async Task<List<Ingredient>> GetAllAsync()
+        {
+            return await _dbContext.Ingredients
+                .Include(i => i.Pizzas)
+                .ToListAsync();
+        }
     }
 }

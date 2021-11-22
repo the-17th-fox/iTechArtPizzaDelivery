@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Services
 {
-    public interface IPromoCodesService
+    public interface IPromoCodesService : IBaseService<PromoCode>
     {
-        public Task<List<PromoCode>> GetPromoCodesAsync();
-        public Task<PromoCode> GetPromoCodeAsync(int id);
-        public Task<PromoCode> AddPromoCodeAsync(string name, string description, float discountAmount);
-        public Task<PromoCode> DeletePromoCodeAsync(int id);
+        // Temporally blank
     }
 }
