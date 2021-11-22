@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PD.Infrastructure.Context;
+using PD.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
@@ -35,7 +35,11 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return promoCodeToDelete;
         }
 
-        public async Task<PromoCode> GetByIdAsync(int id) => await _dbContext.PromoCodes.FindAsync(id);
+        public async Task<PromoCode> GetByIdAsync(int id)
+        {
+            PromoCode promoCode = await _dbContext.PromoCodes.FindAsync(id);
+            return promoCode; 
+        }
 
         public async Task<List<PromoCode>> GetAllAsync() => await _dbContext.PromoCodes.ToListAsync();
     }
