@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
-using PD.Infrastructure.Context;
+using PD.Infrastructure.Contexts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +12,8 @@ namespace PD.Infrastructure.Repositories.EFRepositories
 {
     public class UsersEFRepository : IUsersRepository
     {
-        private readonly PizzaDeliveryContext _dbContext;
-        public UsersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
+        private readonly UsersContext _dbContext;
+        public UsersEFRepository(UsersContext context) => _dbContext = context;
 
         public async Task<User> GetByIdAsync(int id) => await _dbContext.Users.FindAsync(id);
 

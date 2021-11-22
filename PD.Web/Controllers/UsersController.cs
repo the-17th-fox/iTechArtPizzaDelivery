@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
 using PD.Domain.Services;
@@ -13,19 +14,13 @@ namespace PD.Web.Controllers
     [ApiController]
     public class UsersController : Controller
     {
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-        private readonly IUsersService _usersService;
-        public UsersController(IUsersService service) => _usersService = service;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        [ActionName(nameof(GetUsersAsync))]
-        [HttpGet]
-        public async Task<List<User>> GetUsersAsync() => await _usersService.GetAllAsync();
-
-        [Route("{id}")]
-        [HttpGet]
-        public async Task<User> GetUserAsync(int id) => await _usersService.GetByIdAsync(id);
+        public UsersController(UserManager<User> userManager, SignInManager<User> signInManager)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
     }
 }
