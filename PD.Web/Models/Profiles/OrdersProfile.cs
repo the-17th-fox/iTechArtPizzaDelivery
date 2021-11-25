@@ -32,7 +32,7 @@ namespace PD.Web.Models.Profiles
                 .ReverseMap();
 
 
-            CreateMap<Order, ShortOrderViewModel>() // Short piece of information about a ingredient
+            CreateMap<Order, ShortOrderViewModel>() // Short piece of information about an ingredient
                     .ForMember(o => o.Id,
                         option => option.MapFrom(src => src.Id)) // ID
 
@@ -44,7 +44,7 @@ namespace PD.Web.Models.Profiles
                     .ReverseMap();
 
 
-            CreateMap<Order, AddOrderViewModel>() // Information that's used by AddMethod
+            CreateMap<Order, AddOrderViewModel>() // Information that's used by an AddMethod
                 .ForMember(o => o.UserId,
                     option => option.MapFrom(src => src.UserId)) // NAME
                 .ReverseMap();
@@ -71,6 +71,11 @@ namespace PD.Web.Models.Profiles
                     option => option.MapFrom(src => src.Id)) // ID
                 .ForMember(o => o.PromoCodeId,
                     option => option.MapFrom(src => src.PromoCodeId)) // PROMOCODE ID
+                .ReverseMap();
+
+            CreateMap<Order, PromoCodeInOrderViewModel>() // IdOnlyModel
+                .ForMember(o => o.Id,
+                    option => option.MapFrom(src => src.Id)) // ID
                 .ReverseMap();
         }
     }

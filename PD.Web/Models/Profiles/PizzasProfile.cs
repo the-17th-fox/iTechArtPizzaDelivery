@@ -35,7 +35,7 @@ namespace PD.Web.Models.Profiles
                 .ReverseMap();
 
 
-            CreateMap<Pizza, AddPizzaViewModel>() // Information that's used by AddMethod
+            CreateMap<Pizza, AddPizzaModel>() // Information that's used by AddMethod
                 .ForMember(p => p.Name,
                     option => option.MapFrom(src => src.Name)) // NAME
 
@@ -44,7 +44,7 @@ namespace PD.Web.Models.Profiles
                 .ReverseMap();
 
 
-            CreateMap<Pizza, IngredientsInPizzaViewModel>() // Information that's used by AddMethod
+            CreateMap<Pizza, IngredientsInPizzaViewModel>() // Information that's used by an AddMethod
                 .ForMember(p => p.Id,
                     option => option.MapFrom(src => src.Id)) // NAME
 
