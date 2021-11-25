@@ -1,6 +1,6 @@
 using PD.Domain.Interfaces;
 using PD.Domain.Services;
-using PD.Infrastructure.Contexts;
+using PD.Infrastructure.Context;
 using PD.Infrastructure.Repositories.EFRepositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +19,9 @@ using Microsoft.EntityFrameworkCore;
 using PD.Web.Models.Profiles;
 using PD.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace PD.Domain
 {
@@ -51,25 +54,45 @@ namespace PD.Domain
             services.AddAutoMapper(
                 typeof(PizzasProfile), 
                 typeof(IngredientsProfile), 
-                typeof(OrdersProfile)
+                typeof(OrdersProfile),
+                typeof(IngredientsProfile),
+                typeof(UsersProfile)
                 );
 
             //DBCONTEXT SETTINGS
             services.AddDbContext<PizzaDeliveryContext>
                 (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
 
-            services.AddDbContext<UsersContext>
-                (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
-
             //IDENTITY SERVICES AND OPTIONS
-            services.AddIdentity<User, IdentityRole>(opts => {
+            services.AddIdentity<User, IdentityRole<long>>(opts => {
                 opts.Password.RequiredLength = 5; 
                 opts.Password.RequireNonAlphanumeric = false; 
                 opts.Password.RequireLowercase = false; 
                 opts.Password.RequireUppercase = false; 
-                opts.Password.RequireDigit = false; 
+                opts.Password.RequireDigit = false;
+                opts.User.RequireUniqueEmail = true;
             })
-                .AddEntityFrameworkStores<UsersContext>();
+                .AddEntityFrameworkStores<PizzaDeliveryContext>();
+
+            //AUTHENTICATION 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                 .AddJwtBearer(options =>
+                 {
+                     options.TokenValidationParameters = new TokenValidationParameters
+                     {
+                         ValidateIssuer = false,
+                         ValidateAudience = false,
+                         ValidateLifetime = false,
+                         ValidateIssuerSigningKey = false,
+                         IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes("aksdokjafbkjasbfjabojsfbda"))
+                     };
+                 });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
