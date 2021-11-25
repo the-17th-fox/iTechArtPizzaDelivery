@@ -9,6 +9,6 @@ namespace PD.Domain.Interfaces
 {
     public interface IIngredientsRepository : IBaseRepository<Ingredient>
     {
-        // Temporally blank
+        // Unique methods here
     }
 }

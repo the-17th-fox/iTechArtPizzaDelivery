@@ -13,8 +13,12 @@ namespace PD.Domain.Services
         private readonly IUsersRepository _repository;
         public UsersService(IUsersRepository repository) => _repository = repository;
 
-        public async Task<User> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
+        public async Task<User> GetByIdAsync(long id) => await _repository.GetByIdAsync(id);
 
         public async Task<List<User>> GetAllAsync() => await _repository.GetAllAsync();
+
+        public async Task<User> AddAsync(User entity) => await _repository.AddAsync(entity);
+
+        public async Task<User> DeleteAsync(long id) => await _repository.DeleteAsync(id);
     }
 }

@@ -9,6 +9,6 @@ namespace PD.Domain.Services
 {
     public interface IIngredientsService : IBaseService<Ingredient>
     {
-        // Temporally blank
+        // Unique methods here
     }
 }

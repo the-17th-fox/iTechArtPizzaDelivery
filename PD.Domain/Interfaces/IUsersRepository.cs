@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Interfaces
 {
-    public interface IUsersRepository
+    public interface IUsersRepository : IBaseRepository<User>
     {
-        public Task<List<User>> GetAllAsync();
-        public Task<User> GetByIdAsync(int id);
-        //public Task<User> AddUserAsync(string name);
-        //public Task<User> DeleteUserAsync(int id);
+        // Unique methods here
     }
 }
