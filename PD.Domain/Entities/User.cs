@@ -9,11 +9,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace PD.Domain.Entities
 {
-    public class User : IdentityUser<int>
+    public class User : IdentityUser<long>
     {
-        public string Name { get; set; }
-        public int? OrderId { get; set; }
-        [ForeignKey("OrderId")]
-        public Order Order { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public List<Order> Order { get; set; }
     }
 }

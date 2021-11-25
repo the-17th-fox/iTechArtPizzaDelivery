@@ -7,7 +7,7 @@ namespace PD.Web.Models
 {
     public class PromoCodeInOrderViewModel
     {
-        public int Id { get; set; }
-        public int? PromoCodeId { get; set; }
+        public long Id { get; set; }
+        public long? PromoCodeId { get; set; }
     }
 }

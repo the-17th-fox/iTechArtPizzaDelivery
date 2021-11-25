@@ -23,7 +23,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return newIngredient.Entity;
         }
 
-        public async Task<Ingredient> DeleteAsync(int id)
+        public async Task<Ingredient> DeleteAsync(long id)
         {
             Ingredient ingredientToRemove = await _dbContext.Ingredients.FindAsync(id);
 
@@ -33,7 +33,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return ingredientToRemove;
         }
 
-        public async Task<Ingredient> GetByIdAsync(int id) => await _dbContext.Ingredients.FindAsync(id);
+        public async Task<Ingredient> GetByIdAsync(long id) => await _dbContext.Ingredients.FindAsync(id);
 
         public async Task<List<Ingredient>> GetAllAsync()
         {

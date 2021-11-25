@@ -7,7 +7,7 @@ namespace PD.Web.Models
 {
     public class AdressInOrderViewModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Adress { get; set; }
     }
 }

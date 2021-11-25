@@ -11,7 +11,7 @@ namespace PD.Domain.Entities
     public class Pizza
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public List<Ingredient> Ingredients { get; set; }

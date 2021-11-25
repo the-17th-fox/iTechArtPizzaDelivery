@@ -9,6 +9,6 @@ namespace PD.Web.Models
     public class AddOrderViewModel
     {
         [Required]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace PD.Web.Controllers
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<PromoCodeViewModel> GetPromoCodeAsync(int id)
+        public async Task<PromoCodeViewModel> GetPromoCodeAsync(long id)
         {
             PromoCode promoCode = await _promoCodesService.GetByIdAsync(id);
             return _mapper.Map<PromoCodeViewModel>(promoCode);
@@ -50,7 +50,7 @@ namespace PD.Web.Controllers
 
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<ShortPromoCodeViewModel> DeleteAsync(int id)
+        public async Task<ShortPromoCodeViewModel> DeleteAsync(long id)
         {
             PromoCode promoCodeToRemove = await _promoCodesService.DeleteAsync(id);
             return _mapper.Map<ShortPromoCodeViewModel>(promoCodeToRemove);

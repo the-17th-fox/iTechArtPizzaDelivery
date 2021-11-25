@@ -35,7 +35,7 @@ namespace iTechArtIngredientDelivery.Web.Controllers
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<IngredientViewModel> GetAsync(int id)
+        public async Task<IngredientViewModel> GetAsync(long id)
         {
             Ingredient ingredient = await _ingredientsService.GetByIdAsync(id);
             return _mapper.Map<IngredientViewModel>(ingredient);
@@ -52,7 +52,7 @@ namespace iTechArtIngredientDelivery.Web.Controllers
 
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<ShortIngredientViewModel> DeleteAsync(int id)
+        public async Task<ShortIngredientViewModel> DeleteAsync(long id)
         {
             Ingredient ingredientToRemove = await _ingredientsService.DeleteAsync(id);
             return _mapper.Map<ShortIngredientViewModel>(ingredientToRemove);

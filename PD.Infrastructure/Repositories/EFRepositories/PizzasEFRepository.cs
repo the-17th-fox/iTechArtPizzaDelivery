@@ -22,7 +22,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .ToListAsync();
         }
 
-        public async Task<Pizza> GetByIdAsync(int id)
+        public async Task<Pizza> GetByIdAsync(long id)
         {
             return await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
@@ -38,7 +38,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return newPizza.Entity;
         }
 
-        public async Task<Pizza> DeleteAsync(int id)
+        public async Task<Pizza> DeleteAsync(long id)
         {
             Pizza pizzaToRemove = await _dbContext.Pizzas
                 .FindAsync(id);
@@ -50,7 +50,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return pizzaToRemove;
         }
 
-        public async Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId)
+        public async Task<Pizza> AddIngredientToPizzaAsync(long ingredientId, long pizzaId)
         {
             Pizza pizza = await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
@@ -68,7 +68,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return pizza;
         }
 
-        public async Task<Pizza> RemoveIngredientFromPizza(int ingredientId, int pizzaId)
+        public async Task<Pizza> RemoveIngredientFromPizza(long ingredientId, long pizzaId)
         {
             Pizza pizza = await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
@@ -81,6 +81,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .FirstAsync();
 
             pizza.Ingredients.Remove(ingredient);
+            ingredient.Pizzas.Remove(pizza);
 
             await _dbContext.SaveChangesAsync();
             return pizza;

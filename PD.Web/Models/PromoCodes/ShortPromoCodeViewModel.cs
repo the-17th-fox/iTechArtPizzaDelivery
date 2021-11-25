@@ -7,7 +7,7 @@ namespace PD.Web.Models
 { 
     public class ShortPromoCodeViewModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }

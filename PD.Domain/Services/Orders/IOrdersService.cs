@@ -9,13 +9,14 @@ namespace PD.Domain.Services
 {
     public interface IOrdersService : IBaseService<Order>
     {
-        public Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId);
-        public Task<Order> RemovePizzaFromOrderAsync(int pizzaId, int orderId);
+        // Unique methods here
+        public Task<Order> AddPizzaToOrderAsync(long pizzaId, long orderId);
+        public Task<Order> RemovePizzaFromOrderAsync(long pizzaId, long orderId);
 
-        public Task<Order> AddPromoCodeToOrderAsync(int promoCodeId, int orderId);
-        public Task<Order> RemovePromoCodeFromOrderAsync(int orderId);
+        public Task<Order> AddPromoCodeToOrderAsync(long promoCodeId, long orderId);
+        public Task<Order> RemovePromoCodeFromOrderAsync(long orderId);
 
-        public Task<Order> AddAdressToOrderAsync(string adress, int orderId);
-        public Task<Order> RemoveAdressFromOrderAsync(int orderId);
+        public Task<Order> AddAdressToOrderAsync(string adress, long orderId);
+        public Task<Order> RemoveAdressFromOrderAsync(long orderId);
     }
 }

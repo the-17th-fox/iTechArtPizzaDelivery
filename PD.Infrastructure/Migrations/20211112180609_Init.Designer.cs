@@ -23,11 +23,11 @@ namespace PD.Infrastructure.Migrations
 
             modelBuilder.Entity("IngredientPizza", b =>
                 {
-                    b.Property<int>("IngredientsId")
-                        .HasColumnType("int");
+                    b.Property<long>("IngredientsId")
+                        .HasColumnType("long");
 
-                    b.Property<int>("PizzasId")
-                        .HasColumnType("int");
+                    b.Property<long>("PizzasId")
+                        .HasColumnType("long");
 
                     b.HasKey("IngredientsId", "PizzasId");
 
@@ -38,11 +38,11 @@ namespace PD.Infrastructure.Migrations
 
             modelBuilder.Entity("OrderPizza", b =>
                 {
-                    b.Property<int>("OrdersId")
-                        .HasColumnType("int");
+                    b.Property<long>("OrdersId")
+                        .HasColumnType("long");
 
-                    b.Property<int>("PizzasId")
-                        .HasColumnType("int");
+                    b.Property<long>("PizzasId")
+                        .HasColumnType("long");
 
                     b.HasKey("OrdersId", "PizzasId");
 
@@ -53,9 +53,9 @@ namespace PD.Infrastructure.Migrations
 
             modelBuilder.Entity("PD.Domain.Entities.Ingredient", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("long")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
@@ -68,9 +68,9 @@ namespace PD.Infrastructure.Migrations
 
             modelBuilder.Entity("PD.Domain.Entities.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("long")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Adress")
@@ -79,11 +79,11 @@ namespace PD.Infrastructure.Migrations
                     b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("PromoCodeId")
-                        .HasColumnType("int");
+                    b.Property<long?>("PromoCodeId")
+                        .HasColumnType("long");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<long>("UserId")
+                        .HasColumnType("long");
 
                     b.HasKey("Id");
 
@@ -96,9 +96,9 @@ namespace PD.Infrastructure.Migrations
 
             modelBuilder.Entity("PD.Domain.Entities.Pizza", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("long")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
@@ -114,9 +114,9 @@ namespace PD.Infrastructure.Migrations
 
             modelBuilder.Entity("PD.Domain.Entities.PromoCode", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("long")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
@@ -135,16 +135,16 @@ namespace PD.Infrastructure.Migrations
 
             modelBuilder.Entity("PD.Domain.Entities.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("long")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<long?>("OrderId")
+                        .HasColumnType("long");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
