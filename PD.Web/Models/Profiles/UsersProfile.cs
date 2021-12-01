@@ -50,7 +50,7 @@ namespace PD.Web.Models.Profiles
                     option => option.MapFrom(src => src.LastName)) // LAST NAME
 
                 .ForMember(pc => pc.Email,
-                    option => option.MapFrom(src => src.NormalizedEmail)) // EMAIL
+                    option => option.MapFrom(src => src.UserName)) // EMAIL
 
                 .ForMember(pc => pc.PhoneNumber,
                     option => option.MapFrom(src => src.PhoneNumber)) // PHONE NUM
