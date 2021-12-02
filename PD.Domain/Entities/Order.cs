@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PD.Domain.Constants.OrderStatuses;
 
 namespace PD.Domain.Entities
 {
@@ -15,6 +16,7 @@ namespace PD.Domain.Entities
         public List<Pizza> Pizzas { get; set; }
         public string Adress { get; set; }
         public bool IsPaid { get; set; } = false;
+        public string Status { get; set; }
 
         public long UserId { get; set; }
         [ForeignKey("UserId")]
