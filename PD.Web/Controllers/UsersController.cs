@@ -1,15 +1,13 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
 using PD.Domain.Services;
 using PD.Web.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using PD.Domain.Constants.UserRoles;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace PD.Web.Controllers
 {
@@ -51,6 +49,7 @@ namespace PD.Web.Controllers
         {
             User userToAdd = _mapper.Map<RegisterUserModel, User>(userModel);
             await _userManager.CreateAsync(userToAdd, userModel.Password);
+            await _userManager.AddToRoleAsync(userToAdd, UserRoles.USER);
             await _usersService.AddAsync(userToAdd);
             return _mapper.Map<ShortUserViewModel>(userToAdd);
         }
@@ -59,17 +58,25 @@ namespace PD.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserModel userModel)
         {
-            var user = await _userManager.FindByEmailAsync(userModel.Email);
+            var user = await _userManager.FindByNameAsync(userModel.Email);
 
             if (user == null)
                 return NotFound($"User with email '{userModel.Email}' was not found.");
 
-            if (await _userManager.CheckPasswordAsync(user, userModel.Password))
+            if (!await _userManager.CheckPasswordAsync(user, userModel.Password))
+                return Unauthorized("Invalid email or password.");
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authClaims = _usersService.GetUserClaims(user, userRoles);
+            var token = _usersService.GetNewToken(authClaims);
+
+            return Ok(new
             {
-                return Ok(userModel);
-                
-            }
-            return Unauthorized("Invalid password.");
+                token = new JwtSecurityTokenHandler()
+                    .WriteToken(token),
+                expiration = token.ValidTo,
+                id = user.Id
+            });
         }
 
         [Route("delete/{id}")]
