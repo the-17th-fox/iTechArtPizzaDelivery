@@ -57,20 +57,20 @@ namespace PD.Domain
                 typeof(OrdersProfile),
                 typeof(IngredientsProfile),
                 typeof(UsersProfile)
-                );
+            );
 
             //DBCONTEXT SETTINGS
             services.AddDbContext<PizzaDeliveryContext>
-                (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
+                (context => context.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
 
             //IDENTITY SERVICES AND OPTIONS
-            services.AddIdentity<User, IdentityRole<long>>(opts => {
-                opts.Password.RequiredLength = 5; 
-                opts.Password.RequireNonAlphanumeric = false; 
-                opts.Password.RequireLowercase = false; 
-                opts.Password.RequireUppercase = false; 
-                opts.Password.RequireDigit = false;
-                opts.User.RequireUniqueEmail = true;
+            services.AddIdentity<User, IdentityRole<long>>(options => {
+                options.Password.RequiredLength = 5; 
+                options.Password.RequireNonAlphanumeric = false; 
+                options.Password.RequireLowercase = false; 
+                options.Password.RequireUppercase = false; 
+                options.Password.RequireDigit = false;
+                options.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<PizzaDeliveryContext>();
 
@@ -88,9 +88,7 @@ namespace PD.Domain
                          ValidateIssuer = false,
                          ValidateAudience = false,
                          ValidateLifetime = false,
-                         ValidateIssuerSigningKey = false,
-                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes("aksdokjafbkjasbfjabojsfbda"))
+                         ValidateIssuerSigningKey = false
                      };
                  });
 
