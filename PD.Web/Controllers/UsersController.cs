@@ -6,7 +6,7 @@ using PD.Domain.Services;
 using PD.Web.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PD.Domain.Constants.UserRoles;
+using PD.Domain.Constants.UsersRoles;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace PD.Web.Controllers
@@ -29,35 +29,35 @@ namespace PD.Web.Controllers
         [ActionName(nameof(GetAllAsync))]
         [Route("all")]
         [HttpGet]
-        public async Task<List<ShortUserViewModel>> GetAllAsync()
+        public IActionResult GetAllAsync()
         {
-            List<User> Users = await _usersService.GetAllAsync();
-            return _mapper.Map<List<ShortUserViewModel>>(Users);
+            var users = _userManager.Users;
+            return Ok(_mapper.Map<List<ShortUserViewModel>>(users));
         }
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<UserViewModel> GetByIdAsync(long id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
-            User user = await _usersService.GetByIdAsync(id);
-            return _mapper.Map<UserViewModel>(user);
+            User user = await _userManager.FindByIdAsync(id.ToString());
+            return Ok(_mapper.Map<UserViewModel>(user));
         }
 
         [Route("register")]
         [HttpPost]
-        public async Task<ShortUserViewModel> RegisterAsync(RegisterUserModel userModel)
+        public async Task<IActionResult> RegisterAsync(RegisterUserModel userModel)
         {
             User userToAdd = _mapper.Map<RegisterUserModel, User>(userModel);
             await _userManager.CreateAsync(userToAdd, userModel.Password);
-            await _userManager.AddToRoleAsync(userToAdd, UserRoles.USER);
-            await _usersService.AddAsync(userToAdd);
-            return _mapper.Map<ShortUserViewModel>(userToAdd);
+            await _userManager.AddToRoleAsync(userToAdd, RolesNames.USER);
+            return Ok(_mapper.Map<ShortUserViewModel>(userToAdd));
         }
 
         [Route("login")]
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserModel userModel)
         {
+            // Should be moved somewhere(service?)?
             var user = await _userManager.FindByNameAsync(userModel.Email);
 
             if (user == null)
@@ -72,6 +72,7 @@ namespace PD.Web.Controllers
 
             return Ok(new
             {
+                roles = userRoles,
                 token = new JwtSecurityTokenHandler()
                     .WriteToken(token),
                 expiration = token.ValidTo,
@@ -81,10 +82,11 @@ namespace PD.Web.Controllers
 
         [Route("delete/{id}")]
         [HttpDelete]
-        public async Task<ShortUserViewModel> DeleteAsync(long id)
+        public async Task<IActionResult> DeleteAsync(long id)
         {
-            User userToRemove = await _usersService.DeleteAsync(id);
-            return _mapper.Map<ShortUserViewModel>(userToRemove);
+            User userToRemove = await _userManager.FindByIdAsync(id.ToString());
+            await _userManager.DeleteAsync(userToRemove);
+            return Ok(_mapper.Map<ShortUserViewModel>(userToRemove));
         }
     }
 }
