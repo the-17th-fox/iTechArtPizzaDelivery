@@ -25,7 +25,7 @@ namespace PD.Infrastructure.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            List<IdentityRole<long>> usersRoles = RolesNames.GetUsersRoles();
+            List<IdentityRole<long>> usersRoles = RolesNames.GetRolesNames();
             modelBuilder.Entity<IdentityRole<long>>().HasData(usersRoles);
             
         }
