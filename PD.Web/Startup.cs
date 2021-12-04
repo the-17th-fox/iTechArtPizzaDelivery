@@ -4,16 +4,9 @@ using PD.Infrastructure.Context;
 using PD.Infrastructure.Repositories.EFRepositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using PD.Web.Models.Profiles;
@@ -21,7 +14,6 @@ using PD.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace PD.Domain
 {
@@ -48,7 +40,6 @@ namespace PD.Domain
             services.AddScoped<IIngredientsRepository, IngredientsEFRepository>();
             services.AddScoped<IOrdersRepository, OrdersEFRepository>();
             services.AddScoped<IPromoCodesRepository, PromoCodesEFRepository>();
-            services.AddScoped<IUsersRepository, UsersEFRepository>();
 
             //AUTOMAPPER PROFILES
             services.AddAutoMapper(
