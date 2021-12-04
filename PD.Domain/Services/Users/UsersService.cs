@@ -12,17 +12,6 @@ namespace PD.Domain.Services
 {
     public class UsersService : IUsersService
     {
-        private readonly IUsersRepository _repository;
-        public UsersService(IUsersRepository repository) => _repository = repository;
-
-        public async Task<User> GetByIdAsync(long id) => await _repository.GetByIdAsync(id);
-
-        public async Task<List<User>> GetAllAsync() => await _repository.GetAllAsync();
-
-        public async Task<User> AddAsync(User entity) => await _repository.AddAsync(entity);
-
-        public async Task<User> DeleteAsync(long id) => await _repository.DeleteAsync(id);
-
         public JwtSecurityToken GetNewToken(List<Claim> authClaims)
         {
             return new JwtSecurityToken(
@@ -31,7 +20,7 @@ namespace PD.Domain.Services
                 notBefore: DateTime.UtcNow,
                 claims: authClaims,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                signingCredentials: new SigningCredentials(AuthOptions.GetKey(), SecurityAlgorithms.DesEncryption)
+                signingCredentials: new SigningCredentials(AuthOptions.GetKey(), SecurityAlgorithms.HmacSha256)
                 );
         }
 
