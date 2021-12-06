@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace PD.Web.Models
 {
-    public class AdressInOrderViewModel
+    public class IdOnlyOrderViewModel
     {
         public long Id { get; set; }
-        public string Adress { get; set; }
     }
 }

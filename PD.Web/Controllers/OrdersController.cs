@@ -33,7 +33,7 @@ namespace PD.Web.Controllers
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<OrderViewModel> GetByIdAsync(int id)
+        public async Task<OrderViewModel> GetByIdAsync(long id)
         {
             Order order = await _ordersService.GetByIdAsync(id);
             return _mapper.Map<OrderViewModel>(order);
@@ -50,7 +50,7 @@ namespace PD.Web.Controllers
 
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<ShortOrderViewModel> DeleteAsync(int id)
+        public async Task<ShortOrderViewModel> DeleteAsync(long id)
         {
             Order orderToRemove = await _ordersService.DeleteAsync(id);
             return _mapper.Map<ShortOrderViewModel>(orderToRemove);
@@ -58,7 +58,7 @@ namespace PD.Web.Controllers
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<PizzasInOrderViewModel> AddPizzaToOrderAsync(int pizzaId, int orderId)
+        public async Task<PizzasInOrderViewModel> AddPizzaToOrderAsync(long pizzaId, long orderId)
         {
             Order order = await _ordersService.AddPizzaToOrderAsync(pizzaId, orderId);
             return _mapper.Map<PizzasInOrderViewModel>(order);
@@ -66,7 +66,7 @@ namespace PD.Web.Controllers
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<PizzasInOrderViewModel> RemovePizzaFromOrderAsync(int pizzaId, int orderId)
+        public async Task<PizzasInOrderViewModel> RemovePizzaFromOrderAsync(long pizzaId, long orderId)
         {
             Order order = await _ordersService.RemovePizzaFromOrderAsync(pizzaId, orderId);
             return _mapper.Map<PizzasInOrderViewModel>(order);
@@ -74,7 +74,7 @@ namespace PD.Web.Controllers
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<PromoCodeInOrderViewModel> AddPromoCodeToOrderAsync(int promoCodeId, int orderId)
+        public async Task<PromoCodeInOrderViewModel> AddPromoCodeToOrderAsync(long promoCodeId, long orderId)
         {
             Order order = await _ordersService.AddPromoCodeToOrderAsync(promoCodeId, orderId);
             return _mapper.Map<PromoCodeInOrderViewModel>(order);
@@ -82,7 +82,7 @@ namespace PD.Web.Controllers
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<PromoCodeInOrderViewModel> RemovePromoCodeFromOrderAsync(int orderId)
+        public async Task<PromoCodeInOrderViewModel> RemovePromoCodeFromOrderAsync(long orderId)
         {
             Order order = await _ordersService.RemovePromoCodeFromOrderAsync(orderId);
             return _mapper.Map<PromoCodeInOrderViewModel>(order);
@@ -90,7 +90,7 @@ namespace PD.Web.Controllers
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<AdressInOrderViewModel> AddAdressToOrderAsync(string adress, int orderId)
+        public async Task<AdressInOrderViewModel> AddAdressToOrderAsync(string adress, long orderId)
         {
             Order order = await _ordersService.AddAdressToOrderAsync(adress, orderId);
             return _mapper.Map<AdressInOrderViewModel>(order);
@@ -98,7 +98,7 @@ namespace PD.Web.Controllers
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<AdressInOrderViewModel> RemoveAdressFromOrderAsync(int orderId)
+        public async Task<AdressInOrderViewModel> RemoveAdressFromOrderAsync(long orderId)
         {
             Order order = await _ordersService.RemoveAdressFromOrderAsync(orderId);
             return _mapper.Map<AdressInOrderViewModel>(order);

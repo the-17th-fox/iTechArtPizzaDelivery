@@ -9,8 +9,8 @@ namespace PD.Domain.Interfaces
     public interface IBaseRepository<T>
     {
         public Task<List<T>> GetAllAsync();
-        public Task<T> GetByIdAsync(int id);
+        public Task<T> GetByIdAsync(long id);
         public Task<T> AddAsync(T entity);
-        public Task<T> DeleteAsync(int id);
+        public Task<T> DeleteAsync(long id);
     }
 }

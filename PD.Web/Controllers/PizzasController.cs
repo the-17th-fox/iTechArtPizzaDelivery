@@ -1,7 +1,7 @@
 ﻿using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Services;
-using PD.Infrastructure.Contexts;
+using PD.Infrastructure.Context;
 using PD.Infrastructure.Repositories.EFRepositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,7 +40,7 @@ namespace PD.Domain.Controllers
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<PizzaViewModel> GetByIdAsync(int id)
+        public async Task<PizzaViewModel> GetByIdAsync(long id)
         {
             Pizza pizza = await _pizzasService.GetByIdAsync(id);
             return _mapper.Map<PizzaViewModel>(pizza);
@@ -57,7 +57,7 @@ namespace PD.Domain.Controllers
 
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<ShortPizzaViewModel> DeleteAsync(int id)
+        public async Task<ShortPizzaViewModel> DeleteAsync(long id)
         {
             Pizza pizzaToRemove = await _pizzasService.DeleteAsync(id);
             return _mapper.Map<ShortPizzaViewModel>(pizzaToRemove);
@@ -65,16 +65,15 @@ namespace PD.Domain.Controllers
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IngredientsInPizzaViewModel> AddIngredientToPizza(int ingredientId, int pizzaId)
+        public async Task<IngredientsInPizzaViewModel> AddIngredientToPizza(long ingredientId, long pizzaId)
         {
             Pizza pizza = await _pizzasService.AddIngredientToPizzaAsync(ingredientId, pizzaId);
             return _mapper.Map<IngredientsInPizzaViewModel>(pizza);
         }
 
-        [Route("[action]/pizza_id={pizzaId}" +
-            "&ingredient_id={ingredientId}")]
+        [Route("[action]")]
         [HttpPut()]
-        public async Task<IngredientsInPizzaViewModel> RemoveIngredientFromPizza(int ingredientId, int pizzaId)
+        public async Task<IngredientsInPizzaViewModel> RemoveIngredientFromPizza(long ingredientId, long pizzaId)
         {
             Pizza pizza = await _pizzasService.RemoveIngredientFromPizza(ingredientId, pizzaId);
             return _mapper.Map<IngredientsInPizzaViewModel>(pizza);

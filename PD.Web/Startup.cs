@@ -1,24 +1,19 @@
 using PD.Domain.Interfaces;
 using PD.Domain.Services;
-using PD.Infrastructure.Contexts;
+using PD.Infrastructure.Context;
 using PD.Infrastructure.Repositories.EFRepositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using PD.Web.Models.Profiles;
 using PD.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace PD.Domain
 {
@@ -45,31 +40,48 @@ namespace PD.Domain
             services.AddScoped<IIngredientsRepository, IngredientsEFRepository>();
             services.AddScoped<IOrdersRepository, OrdersEFRepository>();
             services.AddScoped<IPromoCodesRepository, PromoCodesEFRepository>();
-            services.AddScoped<IUsersRepository, UsersEFRepository>();
 
             //AUTOMAPPER PROFILES
             services.AddAutoMapper(
                 typeof(PizzasProfile), 
                 typeof(IngredientsProfile), 
-                typeof(OrdersProfile)
-                );
+                typeof(OrdersProfile),
+                typeof(IngredientsProfile),
+                typeof(UsersProfile)
+            );
 
             //DBCONTEXT SETTINGS
             services.AddDbContext<PizzaDeliveryContext>
-                (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
-
-            services.AddDbContext<UsersContext>
-                (x => x.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
+                (context => context.UseSqlServer(Configuration["connectionStrings:DatabaseConnection"]));
 
             //IDENTITY SERVICES AND OPTIONS
-            services.AddIdentity<User, IdentityRole>(opts => {
-                opts.Password.RequiredLength = 5; 
-                opts.Password.RequireNonAlphanumeric = false; 
-                opts.Password.RequireLowercase = false; 
-                opts.Password.RequireUppercase = false; 
-                opts.Password.RequireDigit = false; 
+            services.AddIdentity<User, IdentityRole<long>>(options => {
+                options.Password.RequiredLength = 5; 
+                options.Password.RequireNonAlphanumeric = false; 
+                options.Password.RequireLowercase = false; 
+                options.Password.RequireUppercase = false; 
+                options.Password.RequireDigit = false;
+                options.User.RequireUniqueEmail = true;
             })
-                .AddEntityFrameworkStores<UsersContext>();
+                .AddEntityFrameworkStores<PizzaDeliveryContext>();
+
+            //AUTHENTICATION 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                 .AddJwtBearer(options =>
+                 {
+                     options.TokenValidationParameters = new TokenValidationParameters
+                     {
+                         ValidateIssuer = false,
+                         ValidateAudience = false,
+                         ValidateLifetime = false,
+                         ValidateIssuerSigningKey = false
+                     };
+                 });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

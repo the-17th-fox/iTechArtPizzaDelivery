@@ -9,6 +9,6 @@ namespace PD.Domain.Services
 {
     public interface IPromoCodesService : IBaseService<PromoCode>
     {
-        // Temporally blank
+        // Unique methods here
     }
 }

@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace PD.Web.Models
 {
-    public class AddOrderViewModel
+    public class LoginUserModel
     {
         [Required]
-        public long UserId { get; set; }
+        public string Email { get; set; }
+        [Required]
+        public string Password { get; set; }
     }
 }

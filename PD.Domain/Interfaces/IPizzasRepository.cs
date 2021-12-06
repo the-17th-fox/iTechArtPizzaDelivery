@@ -9,7 +9,8 @@ namespace PD.Domain.Interfaces
 {
     public interface IPizzasRepository : IBaseRepository<Pizza>
     {
-        public Task<Pizza> AddIngredientToPizzaAsync(int ingredientId, int pizzaId);
-        public Task<Pizza> RemoveIngredientFromPizza(int ingredientId, int pizzaId);
+        // Unique methods here
+        public Task<Pizza> AddIngredientToPizzaAsync(long ingredientId, long pizzaId);
+        public Task<Pizza> RemoveIngredientFromPizza(long ingredientId, long pizzaId);
     }
 }

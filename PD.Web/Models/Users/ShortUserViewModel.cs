@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace PD.Web.Models
 {
-    public class AdressInOrderViewModel
+    public class ShortUserViewModel
     {
         public long Id { get; set; }
-        public string Adress { get; set; }
+        public string Email { get; set; }
+        public List<IdOnlyOrderViewModel> Order { get; set; }
     }
 }

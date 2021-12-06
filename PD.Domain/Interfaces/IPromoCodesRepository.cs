@@ -9,6 +9,6 @@ namespace PD.Domain.Interfaces
 {
     public interface IPromoCodesRepository : IBaseRepository<PromoCode>
     {
-        // Temporally blank
+        // Unique methods here
     }
 }

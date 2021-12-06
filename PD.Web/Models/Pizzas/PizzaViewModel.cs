@@ -7,12 +7,9 @@ using System.Threading.Tasks;
 
 namespace PD.Web.Models
 { 
-    /// <summary>
-    /// GetById
-    /// </summary>
     public class PizzaViewModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public List<ShortIngredientViewModel> Ingredients { get; set; } = new List<ShortIngredientViewModel>();

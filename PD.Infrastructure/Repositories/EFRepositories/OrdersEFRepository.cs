@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
-using PD.Infrastructure.Contexts;
+using PD.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return newOrder.Entity;
         }
 
-        public async Task<Order> AddPizzaToOrderAsync(int pizzaId, int orderId)
+        public async Task<Order> AddPizzaToOrderAsync(long pizzaId, long orderId)
         {
             Pizza pizza = await _dbContext.Pizzas
                 .Include(i => i.Orders)
@@ -41,7 +41,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> RemovePizzaFromOrderAsync(int pizzaId, int orderId)
+        public async Task<Order> RemovePizzaFromOrderAsync(long pizzaId, long orderId)
         {
             Pizza pizza = await _dbContext.Pizzas
                 .Include(i => i.Orders)
@@ -59,7 +59,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> DeleteAsync(int id)
+        public async Task<Order> DeleteAsync(long id)
         {
             Order orderToRemove = await _dbContext.Orders.FindAsync(id);
             _dbContext.Orders.Remove(orderToRemove);
@@ -68,7 +68,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return orderToRemove;
         }
 
-        public async Task<Order> GetByIdAsync(int id)
+        public async Task<Order> GetByIdAsync(long id)
         {
             return await _dbContext.Orders
                 .Include(o => o.Pizzas)
@@ -83,7 +83,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .ToListAsync();
         }
 
-        public async Task<Order> AddPromoCodeToOrderAsync(int promoCodeId, int orderId)
+        public async Task<Order> AddPromoCodeToOrderAsync(long promoCodeId, long orderId)
         { 
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
@@ -95,19 +95,20 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> RemovePromoCodeFromOrderAsync(int orderId)
+        public async Task<Order> RemovePromoCodeFromOrderAsync(long orderId)
         {   
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
             PromoCode promoCode = order.PromoCode;
 
+            order.PromoCodeId = null;
             promoCode.Orders.Remove(order);
             await _dbContext.SaveChangesAsync();
 
             return order;
         }
 
-        public async Task<Order> AddAdressToOrderAsync(string adress, int orderId)
+        public async Task<Order> AddAdressToOrderAsync(string adress, long orderId)
         {
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
@@ -117,7 +118,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> RemoveAdressFromOrderAsync(int orderId)
+        public async Task<Order> RemoveAdressFromOrderAsync(long orderId)
         {
             Order order = await _dbContext.Orders.FindAsync(orderId);
 

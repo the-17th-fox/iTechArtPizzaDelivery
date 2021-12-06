@@ -7,7 +7,7 @@ namespace PD.Web.Models
 {
     public class IngredientsInPizzaViewModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public List<ShortIngredientViewModel> Ingredients { get; set; } = new List<ShortIngredientViewModel>();
     }
 }

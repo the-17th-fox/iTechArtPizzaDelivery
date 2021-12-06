@@ -15,10 +15,10 @@ namespace PD.Domain.Services
 
         public async Task<PromoCode> AddAsync(PromoCode entity) => await _repository.AddAsync(entity);
 
-        public async Task<PromoCode> DeleteAsync(int id) => await _repository.DeleteAsync(id);
+        public async Task<PromoCode> DeleteAsync(long id) => await _repository.DeleteAsync(id);
 
         public async Task<List<PromoCode>> GetAllAsync() => await _repository.GetAllAsync();
 
-        public async Task<PromoCode> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
+        public async Task<PromoCode> GetByIdAsync(long id) => await _repository.GetByIdAsync(id);
     }
 }

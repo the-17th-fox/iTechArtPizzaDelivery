@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace PD.Web.Models
 {
-    /// <summary>
-    /// GetAll
-    /// </summary>
     public class ShortPizzaViewModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }

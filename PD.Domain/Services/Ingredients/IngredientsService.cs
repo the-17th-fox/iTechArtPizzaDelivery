@@ -15,10 +15,10 @@ namespace PD.Domain.Services
 
         public async Task<Ingredient> AddAsync(Ingredient entity) => await _repository.AddAsync(entity);
 
-        public async Task<Ingredient> DeleteAsync(int id) => await _repository.DeleteAsync(id);
+        public async Task<Ingredient> DeleteAsync(long id) => await _repository.DeleteAsync(id);
 
         public async Task<List<Ingredient>> GetAllAsync() => await _repository.GetAllAsync();
 
-        public async Task<Ingredient> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
+        public async Task<Ingredient> GetByIdAsync(long id) => await _repository.GetByIdAsync(id);
     }
 }

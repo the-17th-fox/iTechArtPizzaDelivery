@@ -5,22 +5,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PD.Domain.Constants.OrderStatuses;
 
 namespace PD.Domain.Entities
 {
     public class Order
     {
         [Key]
-        public int Id { get; set; }
+        public long Id { get; set; }
         public List<Pizza> Pizzas { get; set; }
         public string Adress { get; set; }
         public bool IsPaid { get; set; } = false;
+        public string Status { get; set; }
 
-        public int UserId { get; set; }
+        public long UserId { get; set; }
         [ForeignKey("UserId")]
         public User User { get; set; }
 
-        public int? PromoCodeId { get; set; }
+        public long? PromoCodeId { get; set; }
         [ForeignKey("PromoCodeId")]
         public PromoCode PromoCode { get; set; }
     }
