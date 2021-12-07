@@ -11,12 +11,13 @@ namespace PD.Domain.Entities
 {
     public class Order
     {
-        [Key]
         public long Id { get; set; }
         public List<Pizza> Pizzas { get; set; }
         public string Adress { get; set; }
         public bool IsPaid { get; set; } = false;
         public string Status { get; set; }
+        public string DeliveryMethod { get; set; }
+        public string Description { get; set; }
 
         public long UserId { get; set; }
         [ForeignKey("UserId")]
