@@ -51,6 +51,7 @@ namespace PD.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterUserModel userModel)
         {
+            //ISSUE: Method can't add user to DB
             User userToAdd = _mapper.Map<RegisterUserModel, User>(userModel);
             await _userManager.CreateAsync(userToAdd, userModel.Password);
             await _userManager.AddToRoleAsync(userToAdd, RolesNames.USER);
@@ -61,7 +62,7 @@ namespace PD.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserModel userModel)
         {
-            var user = await _userManager.FindByNameAsync(userModel.Email);
+            var user = await _userManager.FindByNameAsync(userModel.Email.Normalize());
 
             if (user == null)
                 return NotFound($"User with email '{userModel.Email}' was not found.");
@@ -84,6 +85,7 @@ namespace PD.Web.Controllers
         }
 
         // Add two methods: 1 - for user without id request, 2 - for admin, who can specify id?
+        [Authorize(Roles = "Administrator")]
         [Route("delete/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(long id)
