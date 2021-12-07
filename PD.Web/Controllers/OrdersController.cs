@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
 using PD.Domain.Services;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace PD.Web.Controllers
 {
+    [Authorize(Policy = "DefaultRights")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : Controller
@@ -22,6 +24,7 @@ namespace PD.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Administrator")]
         [Route("all")]
         [ActionName(nameof(GetAllAsync))]
         [HttpGet]
@@ -31,6 +34,7 @@ namespace PD.Web.Controllers
             return _mapper.Map<List<ShortOrderViewModel>>(orders);
         }
 
+        [Authorize(Roles = "Administrator")]
         [Route("{id}")]
         [HttpGet]
         public async Task<OrderViewModel> GetByIdAsync(long id)
@@ -48,6 +52,7 @@ namespace PD.Web.Controllers
             return _mapper.Map<ShortOrderViewModel>(newOrder);
         }
 
+        // Add two methods: 1 - for user without id request, 2 - for admin, who can specify id?
         [Route("[action]/{id}")]
         [HttpDelete]
         public async Task<ShortOrderViewModel> DeleteAsync(long id)

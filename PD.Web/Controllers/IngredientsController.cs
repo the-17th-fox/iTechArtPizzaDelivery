@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace iTechArtIngredientDelivery.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     [Route("api/[controller]")]
     [ApiController]
     public class IngredientsController : Controller

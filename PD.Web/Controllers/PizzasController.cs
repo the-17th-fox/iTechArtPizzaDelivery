@@ -12,9 +12,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using PD.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PD.Domain.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class PizzasController : ControllerBase
@@ -27,7 +29,6 @@ namespace PD.Domain.Controllers
             _pizzasService = service;
             _mapper = mapper;
         }
-
 
         [ActionName(nameof(GetAllAsync))]
         [Route("all")]
@@ -46,15 +47,21 @@ namespace PD.Domain.Controllers
             return _mapper.Map<PizzaViewModel>(pizza);
         }
 
+        [Authorize(Roles = "Administrator")]
         [Route("[action]")]
         [HttpPost]
-        public async Task<ShortPizzaViewModel> AddAsync(AddPizzaModel pizzaModel)
+        public async Task<IActionResult> AddAsync(AddPizzaModel pizzaModel)
         {
             Pizza pizzaToAdd = _mapper.Map<AddPizzaModel, Pizza>(pizzaModel);
             await _pizzasService.AddAsync(pizzaToAdd);
-            return _mapper.Map<ShortPizzaViewModel>(pizzaToAdd);
+            return Ok(new
+            {
+                UserRoles = 
+                Pizza = _mapper.Map<ShortPizzaViewModel>(pizzaToAdd)
+            });
         }
 
+        [Authorize(Roles = "Administrator")]
         [Route("[action]/{id}")]
         [HttpDelete]
         public async Task<ShortPizzaViewModel> DeleteAsync(long id)
@@ -63,6 +70,7 @@ namespace PD.Domain.Controllers
             return _mapper.Map<ShortPizzaViewModel>(pizzaToRemove);
         }
 
+        [Authorize(Roles = "Administrator")]
         [Route("[action]")]
         [HttpPut()]
         public async Task<IngredientsInPizzaViewModel> AddIngredientToPizza(long ingredientId, long pizzaId)
@@ -71,6 +79,7 @@ namespace PD.Domain.Controllers
             return _mapper.Map<IngredientsInPizzaViewModel>(pizza);
         }
 
+        [Authorize(Roles = "Administrator")]
         [Route("[action]")]
         [HttpPut()]
         public async Task<IngredientsInPizzaViewModel> RemoveIngredientFromPizza(long ingredientId, long pizzaId)

@@ -8,9 +8,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using PD.Domain.Constants.UsersRoles;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PD.Web.Controllers
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : Controller
@@ -26,6 +28,7 @@ namespace PD.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Administrator")]
         [ActionName(nameof(GetAllAsync))]
         [Route("all")]
         [HttpGet]
@@ -35,6 +38,7 @@ namespace PD.Web.Controllers
             return Ok(_mapper.Map<List<ShortUserViewModel>>(users));
         }
 
+        [Authorize(Roles = "Administrator")]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetByIdAsync(long id)
@@ -57,7 +61,6 @@ namespace PD.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserModel userModel)
         {
-            // Should be moved somewhere(service?)?
             var user = await _userManager.FindByNameAsync(userModel.Email);
 
             if (user == null)
@@ -80,6 +83,7 @@ namespace PD.Web.Controllers
             });
         }
 
+        // Add two methods: 1 - for user without id request, 2 - for admin, who can specify id?
         [Route("delete/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(long id)

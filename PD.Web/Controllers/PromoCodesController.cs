@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
 using PD.Domain.Services;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace PD.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     [Route("api/[controller]")]
     [ApiController]
     public class PromoCodesController : Controller
@@ -33,7 +35,7 @@ namespace PD.Web.Controllers
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<PromoCodeViewModel> GetPromoCodeAsync(long id)
+        public async Task<PromoCodeViewModel> GetByIdAsync(long id)
         {
             PromoCode promoCode = await _promoCodesService.GetByIdAsync(id);
             return _mapper.Map<PromoCodeViewModel>(promoCode);
