@@ -62,6 +62,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Order> DeleteAsync(long id)
         {
             Order orderToRemove = await _dbContext.Orders.FindAsync(id);
+
             _dbContext.Orders.Remove(orderToRemove);
 
             await _dbContext.SaveChangesAsync();
@@ -86,25 +87,22 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Order> AddPromoCodeToOrderAsync(long promoCodeId, long orderId)
         { 
             Order order = await _dbContext.Orders.FindAsync(orderId);
-
             PromoCode promoCode = await _dbContext.PromoCodes.FindAsync(promoCodeId);
 
             order.PromoCode = promoCode;
-            await _dbContext.SaveChangesAsync();
 
+            await _dbContext.SaveChangesAsync();
             return order;
         }
 
         public async Task<Order> RemovePromoCodeFromOrderAsync(long orderId)
         {   
             Order order = await _dbContext.Orders.FindAsync(orderId);
-
             PromoCode promoCode = order.PromoCode;
 
-            order.PromoCodeId = null;
             promoCode.Orders.Remove(order);
-            await _dbContext.SaveChangesAsync();
 
+            await _dbContext.SaveChangesAsync();
             return order;
         }
 
@@ -122,7 +120,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
-            order.Adress = null;
+            order.Adress = string.Empty;
             await _dbContext.SaveChangesAsync();
 
             return order;

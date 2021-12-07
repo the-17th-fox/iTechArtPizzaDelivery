@@ -81,7 +81,6 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .FirstAsync();
 
             pizza.Ingredients.Remove(ingredient);
-            ingredient.Pizzas.Remove(pizza);
 
             await _dbContext.SaveChangesAsync();
             return pizza;
