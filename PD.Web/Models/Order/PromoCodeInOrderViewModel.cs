@@ -9,5 +9,6 @@ namespace PD.Web.Models
     {
         public long Id { get; set; }
         public long? PromoCodeId { get; set; }
+        public float DiscountAmount { get; set; }
     }
 }

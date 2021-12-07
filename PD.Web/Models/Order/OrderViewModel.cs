@@ -13,5 +13,6 @@ namespace PD.Web.Models
         public bool IsPaid { get; set; }
         public long UserId { get; set; }
         public long? PromoCodeId { get; set; }
+        public float DiscountAmount { get; set; }
     }
 }
