@@ -9,11 +9,11 @@ namespace PD.Domain.Entities
 {
     public class PromoCode
     {
-        [Key]
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public float DiscountAmount { get; set; }
+        //public DATAtype Lifetime { get; set; }
         public List<Order> Orders { get; set; }
     }
 }

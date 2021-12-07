@@ -10,7 +10,6 @@ namespace PD.Domain.Entities
 {
     public class Ingredient
     {
-        [Key]
         public long Id { get; set; }
         public string Name { get; set; }
         public List<Pizza> Pizzas { get; set; }
