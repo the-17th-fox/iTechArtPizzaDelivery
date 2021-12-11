@@ -96,27 +96,32 @@ namespace PD.Domain
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "iTechArtPizzaDelivery", Version = "v1" });
-                var jwtSecurityScheme = new OpenApiSecurityScheme
-                {
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    Name = "JWT Authentication",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.Http,
-                    Description = "Put **_ONLY_** your JWT Bearer token on textbox below!",
+                c.AddSecurityDefinition("Bearer",
+                    new OpenApiSecurityScheme
+                    {   
+                        In = ParameterLocation.Header,
+                        Description = @"JWT Authorization header using the Bearer scheme.
+                                        Enter 'Bearer' [space] and then you token in the text input below.
+                                        Example: 'Bearer 1234asdf'",
+                        Name = "Authorization",
+                        Type =SecuritySchemeType.ApiKey
+                    });
 
-                    Reference = new OpenApiReference
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+                {
+                    new OpenApiSecurityScheme
                     {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-
-                c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    { jwtSecurityScheme, Array.Empty<string>() }
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+                    },
+                    new string[] { }
+                }
                 });
             });
         }
