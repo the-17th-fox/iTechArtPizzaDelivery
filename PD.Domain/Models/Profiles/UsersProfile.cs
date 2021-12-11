@@ -14,14 +14,10 @@ namespace PD.Domain.Models.Profiles
             CreateMap<User, UserViewModel>().ReverseMap();
             CreateMap<User, ShortUserViewModel>().ReverseMap();
 
-            CreateMap<User, LoginUserModel>()
-                .ReverseMap();
+            CreateMap<User, LoginUserModel>().ReverseMap();
 
             CreateMap<User, RegisterUserModel>()
-                .ForMember(u => u.Email.Normalize(),
-                    option => option.MapFrom(src => src.NormalizedEmail))
-                .ForMember(u => u.Email,
-                    option => option.MapFrom(src => src.Email))
+                .ForMember(u => u.FirstName, (o => o.MapFrom(src => src.UserName)))
                 .ReverseMap();
         }
     }
