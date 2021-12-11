@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using PD.Domain.Models;
 using System;
+using System.Security.Claims;
 
 namespace PD.Web.Controllers
 {
@@ -49,16 +50,16 @@ namespace PD.Web.Controllers
         public async Task<IActionResult> RegisterAsync(RegisterUserModel userModel)
         {
             return Ok(await _usersService.RegisterAsync(userModel));
-            //ISSUE: Method can't add user to DB
+            
         }
 
-        //[AllowAnonymous]
-        //[Route("login")]
-        //[HttpPost]
-        //public async Task<IActionResult> LoginAsync([FromBody] LoginUserModel userModel)
-        //{
-            
-        //}
+        [AllowAnonymous]
+        [Route("login")]
+        [HttpPost]
+        public async Task<IActionResult> LoginAsync([FromBody] LoginUserModel userModel)
+        {
+            return Ok(await _usersService.LoginAsync(userModel));
+        }
 
         [Authorize(Roles = "Administrator")]
         [Route("delete/{id}")]
@@ -69,12 +70,20 @@ namespace PD.Web.Controllers
         }
 
         [Authorize(Roles = "User")]
-        [Route("delete/{id}")]
+        [Route("delete")]
         [HttpDelete]
-        public async Task<UserViewModel> DeleteAsync()
+        public async Task<IActionResult> DeleteAsync()
         {
-            throw new NotImplementedException();
-            //This methods stands for user self-deletion
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _usersService.DeleteAsync(long.Parse(userId)));
+        }
+
+        [AllowAnonymous]
+        //[Route("")]
+        [HttpPut]
+        public async Task<IActionResult> AddToRole(long userId, string role)
+        {
+            return Ok(await _usersService.AddToRole(userId, role));
         }
     }
 }
