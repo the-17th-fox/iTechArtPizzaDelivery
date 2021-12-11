@@ -11,7 +11,7 @@ namespace PD.Domain.Constants.AuthOptions
     {
         public const string ISSUER = "PizzaDeliveryServer";
         public const string AUDIENCE = "PizzaDeliveryClient";
-        public const int LIFETIME = 1;
+        public const int LIFETIME = 1; // Hours
         private const string KEY = "asdfghjklfoxlkjhgfdsa";
         public static SymmetricSecurityKey GetKey()
         {

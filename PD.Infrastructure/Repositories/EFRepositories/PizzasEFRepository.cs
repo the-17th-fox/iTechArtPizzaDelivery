@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PD.Domain.Models;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
 {
@@ -30,9 +31,13 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .FirstAsync();
         }
 
-        public async Task<Pizza> AddAsync(Pizza entity)
+        public async Task<Pizza> AddAsync(AddPizzaViewModel model)
         {
-            var newPizza = _dbContext.Pizzas.Add(entity);
+            var newPizza = _dbContext.Pizzas.Add(new Pizza()
+            {
+                Name = model.Name,
+                Description = model.Description
+            });
 
             await _dbContext.SaveChangesAsync();
             return newPizza.Entity;
@@ -50,7 +55,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return pizzaToRemove;
         }
 
-        public async Task<Pizza> AddIngredientToPizzaAsync(long ingredientId, long pizzaId)
+        public async Task<Pizza> AddIngredientAsync(long ingredientId, long pizzaId)
         {
             Pizza pizza = await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
@@ -68,7 +73,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return pizza;
         }
 
-        public async Task<Pizza> RemoveIngredientFromPizza(long ingredientId, long pizzaId)
+        public async Task<Pizza> RemoveIngredientAsync(long ingredientId, long pizzaId)
         {
             Pizza pizza = await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
@@ -81,6 +86,18 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .FirstAsync();
 
             pizza.Ingredients.Remove(ingredient);
+
+            await _dbContext.SaveChangesAsync();
+            return pizza;
+        }
+
+        public async Task<Pizza> ChangeDescriptionAsync(long pizzaId, string newDescription)
+        {
+            Pizza pizza = await _dbContext.Pizzas
+                .Where(p => p.Id == pizzaId)
+                .FirstAsync();
+
+            pizza.Description = newDescription;
 
             await _dbContext.SaveChangesAsync();
             return pizza;

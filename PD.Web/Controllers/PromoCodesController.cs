@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
 using PD.Domain.Services;
-using PD.Web.Models;
+using PD.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,45 +17,38 @@ namespace PD.Web.Controllers
     public class PromoCodesController : Controller
     {
         private readonly IPromoCodesService _promoCodesService;
-        private readonly IMapper _mapper;
-        public PromoCodesController(IPromoCodesService service, IMapper mapper)
+        public PromoCodesController(IPromoCodesService service)
         {
             _promoCodesService = service;
-            _mapper = mapper;
         }
 
         [Route("all")]
         [ActionName(nameof(GetAllAsync))]
         [HttpGet]
-        public async Task<List<ShortPromoCodeViewModel>> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
-            List<PromoCode> promoCodes = await _promoCodesService.GetAllAsync();
-            return _mapper.Map<List<ShortPromoCodeViewModel>>(promoCodes);
+            return Ok(await _promoCodesService.GetAllAsync());
         }
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<PromoCodeViewModel> GetByIdAsync(long id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
-            PromoCode promoCode = await _promoCodesService.GetByIdAsync(id);
-            return _mapper.Map<PromoCodeViewModel>(promoCode);
+            return Ok(await _promoCodesService.GetByIdAsync(id));
         }
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<ShortPromoCodeViewModel> AddAsync(AddPromoCodeModel promoCodeModel)
+        public async Task<IActionResult> AddAsync(AddPromoCodeViewModel promoCodeModel)
         {
-            PromoCode newPromoCode = _mapper.Map<AddPromoCodeModel, PromoCode>(promoCodeModel);
-            await _promoCodesService.AddAsync(newPromoCode);
-            return _mapper.Map<ShortPromoCodeViewModel>(newPromoCode);
+            return Ok(await _promoCodesService.AddAsync(promoCodeModel));
         }
 
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<ShortPromoCodeViewModel> DeleteAsync(long id)
+        public async Task<IActionResult> DeleteAsync(long id)
         {
-            PromoCode promoCodeToRemove = await _promoCodesService.DeleteAsync(id);
-            return _mapper.Map<ShortPromoCodeViewModel>(promoCodeToRemove);
+            return Ok(await _promoCodesService.DeleteAsync(id));
         }
     }
 }

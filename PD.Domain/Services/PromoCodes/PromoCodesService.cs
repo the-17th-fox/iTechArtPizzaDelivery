@@ -1,5 +1,7 @@
-﻿using PD.Domain.Entities;
+﻿using AutoMapper;
+using PD.Domain.Entities;
 using PD.Domain.Interfaces;
+using PD.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +13,35 @@ namespace PD.Domain.Services
     public class PromoCodesService : IPromoCodesService
     {
         private readonly IPromoCodesRepository _repository;
-        public PromoCodesService(IPromoCodesRepository repository) => _repository = repository;
+        private readonly IMapper _mapper;
+        public PromoCodesService(IPromoCodesRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
 
-        public async Task<PromoCode> AddAsync(PromoCode entity) => await _repository.AddAsync(entity);
+        public async Task<PromoCodeViewModel> AddAsync(AddPromoCodeViewModel model)
+        { 
+            PromoCode promoCode = await _repository.AddAsync(model);
+            return _mapper.Map<PromoCodeViewModel>(promoCode);
+        }
 
-        public async Task<PromoCode> DeleteAsync(long id) => await _repository.DeleteAsync(id);
+        public async Task<PromoCodeViewModel> DeleteAsync(long id)
+        {
+            PromoCode promoCode = await _repository.DeleteAsync(id);
+            return _mapper.Map<PromoCodeViewModel>(promoCode);
+        }
 
-        public async Task<List<PromoCode>> GetAllAsync() => await _repository.GetAllAsync();
+        public async Task<List<ShortPromoCodeViewModel>> GetAllAsync()
+        {
+            List<PromoCode> promoCodes = await _repository.GetAllAsync();
+            return _mapper.Map<List<ShortPromoCodeViewModel>>(promoCodes);
+        }
 
-        public async Task<PromoCode> GetByIdAsync(long id) => await _repository.GetByIdAsync(id);
+        public async Task<PromoCodeViewModel> GetByIdAsync(long id)
+        {
+            PromoCode promoCode = await _repository.GetByIdAsync(id);
+            return _mapper.Map<PromoCodeViewModel>(promoCode);
+        }
     }
 }

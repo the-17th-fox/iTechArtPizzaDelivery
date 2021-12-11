@@ -1,5 +1,7 @@
-﻿using PD.Domain.Entities;
+﻿using AutoMapper;
+using PD.Domain.Entities;
 using PD.Domain.Interfaces;
+using PD.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +13,36 @@ namespace PD.Domain.Services
     public class IngredientsService : IIngredientsService
     {
         private readonly IIngredientsRepository _repository;
-        public IngredientsService(IIngredientsRepository repository) => _repository = repository;
+        private readonly IMapper _mapper;
 
-        public async Task<Ingredient> AddAsync(Ingredient entity) => await _repository.AddAsync(entity);
+        public IngredientsService(IIngredientsRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
 
-        public async Task<Ingredient> DeleteAsync(long id) => await _repository.DeleteAsync(id);
+        public async Task<IngredientViewModel> AddAsync(AddIngredientViewModel model)
+        {
+            Ingredient ingredient = await _repository.AddAsync(model);
+            return _mapper.Map<IngredientViewModel>(ingredient);
+        }
 
-        public async Task<List<Ingredient>> GetAllAsync() => await _repository.GetAllAsync();
+        public async Task<IngredientViewModel> DeleteAsync(long id)
+        {
+            Ingredient ingredient = await _repository.DeleteAsync(id);
+            return _mapper.Map<IngredientViewModel>(ingredient);
+        }
 
-        public async Task<Ingredient> GetByIdAsync(long id) => await _repository.GetByIdAsync(id);
+        public async Task<List<ShortIngredientViewModel>> GetAllAsync()
+        {
+            List<Ingredient> ingredients = await _repository.GetAllAsync();
+            return _mapper.Map<List<ShortIngredientViewModel>>(ingredients);
+        }
+
+        public async Task<IngredientViewModel> GetByIdAsync(long id)
+        {
+            Ingredient ingredient = await _repository.GetByIdAsync(id);
+            return _mapper.Map<IngredientViewModel>(ingredient);
+        }
     }
 }

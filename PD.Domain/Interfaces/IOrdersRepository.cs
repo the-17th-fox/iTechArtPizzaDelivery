@@ -1,4 +1,5 @@
 ﻿using PD.Domain.Entities;
+using PD.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +9,24 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Interfaces
 {
-    public interface IOrdersRepository : IBaseRepository<Order>
+    public interface IOrdersRepository
     {
-        // Unique methods here
-        public Task<Order> AddPizzaToOrderAsync(long pizzaId, long orderId);
-        public Task<Order> RemovePizzaFromOrderAsync(long pizzaId, long orderId);
+        public Task<List<Order>> GetAllAsync();
+        public Task<Order> GetByIdAsync(long id);
+        public Task<Order> AddAsync(AddOrderViewModel model);
+        public Task<Order> DeleteAsync(long id);
+        public Task<Order> ChangeIsPaidStatusAsync(long orderId, bool isPaid);
+        public Task<Order> ChangeDeliveryStatusAsync(long orderId, string status);
+        public Task<Order> ChangeDeliveryMethodAsync(long orderId, string method);
+        public Task<Order> ChangeDescriptionAsync(long orderId, string newDescription);
 
-        public Task<Order> AddPromoCodeToOrderAsync(long promoCodeId, long orderId);
-        public Task<Order> RemovePromoCodeFromOrderAsync(long orderId);
+        public Task<Order> AddPizzaAsync(long pizzaId, long orderId);
+        public Task<Order> RemovePizzaAsync(long pizzaId, long orderId);
 
-        public Task<Order> AddAdressToOrderAsync(string adress, long orderId);
-        public Task<Order> RemoveAdressFromOrderAsync(long orderId);
+        public Task<Order> AddPromoCodeAsync(long promoCodeId, long orderId);
+        public Task<Order> RemovePromoCodeAsync(long orderId);
 
-        // TODO: Add status change
+        public Task<Order> AddAdressAsync(string adress, long orderId);
+        public Task<Order> RemoveAdressAsync(long orderId);
     }
 }

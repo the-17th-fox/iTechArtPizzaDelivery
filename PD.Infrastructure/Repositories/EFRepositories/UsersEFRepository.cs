@@ -14,9 +14,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
     {
         private readonly PizzaDeliveryContext _dbContext;
         public UsersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
-
-        public async Task<User> GetByIdAsync(int id) => await _dbContext.Users.FindAsync(id);
-
+        
         public async Task<List<User>> GetAllAsync() => await _dbContext.Users.ToListAsync();
     }
 }

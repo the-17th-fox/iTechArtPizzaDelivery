@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
+using PD.Domain.Models;
 using PD.Domain.Services;
-using PD.Web.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace PD.Web.Controllers
@@ -26,87 +24,82 @@ namespace PD.Web.Controllers
 
         [Authorize(Roles = "Administrator")]
         [Route("all")]
-        [ActionName(nameof(GetAllAsync))]
         [HttpGet]
-        public async Task<List<ShortOrderViewModel>> GetAllAsync()
-        {
-            List<Order> orders = await _ordersService.GetAllAsync();
-            return _mapper.Map<List<ShortOrderViewModel>>(orders);
+        public async Task<IActionResult> GetAllAsync()
+        { 
+            return Ok(await _ordersService.GetAllAsync());
         }
 
         [Authorize(Roles = "Administrator")]
         [Route("{id}")]
         [HttpGet]
-        public async Task<OrderViewModel> GetByIdAsync(long id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
-            Order order = await _ordersService.GetByIdAsync(id);
-            return _mapper.Map<OrderViewModel>(order);
+            return Ok(await _ordersService.GetByIdAsync(id));
         }
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<ShortOrderViewModel> AddAsync(AddOrderViewModel orderModel)
+        public async Task<IActionResult> AddAsync(AddOrderViewModel model)
         {
-            Order newOrder = _mapper.Map<AddOrderViewModel, Order>(orderModel);
-            await _ordersService.AddAsync(newOrder);
-            return _mapper.Map<ShortOrderViewModel>(newOrder);
+            return Ok(await _ordersService.AddAsync(model));
         }
 
-        // Add two methods: 1 - for user without id request, 2 - for admin, who can specify id?
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<ShortOrderViewModel> DeleteAsync(long id)
+        public async Task<IActionResult> DeleteAsync(long id)
         {
-            Order orderToRemove = await _ordersService.DeleteAsync(id);
-            return _mapper.Map<ShortOrderViewModel>(orderToRemove);
+            return Ok(await _ordersService.DeleteAsync(id));
+        }
+
+        [Route("[action]")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAsync()
+        {
+            throw new NotImplementedException();
+            //This methods stands for order deletion by user
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<PizzasInOrderViewModel> AddPizzaToOrderAsync(long pizzaId, long orderId)
+        public async Task<IActionResult> AddPizzaAsync(long pizzaId, long orderId)
         {
-            Order order = await _ordersService.AddPizzaToOrderAsync(pizzaId, orderId);
-            return _mapper.Map<PizzasInOrderViewModel>(order);
+            return Ok(await _ordersService.AddPizzaAsync(pizzaId, orderId));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<PizzasInOrderViewModel> RemovePizzaFromOrderAsync(long pizzaId, long orderId)
+        public async Task<IActionResult> RemovePizzaAsync(long pizzaId, long orderId)
         {
-            Order order = await _ordersService.RemovePizzaFromOrderAsync(pizzaId, orderId);
-            return _mapper.Map<PizzasInOrderViewModel>(order);
+            return Ok(await _ordersService.RemovePizzaAsync(pizzaId, orderId));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<PromoCodeInOrderViewModel> AddPromoCodeToOrderAsync(long promoCodeId, long orderId)
+        public async Task<IActionResult> AddPromoCodeAsync(long promoCodeId, long orderId)
         {
-            Order order = await _ordersService.AddPromoCodeToOrderAsync(promoCodeId, orderId);
-            return _mapper.Map<PromoCodeInOrderViewModel>(order);
+            return Ok(await _ordersService.AddPromoCodeAsync(promoCodeId, orderId));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<PromoCodeInOrderViewModel> RemovePromoCodeFromOrderAsync(long orderId)
+        public async Task<IActionResult> RemovePromoCodeAsync(long orderId)
         {
-            Order order = await _ordersService.RemovePromoCodeFromOrderAsync(orderId);
-            return _mapper.Map<PromoCodeInOrderViewModel>(order);
+            return Ok(await _ordersService.RemovePromoCodeAsync(orderId));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<AdressInOrderViewModel> AddAdressToOrderAsync(string adress, long orderId)
+        public async Task<IActionResult> AddAdressAsync(string adress, long orderId)
         {
-            Order order = await _ordersService.AddAdressToOrderAsync(adress, orderId);
-            return _mapper.Map<AdressInOrderViewModel>(order);
+            return Ok(await _ordersService.AddAdressAsync(adress, orderId));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<AdressInOrderViewModel> RemoveAdressFromOrderAsync(long orderId)
+        public async Task<IActionResult> RemoveAdressAsync(long orderId)
         {
-            Order order = await _ordersService.RemoveAdressFromOrderAsync(orderId);
-            return _mapper.Map<AdressInOrderViewModel>(order);
+            return Ok(await _ordersService.RemoveAdressAsync(orderId));
         }
     }
 }

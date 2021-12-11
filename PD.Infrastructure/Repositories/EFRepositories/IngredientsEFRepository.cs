@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
+using PD.Domain.Models;
 using PD.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,15 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public IngredientsEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Ingredient> AddAsync(Ingredient entity)
+        public async Task<Ingredient> AddAsync(AddIngredientViewModel model)
         {
-            var newIngredient = _dbContext.Ingredients.Add(entity);
+            var newIngredient = _dbContext.Ingredients.Add(new Ingredient()
+            {
+                Name = model.Name
+            });
 
             await _dbContext.SaveChangesAsync();
+
             return newIngredient.Entity;
         }
 

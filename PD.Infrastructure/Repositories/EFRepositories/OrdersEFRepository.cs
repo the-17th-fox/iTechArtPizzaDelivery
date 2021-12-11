@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
+using PD.Domain.Models;
 using PD.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
@@ -15,15 +16,18 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public OrdersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Order> AddAsync(Order order)
+        public async Task<Order> AddAsync(AddOrderViewModel model)
         {
-            var newOrder = _dbContext.Orders.Add(order);
+            var newOrder = _dbContext.Orders.Add(new Order()
+            {
+                UserId = model.UserId
+            });
 
             await _dbContext.SaveChangesAsync();
             return newOrder.Entity;
         }
 
-        public async Task<Order> AddPizzaToOrderAsync(long pizzaId, long orderId)
+        public async Task<Order> AddPizzaAsync(long pizzaId, long orderId)
         {
             Pizza pizza = await _dbContext.Pizzas
                 .Include(i => i.Orders)
@@ -41,7 +45,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> RemovePizzaFromOrderAsync(long pizzaId, long orderId)
+        public async Task<Order> RemovePizzaAsync(long pizzaId, long orderId)
         {
             Pizza pizza = await _dbContext.Pizzas
                 .Include(i => i.Orders)
@@ -84,7 +88,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .ToListAsync();
         }
 
-        public async Task<Order> AddPromoCodeToOrderAsync(long promoCodeId, long orderId)
+        public async Task<Order> AddPromoCodeAsync(long promoCodeId, long orderId)
         { 
             Order order = await _dbContext.Orders.FindAsync(orderId);
             PromoCode promoCode = await _dbContext.PromoCodes.FindAsync(promoCodeId);
@@ -95,7 +99,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> RemovePromoCodeFromOrderAsync(long orderId)
+        public async Task<Order> RemovePromoCodeAsync(long orderId)
         {   
             Order order = await _dbContext.Orders.FindAsync(orderId);
             PromoCode promoCode = order.PromoCode;
@@ -106,7 +110,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> AddAdressToOrderAsync(string adress, long orderId)
+        public async Task<Order> AddAdressAsync(string adress, long orderId)
         {
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
@@ -116,11 +120,51 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return order;
         }
 
-        public async Task<Order> RemoveAdressFromOrderAsync(long orderId)
+        public async Task<Order> RemoveAdressAsync(long orderId)
         {
             Order order = await _dbContext.Orders.FindAsync(orderId);
 
             order.Adress = string.Empty;
+            await _dbContext.SaveChangesAsync();
+
+            return order;
+        }
+
+        public async Task<Order> ChangeIsPaidStatusAsync(long orderId, bool isPaid)
+        {
+            Order order = await _dbContext.Orders.FindAsync(orderId);
+
+            order.IsPaid = isPaid;
+            await _dbContext.SaveChangesAsync();
+
+            return order;
+        }
+
+        public async Task<Order> ChangeDeliveryStatusAsync(long orderId, string status)
+        {
+            Order order = await _dbContext.Orders.FindAsync(orderId);
+
+            order.DeliveryStatus = status;
+            await _dbContext.SaveChangesAsync();
+
+            return order;
+        }
+
+        public async Task<Order> ChangeDeliveryMethodAsync(long orderId, string method)
+        {
+            Order order = await _dbContext.Orders.FindAsync(orderId);
+
+            order.DeliveryMethod = method;
+            await _dbContext.SaveChangesAsync();
+
+            return order;
+        }
+
+        public async Task<Order> ChangeDescriptionAsync(long orderId, string newDescription)
+        {
+            Order order = await _dbContext.Orders.FindAsync(orderId);
+
+            order.Description = newDescription;
             await _dbContext.SaveChangesAsync();
 
             return order;

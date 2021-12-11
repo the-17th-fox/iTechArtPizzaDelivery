@@ -15,7 +15,7 @@ namespace PD.Domain.Entities
         public List<Pizza> Pizzas { get; set; }
         public string Adress { get; set; }
         public bool IsPaid { get; set; } = false;
-        public string Status { get; set; }
+        public string DeliveryStatus { get; set; }
         public string DeliveryMethod { get; set; }
         public string Description { get; set; }
 

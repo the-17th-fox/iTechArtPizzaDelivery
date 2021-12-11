@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using PD.Web.Models.Profiles;
+using PD.Domain.Models.Profiles;
 using PD.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,6 +42,7 @@ namespace PD.Domain
             services.AddScoped<IIngredientsRepository, IngredientsEFRepository>();
             services.AddScoped<IOrdersRepository, OrdersEFRepository>();
             services.AddScoped<IPromoCodesRepository, PromoCodesEFRepository>();
+            services.AddScoped<IUsersRepository, UsersEFRepository>();
 
             //AUTOMAPPER PROFILES
             services.AddAutoMapper(
@@ -78,19 +79,19 @@ namespace PD.Domain
                  {
                      options.TokenValidationParameters = new TokenValidationParameters
                      {
-                         ValidateIssuer = false,
-                         ValidateAudience = false,
-                         ValidateLifetime = false,
-                         ValidateIssuerSigningKey = false
+                         ValidateIssuer = true,
+                         ValidateAudience = true,
+                         ValidateLifetime = true,
+                         ValidateIssuerSigningKey = true
                      };
                  });
 
             //AUTHORIZATION
-            services.AddAuthorization(options =>
+            services.AddAuthorization(/*options =>
             {
                 options.AddPolicy("DefaultRights", policy =>
                     policy.RequireRole("User", "Administrator"));
-            });
+            }*/);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

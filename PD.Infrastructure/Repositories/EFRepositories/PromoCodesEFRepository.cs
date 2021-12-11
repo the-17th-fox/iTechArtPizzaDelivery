@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PD.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using PD.Domain.Models;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
 {
@@ -15,9 +16,14 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PromoCodesEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<PromoCode> AddAsync(PromoCode entity)
+        public async Task<PromoCode> AddAsync(AddPromoCodeViewModel model)
         {
-            var PromoCode = _dbContext.PromoCodes.Add(entity);
+            var PromoCode = _dbContext.PromoCodes.Add(new PromoCode()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                DiscountAmount = model.DiscountAmount
+            });
 
             await _dbContext.SaveChangesAsync();
             return PromoCode.Entity;

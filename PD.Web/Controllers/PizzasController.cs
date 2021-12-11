@@ -11,81 +11,76 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using PD.Web.Models;
+using PD.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 
-namespace PD.Domain.Controllers
+namespace PD.Web.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class PizzasController : ControllerBase
     {		
         private readonly IPizzasService _pizzasService;
-        private readonly IMapper _mapper;
 
-        public PizzasController(IPizzasService service, IMapper mapper)
+        public PizzasController(IPizzasService service)
         {
             _pizzasService = service;
-            _mapper = mapper;
         }
 
         [ActionName(nameof(GetAllAsync))]
         [Route("all")]
         [HttpGet]
-        public async Task<List<ShortPizzaViewModel>> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
-            List<Pizza> pizzas = await _pizzasService.GetAllAsync();
-            return _mapper.Map<List<ShortPizzaViewModel>>(pizzas);
+            return Ok(await _pizzasService.GetAllAsync());
         }
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<PizzaViewModel> GetByIdAsync(long id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
-            Pizza pizza = await _pizzasService.GetByIdAsync(id);
-            return _mapper.Map<PizzaViewModel>(pizza);
+            return Ok(await _pizzasService.GetByIdAsync(id));
         }
 
         [Authorize(Roles = "Administrator")]
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> AddAsync(AddPizzaModel pizzaModel)
+        public async Task<IActionResult> AddAsync(AddPizzaViewModel pizzaModel)
         {
-            Pizza pizzaToAdd = _mapper.Map<AddPizzaModel, Pizza>(pizzaModel);
-            await _pizzasService.AddAsync(pizzaToAdd);
-            return Ok(new
-            {
-                UserRoles = 
-                Pizza = _mapper.Map<ShortPizzaViewModel>(pizzaToAdd)
-            });
+            return Ok(await _pizzasService.AddAsync(pizzaModel));
         }
 
         [Authorize(Roles = "Administrator")]
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<ShortPizzaViewModel> DeleteAsync(long id)
+        public async Task<IActionResult> DeleteAsync(long id)
         {
-            Pizza pizzaToRemove = await _pizzasService.DeleteAsync(id);
-            return _mapper.Map<ShortPizzaViewModel>(pizzaToRemove);
+            return Ok(await _pizzasService.DeleteAsync(id));
         }
 
         [Authorize(Roles = "Administrator")]
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IngredientsInPizzaViewModel> AddIngredientToPizza(long ingredientId, long pizzaId)
+        public async Task<IActionResult> AddIngredientAsync(long ingredientId, long pizzaId)
         {
-            Pizza pizza = await _pizzasService.AddIngredientToPizzaAsync(ingredientId, pizzaId);
-            return _mapper.Map<IngredientsInPizzaViewModel>(pizza);
+            return Ok(await _pizzasService.AddIngredientAsync(ingredientId, pizzaId));
         }
 
         [Authorize(Roles = "Administrator")]
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IngredientsInPizzaViewModel> RemoveIngredientFromPizza(long ingredientId, long pizzaId)
+        public async Task<IActionResult> RemoveIngredientAsync(long ingredientId, long pizzaId)
         {
-            Pizza pizza = await _pizzasService.RemoveIngredientFromPizza(ingredientId, pizzaId);
-            return _mapper.Map<IngredientsInPizzaViewModel>(pizza);
+            return Ok(await _pizzasService.RemoveIngredientAsync(ingredientId, pizzaId));
+        }
+
+        [Authorize(Roles = "Administrator")]
+        [Route("[action]")]
+        [HttpPut()]
+        public async Task<IActionResult> ChangeDescriptionAsync(long pizzaId, string newDescription)
+        {
+            return Ok(await _pizzasService.ChangeDescriptionAsync(pizzaId, newDescription));
         }
     }
 }
