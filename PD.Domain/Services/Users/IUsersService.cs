@@ -15,8 +15,9 @@ namespace PD.Domain.Services
         public List<Claim> GetClaims(User user, IList<string> userRoles);
         public Task<List<ShortUserViewModel>> GetAllAsync();
         public Task<UserViewModel> GetByIdAsync(long id);
-        public Task<UserViewModel> RegisterAsync(RegisterUserModel model);
-        //public Task<IActionResult> LoginAsync(LoginUserModel model);
+        public Task<IActionResult> RegisterAsync(RegisterUserModel model);
+        public Task<IActionResult> LoginAsync(LoginUserModel model);
         public Task<UserViewModel> DeleteAsync(long id);
+        public Task<IActionResult> AddToRole(long userId, string role);
     }
 }

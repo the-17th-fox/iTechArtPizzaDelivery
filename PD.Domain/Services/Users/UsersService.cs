@@ -59,43 +59,59 @@ namespace PD.Domain.Services
             return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task<UserViewModel> RegisterAsync(RegisterUserModel model)
+        public async Task<IActionResult> RegisterAsync(RegisterUserModel model)
         {
             User user = _mapper.Map<RegisterUserModel, User>(model);
-            await _userManager.CreateAsync(user, model.Password);
+            IdentityResult identityResult = await _userManager.CreateAsync(user, model.Password);
+            if(identityResult.Succeeded!)
+            {
+                return new NotFoundObjectResult(identityResult);
+            }
             await _userManager.AddToRoleAsync(user, RolesNames.USER);
-            return _mapper.Map<UserViewModel>(user);
+            return new OkObjectResult(_mapper.Map<UserViewModel>(user));
         }
 
-        //public Task<IActionResult> LoginAsync(LoginUserModel model)
-        //{
-        //    var user = await _userManager.FindByNameAsync(model.Email.Normalize());
+        public async Task<IActionResult> LoginAsync(LoginUserModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email.Normalize());
 
-        //    if (user == null)
-        //        return NotFound($"User with email '{model.Email}' was not found.");
+            if (user == null)
+                return new NotFoundObjectResult($"User with email '{model.Email}' was not found.");
 
-        //    if (!await _userManager.CheckPasswordAsync(user, model.Password))
-        //        return Unauthorized("Invalid email or password.");
+            if (!await _userManager.CheckPasswordAsync(user, model.Password))
+                return new UnauthorizedObjectResult("Invalid email or password.");
 
-        //    var userRoles = await _userManager.GetRolesAsync(user);
-        //    var authClaims = GetClaims(user, userRoles);
-        //    var token = GetNewToken(authClaims);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authClaims = GetClaims(user, userRoles);
+            var token = GetNewToken(authClaims);
 
-        //    return Ok(new
-        //    {
-        //        roles = userRoles,
-        //        token = new JwtSecurityTokenHandler()
-        //            .WriteToken(token),
-        //        expiration = token.ValidTo,
-        //        id = user.Id
-        //    });
-        //}
+            return new OkObjectResult(new
+            {
+                roles = userRoles,
+                token = new JwtSecurityTokenHandler()
+                    .WriteToken(token),
+                expiration = token.ValidTo,
+                id = user.Id
+            });
+        }
 
         public async Task<UserViewModel> DeleteAsync(long id)
         {
             User user = await _userManager.FindByIdAsync(id.ToString());
             await _userManager.DeleteAsync(user);
             return _mapper.Map<UserViewModel>(user);
+        }
+
+        public async Task<IActionResult> AddToRole(long userId, string role)
+        {
+            User user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return new NotFoundObjectResult($"User with id {userId} wasn't found.");
+
+            var result = await _userManager.AddToRoleAsync(user, role);
+            if (!result.Succeeded)
+                return new ObjectResult("Failed to add user to role.");
+            return new OkObjectResult(user);
         }
     }
 }
