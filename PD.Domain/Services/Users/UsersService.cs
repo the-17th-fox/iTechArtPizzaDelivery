@@ -41,11 +41,15 @@ namespace PD.Domain.Services
 
         public List<Claim> GetClaims(User user, IList<string> userRoles)
         {
-            return new List<Claim>()
+            List<Claim> claims = new List<Claim>()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, userRoles.ToString())
             };
+            foreach (string role in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            return claims;
         }
 
         public async Task<List<ShortUserViewModel>> GetAllAsync()
@@ -87,6 +91,7 @@ namespace PD.Domain.Services
 
             return new OkObjectResult(new
             {
+                claims = authClaims,
                 roles = userRoles,
                 token = new JwtSecurityTokenHandler()
                     .WriteToken(token),
