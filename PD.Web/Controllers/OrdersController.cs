@@ -5,21 +5,20 @@ using PD.Domain.Entities;
 using PD.Domain.Models;
 using PD.Domain.Services;
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace PD.Web.Controllers
 {
-    [Authorize(Policy = "DefaultRights")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : Controller
     {
-        private readonly IMapper _mapper;
         private readonly IOrdersService _ordersService;
         public OrdersController(IOrdersService service, IMapper mapper)
         {
             _ordersService = service;
-            _mapper = mapper;
         }
 
         [Authorize(Roles = "Administrator")]
@@ -38,6 +37,7 @@ namespace PD.Web.Controllers
             return Ok(await _ordersService.GetByIdAsync(id));
         }
 
+        [Authorize(Roles = "User")]
         [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> AddAsync(AddOrderViewModel model)
@@ -45,6 +45,7 @@ namespace PD.Web.Controllers
             return Ok(await _ordersService.AddAsync(model));
         }
 
+        [Authorize(Roles = "Administrator")]
         [Route("[action]/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(long id)
@@ -52,14 +53,16 @@ namespace PD.Web.Controllers
             return Ok(await _ordersService.DeleteAsync(id));
         }
 
+        [Authorize(Roles = "User")]
         [Route("[action]")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync()
         {
-            throw new NotImplementedException();
-            //This methods stands for order deletion by user
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Ok(await _ordersService.DeleteAsync(long.Parse(userId)));
         }
 
+        [Authorize(Roles = "User")]
         [Route("[action]")]
         [HttpPut()]
         public async Task<IActionResult> AddPizzaAsync(long pizzaId, long orderId)
@@ -67,6 +70,7 @@ namespace PD.Web.Controllers
             return Ok(await _ordersService.AddPizzaAsync(pizzaId, orderId));
         }
 
+        [Authorize(Roles = "User")]
         [Route("[action]")]
         [HttpPut()]
         public async Task<IActionResult> RemovePizzaAsync(long pizzaId, long orderId)
@@ -74,6 +78,7 @@ namespace PD.Web.Controllers
             return Ok(await _ordersService.RemovePizzaAsync(pizzaId, orderId));
         }
 
+        [Authorize(Roles = "User")]
         [Route("[action]")]
         [HttpPut()]
         public async Task<IActionResult> AddPromoCodeAsync(long promoCodeId, long orderId)
@@ -81,6 +86,7 @@ namespace PD.Web.Controllers
             return Ok(await _ordersService.AddPromoCodeAsync(promoCodeId, orderId));
         }
 
+        [Authorize(Roles = "User")]
         [Route("[action]")]
         [HttpPut()]
         public async Task<IActionResult> RemovePromoCodeAsync(long orderId)
@@ -88,6 +94,7 @@ namespace PD.Web.Controllers
             return Ok(await _ordersService.RemovePromoCodeAsync(orderId));
         }
 
+        [Authorize(Roles = "User")]
         [Route("[action]")]
         [HttpPut()]
         public async Task<IActionResult> AddAdressAsync(string adress, long orderId)
@@ -95,6 +102,7 @@ namespace PD.Web.Controllers
             return Ok(await _ordersService.AddAdressAsync(adress, orderId));
         }
 
+        [Authorize(Roles = "User")]
         [Route("[action]")]
         [HttpPut()]
         public async Task<IActionResult> RemoveAdressAsync(long orderId)

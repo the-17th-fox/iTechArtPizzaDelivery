@@ -28,6 +28,7 @@ namespace PD.Web.Controllers
             _pizzasService = service;
         }
 
+        [Authorize(Roles = "User")]
         [ActionName(nameof(GetAllAsync))]
         [Route("all")]
         [HttpGet]
@@ -36,6 +37,7 @@ namespace PD.Web.Controllers
             return Ok(await _pizzasService.GetAllAsync());
         }
 
+        [Authorize(Roles = "User")]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetByIdAsync(long id)

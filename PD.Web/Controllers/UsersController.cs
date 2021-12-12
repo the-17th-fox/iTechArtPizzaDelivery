@@ -79,7 +79,7 @@ namespace PD.Web.Controllers
         }
 
         [AllowAnonymous]
-        //[Route("")]
+        [Route("[action]")]
         [HttpPut]
         public async Task<IActionResult> AddToRole(long userId, string role)
         {
