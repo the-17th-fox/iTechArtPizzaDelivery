@@ -10,5 +10,6 @@ namespace PD.Domain.Interfaces
     public interface IUsersRepository
     {
         public Task<List<User>> GetAllAsync();
+        public Task<bool> IsPhoneTakenAsync(string phoneNumber);
     }
 }

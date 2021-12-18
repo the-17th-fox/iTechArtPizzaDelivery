@@ -19,5 +19,6 @@ namespace PD.Domain.Services
         public Task<IActionResult> LoginAsync(LoginUserModel model);
         public Task<UserViewModel> DeleteAsync(long id);
         public Task<IActionResult> AddToRole(long userId, string role);
+        public Task<bool> IsPhoneNumberTakenAsync(string phoneNumber);
     }
 }
