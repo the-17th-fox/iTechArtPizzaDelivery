@@ -10,10 +10,18 @@ namespace PD.Domain.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Email is Required")]
+        [EmailAddress(ErrorMessage = "Email is Incorrect")]
         public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Password is Required")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage = "Phone Number is Required")]
+        [Phone(ErrorMessage = "Phone Number is Incorrect")]
+        public string PhoneNumber { get; set; }
+        
+        
     }
 }
