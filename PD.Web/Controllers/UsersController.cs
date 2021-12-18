@@ -49,8 +49,10 @@ namespace PD.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterUserModel userModel)
         {
+            if(!ModelState.IsValid)
+                return new BadRequestObjectResult("Model is invalid.");
+
             return Ok(await _usersService.RegisterAsync(userModel));
-            
         }
 
         [AllowAnonymous]
@@ -58,6 +60,9 @@ namespace PD.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserModel userModel)
         {
+            if(!ModelState.IsValid)
+                return new BadRequestObjectResult("Model is invalid.");
+
             return Ok(await _usersService.LoginAsync(userModel));
         }
 
@@ -75,6 +80,7 @@ namespace PD.Web.Controllers
         public async Task<IActionResult> DeleteAsync()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             return Ok(await _usersService.DeleteAsync(long.Parse(userId)));
         }
 
