@@ -41,6 +41,9 @@ namespace PD.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync(AddPromoCodeViewModel promoCodeModel)
         {
+            if (!ModelState.IsValid)
+                return new BadRequestObjectResult("Model is invalid");
+
             return Ok(await _promoCodesService.AddAsync(promoCodeModel));
         }
 
