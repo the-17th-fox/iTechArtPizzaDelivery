@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PD.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using PD.Domain.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
 {
@@ -16,37 +17,33 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PromoCodesEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<PromoCode> AddAsync(AddPromoCodeViewModel model)
+        public async Task<PromoCode> AddAsync(PromoCode promoCode)
         {
-            var PromoCode = _dbContext.PromoCodes.Add(new PromoCode()
-            {
-                Name = model.Name,
-                Description = model.Description,
-                DiscountAmount = model.DiscountAmount
-            });
-
-            await _dbContext.SaveChangesAsync();
-            return PromoCode.Entity;
-        }
-
-        public async Task<PromoCode> DeleteAsync(long id)
-        {
-            PromoCode promoCodeToDelete = await _dbContext.PromoCodes
-                .FindAsync(id);
-
-            _dbContext.PromoCodes.Remove(promoCodeToDelete);
+            var addedPromoCode = _dbContext.PromoCodes.Add(promoCode);
 
             await _dbContext.SaveChangesAsync();
 
-            return promoCodeToDelete;
+            return addedPromoCode.Entity;
         }
 
-        public async Task<PromoCode> GetByIdAsync(long id)
+        public async Task<PromoCode> DeleteAsync(PromoCode promoCode)
         {
-            PromoCode promoCode = await _dbContext.PromoCodes.FindAsync(id);
-            return promoCode; 
+            var deletedPromoCode = _dbContext.PromoCodes.Remove(promoCode);
+
+            await _dbContext.SaveChangesAsync();
+
+            return deletedPromoCode.Entity;
         }
+
+        public async Task<PromoCode> GetByIdAsync(long id) => await _dbContext.PromoCodes.FindAsync(id);
 
         public async Task<List<PromoCode>> GetAllAsync() => await _dbContext.PromoCodes.ToListAsync();
+
+        public async Task<PromoCode> GetByNameAsync(string name)
+        {
+            return await _dbContext.PromoCodes
+                .Include(p => p.Name == name)
+                .FirstAsync();
+        }
     }
 }
