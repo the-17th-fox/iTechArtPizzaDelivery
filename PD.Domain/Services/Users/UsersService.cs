@@ -58,7 +58,7 @@ namespace PD.Domain.Services
             List<User> users = await _repository.GetAllAsync();
             // Checks if there are any users in the database
             if (users.IsNullOrEmpty())
-                return new NotFoundObjectResult($"No users were not found");
+                return new NotFoundObjectResult($"No users were found");
 
             return new OkObjectResult(_mapper.Map<List<ShortUserViewModel>>(users));
         }
@@ -75,26 +75,26 @@ namespace PD.Domain.Services
 
         public async Task<IActionResult> RegisterAsync(RegisterUserModel model)
         {
-            // Checks if the given email was already taken
             var emailTaken = await _userManager.FindByEmailAsync(model.Email.Normalize());
+            // Checks if the given email was already taken
             if (emailTaken == null)
                 return new BadRequestObjectResult("Email is taken");
 
-            // Checks if the given phone number was already taken
             var phoneTaken = await IsPhoneNumberTakenAsync(model.PhoneNumber);
-            if(phoneTaken)
+            // Checks if the given phone number was already taken
+            if (phoneTaken)
                 return new BadRequestObjectResult("Phone number is taken");
 
-            // Trying to add a user to DB
-            User user = _mapper.Map<RegisterUserModel, User>(model);
+            var user = _mapper.Map<RegisterUserModel, User>(model);
             var identityResult = await _userManager.CreateAsync(user, model.Password);
-            if(!identityResult.Succeeded)
-            {
-                return new ObjectResult($"An error occured while trying to add a user to DB, " +
-                    $"INFO: {identityResult}");
-            }
+            // Checks whether the adding was successful
+            if (!identityResult.Succeeded)
+                return new ObjectResult($"An error occured while trying to add a user");
 
-            await _userManager.AddToRoleAsync(user, RolesNames.USER);
+            var result = await _userManager.AddToRoleAsync(user, RolesNames.USER);
+            // Checks whether the adding a user to roles was successful
+            if (!result.Succeeded)
+                return new ObjectResult($"An error occured while trying to add a user to roles");
 
             return new OkObjectResult(_mapper.Map<ShortUserViewModel>(user));
         }
