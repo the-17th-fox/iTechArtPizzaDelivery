@@ -65,10 +65,10 @@ namespace PD.Domain.Services
 
         public async Task<IActionResult> GetByIdAsync(long id)
         {
-            User user = await _userManager.FindByIdAsync(id.ToString());
+            var user = await _userManager.FindByIdAsync(id.ToString());
             // Checks if there is any user with the specified ID    
             if (user == null)
-                return new NotFoundObjectResult($"User was not found");
+                return new NotFoundObjectResult($"The user was not found");
 
             return new OkObjectResult(_mapper.Map<UserViewModel>(user));
         }
@@ -113,7 +113,7 @@ namespace PD.Domain.Services
             var userRoles = await _userManager.GetRolesAsync(user);
             // Searches for the user's roles (there must be a USER role at least)
             if (userRoles.IsNullOrEmpty())
-                return new NotFoundObjectResult("User's roles were not found");
+                return new NotFoundObjectResult("User roles were not found");
 
             var authClaims = GetClaims(user, userRoles);
             // Checks if there are any user's claims (there must be two claims at least: userID and USER role)
@@ -141,7 +141,7 @@ namespace PD.Domain.Services
             User user = await _userManager.FindByIdAsync(id.ToString());
             // Checks if there is any user with the specified ID    
             if(user == null)
-                return new NotFoundObjectResult("User was not found");
+                return new NotFoundObjectResult("The user was not found");
 
             var result = await _userManager.DeleteAsync(user);
             // Сhecks whether the action was completed successfully
