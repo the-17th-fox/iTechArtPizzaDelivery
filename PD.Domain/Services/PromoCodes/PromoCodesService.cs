@@ -24,12 +24,12 @@ namespace PD.Domain.Services
 
         public async Task<IActionResult> AddAsync(AddPromoCodeViewModel model)
         {
-            var existingPromoCode = await _repository.GetByNameAsync(model.Name);
             // Checks if there is any promocode with the same name
-            if (existingPromoCode != null)
+            if (await _repository.ExistsAsync(model.Name))
                 return new BadRequestObjectResult("There is already a promo code with this name");
 
             var promoCode = _mapper.Map<AddPromoCodeViewModel, PromoCode>(model);
+
             var result = await _repository.AddAsync(promoCode);
             // Checks whether the adding was successful
             if (result == null)
@@ -40,12 +40,11 @@ namespace PD.Domain.Services
 
         public async Task<IActionResult> DeleteAsync(long id)
         {
-            var promoCode = await _repository.GetByIdAsync(id);
             // Checks if there is any promocode with the specified ID
-            if (promoCode == null)
+            if (await _repository.ExistsAsync(id))
                 return new BadRequestObjectResult("The promocode with the specified id does not exist");
 
-            var result = await _repository.DeleteAsync(promoCode);
+            var result = await _repository.DeleteAsync(id);
             // Checks whether the deletion was successful
             if(result == null)
                 return new ObjectResult("An error occured while trying to delete the promocode");
