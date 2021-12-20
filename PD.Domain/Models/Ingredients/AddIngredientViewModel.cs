@@ -9,7 +9,8 @@ namespace PD.Domain.Models
 {
     public class AddIngredientViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Name is Required")]
+        [StringLength(maximumLength: 15, ErrorMessage = "The length of the string must not be more than 15 characters")]
         public string Name { get; set; }
     }
 }
