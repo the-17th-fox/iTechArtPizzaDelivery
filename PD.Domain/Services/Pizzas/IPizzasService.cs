@@ -1,4 +1,5 @@
-﻿using PD.Domain.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using PD.Domain.Entities;
 using PD.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,12 @@ namespace PD.Domain.Services
 {
     public interface IPizzasService
     {
-        public Task<List<ShortPizzaViewModel>> GetAllAsync();
-        public Task<PizzaViewModel> GetByIdAsync(long id);
-        public Task<PizzaViewModel> AddAsync(AddPizzaViewModel model);
-        public Task<PizzaViewModel> DeleteAsync(long id);
-        public Task<PizzaIngredientsViewModel> AddIngredientAsync(long ingredientId, long pizzaId);
-        public Task<PizzaIngredientsViewModel> RemoveIngredientAsync(long ingredientId, long pizzaId);
-        public Task<PizzaDescriptionViewModel> ChangeDescriptionAsync(long pizzaId, string newDescription);
+        public Task<IActionResult> GetAllAsync();
+        public Task<IActionResult> GetByIdAsync(long id);
+        public Task<IActionResult> AddAsync(AddPizzaViewModel model);
+        public Task<IActionResult> DeleteAsync(long id);
+        public Task<IActionResult> AddIngredientAsync(long pizzaId, long ingredientId);
+        public Task<IActionResult> RemoveIngredientAsync(long pizzaId, long ingredientId);
+        public Task<IActionResult> ChangeDescriptionAsync(long pizzaId, string newDescription);
     }
 }
