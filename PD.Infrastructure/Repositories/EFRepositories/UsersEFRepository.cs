@@ -20,13 +20,10 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<bool> IsPhoneTakenAsync(string phoneNumber)
         {
             var isTaken = await _dbContext.Users
-                .Include(u => u.PhoneNumber == phoneNumber)
+                .Where(u => u.PhoneNumber == phoneNumber)
                 .FirstAsync();
 
-            if (isTaken == null)
-                return false;
-            else
-                return true;
+            return isTaken != null;
         }
     }
 }
