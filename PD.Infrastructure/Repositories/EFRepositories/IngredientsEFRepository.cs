@@ -46,5 +46,22 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .Include(i => i.Pizzas)
                 .ToListAsync();
         }
+
+        public async Task<bool> ExistsAsync(long id)
+        {
+            var ingredient = await _dbContext.Ingredients
+                .FindAsync(id);
+
+            return ingredient != null;
+        }
+
+        public async Task<bool> ExistsAsync(string name)
+        {
+            var ingredient = await _dbContext.Ingredients
+                .Where(p => p.Name == name)
+                .FirstAsync();
+
+            return ingredient != null;
+        }
     }
 }
