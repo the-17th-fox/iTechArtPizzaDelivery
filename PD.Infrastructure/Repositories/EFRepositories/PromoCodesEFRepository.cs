@@ -26,13 +26,15 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return addedPromoCode.Entity;
         }
 
-        public async Task<PromoCode> DeleteAsync(PromoCode promoCode)
+        public async Task<PromoCode> DeleteAsync(long id)
         {
-            var deletedPromoCode = _dbContext.PromoCodes.Remove(promoCode);
+            var promoCode = await _dbContext.PromoCodes.FindAsync(id);
+
+            _dbContext.PromoCodes.Remove(promoCode);
 
             await _dbContext.SaveChangesAsync();
 
-            return deletedPromoCode.Entity;
+            return promoCode;
         }
 
         public async Task<PromoCode> GetByIdAsync(long id) => await _dbContext.PromoCodes.FindAsync(id);
@@ -44,6 +46,23 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return await _dbContext.PromoCodes
                 .Include(p => p.Name == name)
                 .FirstAsync();
+        }
+
+        public async Task<bool> ExistsAsync(long id)
+        {
+            var promoCode = await _dbContext.PromoCodes
+                .FindAsync(id);
+
+            return promoCode != null;
+        }
+
+        public async Task<bool> ExistsAsync(string name)
+        {
+            var promoCode = await _dbContext.PromoCodes
+                .Where(p => p.Name == name)
+                .FirstAsync();
+
+            return promoCode != null;
         }
     }
 }
