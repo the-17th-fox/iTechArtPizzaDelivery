@@ -33,6 +33,9 @@ namespace iTechArtIngredientDelivery.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddAsync(AddIngredientViewModel model)
         {
+            if (!ModelState.IsValid)
+                return new BadRequestObjectResult("Model is invalid.");
+
             return Ok(await _ingredientsService.AddAsync(model));
         }
 
