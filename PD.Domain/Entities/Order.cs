@@ -20,11 +20,9 @@ namespace PD.Domain.Entities
         public string Description { get; set; }
 
         public long UserId { get; set; }
-        [ForeignKey("UserId")]
         public User User { get; set; }
 
         public long? PromoCodeId { get; set; }
-        [ForeignKey("PromoCodeId")]
         public PromoCode PromoCode { get; set; }
     }
 }
