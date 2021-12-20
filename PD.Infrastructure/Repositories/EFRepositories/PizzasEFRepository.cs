@@ -31,21 +31,18 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .FirstAsync();
         }
 
-        public async Task<Pizza> AddAsync(AddPizzaViewModel model)
+        public async Task<Pizza> AddAsync(Pizza pizza)
         {
-            var newPizza = _dbContext.Pizzas.Add(new Pizza()
-            {
-                Name = model.Name,
-                Description = model.Description
-            });
+            var newPizza = _dbContext.Pizzas.Add(pizza);
 
             await _dbContext.SaveChangesAsync();
+
             return newPizza.Entity;
         }
 
         public async Task<Pizza> DeleteAsync(long id)
         {
-            Pizza pizzaToRemove = await _dbContext.Pizzas
+            var pizzaToRemove = await _dbContext.Pizzas
                 .FindAsync(id);
 
             _dbContext.Pizzas.Remove(pizzaToRemove);
@@ -55,14 +52,14 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return pizzaToRemove;
         }
 
-        public async Task<Pizza> AddIngredientAsync(long ingredientId, long pizzaId)
+        public async Task<Pizza> AddIngredientAsync(long pizzaId, long ingredientId)
         {
-            Pizza pizza = await _dbContext.Pizzas
+            var pizza = await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
                 .Where(p => p.Id == pizzaId)
                 .FirstAsync();
 
-            Ingredient ingredient = await _dbContext.Ingredients
+            var ingredient = await _dbContext.Ingredients
                 .Include(i => i.Pizzas)
                 .Where(i => i.Id == ingredientId)
                 .FirstAsync();
@@ -73,14 +70,14 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return pizza;
         }
 
-        public async Task<Pizza> RemoveIngredientAsync(long ingredientId, long pizzaId)
+        public async Task<Pizza> RemoveIngredientAsync(long pizzaId, long ingredientId)
         {
-            Pizza pizza = await _dbContext.Pizzas
+            var pizza = await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
                 .Where(p => p.Id == pizzaId)
                 .FirstAsync();
 
-            Ingredient ingredient = await _dbContext.Ingredients
+            var ingredient = await _dbContext.Ingredients
                 .Include(i => i.Pizzas)
                 .Where(i => i.Id == ingredientId)
                 .FirstAsync();
@@ -93,7 +90,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
 
         public async Task<Pizza> ChangeDescriptionAsync(long pizzaId, string newDescription)
         {
-            Pizza pizza = await _dbContext.Pizzas
+            var pizza = await _dbContext.Pizzas
                 .Where(p => p.Id == pizzaId)
                 .FirstAsync();
 
@@ -101,6 +98,41 @@ namespace PD.Infrastructure.Repositories.EFRepositories
 
             await _dbContext.SaveChangesAsync();
             return pizza;
+        }
+
+        public async Task<Pizza> GetByNameAsync(string name)
+        {
+            return await _dbContext.Pizzas
+                .Include(p => p.Name == name)
+                .FirstAsync();
+        }
+
+        public async Task<bool> HasIngredientAsync(long pizzaId, long ingredientId)
+        {
+            var pizza = await _dbContext.Pizzas
+                .Include(p => 
+                    p.Ingredients.Find(i => 
+                        i.Id == ingredientId))
+                .FirstAsync();
+
+            return pizza != null;
+        }
+
+        public async Task<bool> ExistsAsync(long id)
+        {
+            var pizza = await _dbContext.Pizzas
+                .FindAsync(id);
+
+            return pizza != null; 
+        }
+
+        public async Task<bool> ExistsAsync(string name)
+        {
+            var pizza = await _dbContext.Pizzas
+                .Where(p => p.Name == name)
+                .FirstAsync();
+
+            return pizza != null;
         }
     }
 }
