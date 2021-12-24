@@ -66,15 +66,15 @@ namespace PD.Infrastructure.Migrations
                         new
                         {
                             Id = 1L,
-                            ConcurrencyStamp = "1fcdea78-a205-4448-8844-b4e2e800609e",
+                            ConcurrencyStamp = "fa497175-6051-49f7-81e5-dfc6648d3f2e",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 2L,
-                            ConcurrencyStamp = "e471e2a0-5c26-4931-8be7-5fb1bb04db15",
-                            Name = "ADMINISTRATOR",
+                            ConcurrencyStamp = "e3a5b039-4d5a-45fe-9089-f4d2a27af382",
+                            Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
                 });
@@ -220,14 +220,20 @@ namespace PD.Infrastructure.Migrations
                     b.Property<string>("Adress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DeliveryMethod")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeliveryStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
 
                     b.Property<long?>("PromoCodeId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("UserId")
                         .HasColumnType("bigint");
