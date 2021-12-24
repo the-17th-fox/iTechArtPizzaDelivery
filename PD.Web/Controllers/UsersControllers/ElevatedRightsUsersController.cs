@@ -12,22 +12,21 @@ using PD.Domain.Models;
 using System;
 using System.Security.Claims;
 
-namespace PD.Web.Controllers
+namespace PD.Web.Controllers.UsersControllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : Controller
+    public class ElevatedRightsUsersController : Controller
     {
         
         private readonly IUsersService _usersService;
         
-        public UsersController(IUsersService usersService)
+        public ElevatedRightsUsersController(IUsersService usersService)
         {
             _usersService = usersService;
         }
-
-        [Authorize(Roles = "Administrator")]
+        
         [ActionName(nameof(GetAllAsync))]
         [Route("all")]
         [HttpGet]
@@ -36,7 +35,6 @@ namespace PD.Web.Controllers
             return Ok(await _usersService.GetAllAsync());
         }
 
-        [Authorize(Roles = "Administrator")]
         [Route("{id}")]
         [HttpGet]
         public async Task<IActionResult> GetByIdAsync(long id)
@@ -44,29 +42,6 @@ namespace PD.Web.Controllers
             return Ok(await _usersService.GetByIdAsync(id));
         }
 
-        [AllowAnonymous]
-        [Route("register")]
-        [HttpPost]
-        public async Task<IActionResult> RegisterAsync(RegisterUserModel userModel)
-        {
-            if(!ModelState.IsValid)
-                return new BadRequestObjectResult("Model is invalid.");
-
-            return Ok(await _usersService.RegisterAsync(userModel));
-        }
-
-        [AllowAnonymous]
-        [Route("login")]
-        [HttpPost]
-        public async Task<IActionResult> LoginAsync([FromBody] LoginUserModel userModel)
-        {
-            if(!ModelState.IsValid)
-                return new BadRequestObjectResult("Model is invalid.");
-
-            return Ok(await _usersService.LoginAsync(userModel));
-        }
-
-        [Authorize(Roles = "Administrator")]
         [Route("delete/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(long id)
@@ -74,17 +49,6 @@ namespace PD.Web.Controllers
             return Ok(await _usersService.DeleteAsync(id));
         }
 
-        [Authorize(Roles = "User")]
-        [Route("delete")]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAsync()
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            return Ok(await _usersService.DeleteAsync(long.Parse(userId)));
-        }
-
-        [AllowAnonymous]
         [Route("[action]")]
         [HttpPut]
         public async Task<IActionResult> AddToRole(long userId, string role)
