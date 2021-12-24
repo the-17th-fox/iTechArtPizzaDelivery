@@ -5,8 +5,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PD.Domain.Constants.AuthOptions;
 using PD.Domain.Constants.UsersRoles;
@@ -77,13 +75,13 @@ namespace PD.Domain.Services
         {
             var emailTaken = await _userManager.FindByEmailAsync(model.Email.Normalize());
             // Checks if the given email was already taken
-            if (emailTaken == null)
-                return new BadRequestObjectResult("Email is taken");
+            if (emailTaken != null)
+                return new BadRequestObjectResult("The email is taken");
 
             var phoneTaken = await IsPhoneNumberTakenAsync(model.PhoneNumber);
             // Checks if the given phone number was already taken
             if (phoneTaken)
-                return new BadRequestObjectResult("Phone number is taken");
+                return new BadRequestObjectResult("The phone number is taken");
 
             var user = _mapper.Map<RegisterUserModel, User>(model);
             var identityResult = await _userManager.CreateAsync(user, model.Password);
@@ -113,7 +111,7 @@ namespace PD.Domain.Services
             var userRoles = await _userManager.GetRolesAsync(user);
             // Searches for the user's roles (there must be a USER role at least)
             if (userRoles.IsNullOrEmpty())
-                return new NotFoundObjectResult("User roles were not found");
+                return new NotFoundObjectResult("The user's roles were not found");
 
             var authClaims = GetClaims(user, userRoles);
             // Checks if there are any user's claims (there must be two claims at least: userID and USER role)
@@ -127,7 +125,6 @@ namespace PD.Domain.Services
 
             return new OkObjectResult(new
             {
-                claims = authClaims,
                 roles = userRoles,
                 token = new JwtSecurityTokenHandler()
                     .WriteToken(token),
@@ -144,7 +141,7 @@ namespace PD.Domain.Services
                 return new NotFoundObjectResult("The user was not found");
 
             var result = await _userManager.DeleteAsync(user);
-            // Сhecks whether the action was completed successfully
+            // Сhecks whether the action has completed successfully
             if (!result.Succeeded)
                 return new ObjectResult("An error occured while trying to delete the user");
 
@@ -156,12 +153,16 @@ namespace PD.Domain.Services
             User user = await _userManager.FindByIdAsync(userId.ToString());
             // Checks if there is any user with the specified ID    
             if (user == null)
-                return new NotFoundObjectResult($"User was not found");
+                return new NotFoundObjectResult($"The user was not found");
+
+            // Checks whether the user has the specified role
+            if (await _userManager.IsInRoleAsync(user, role))
+                return new BadRequestObjectResult("The user has already in this role");
 
             var result = await _userManager.AddToRoleAsync(user, role);
-            // Сhecks whether the action was completed successfully
+            // Сhecks whether the action has completed successfully
             if (!result.Succeeded)
-                return new ObjectResult("Failed to add user to role.");
+                return new ObjectResult("An error occured while trying to a add user to the role.");
 
             return new OkObjectResult(user);
         }
