@@ -1,21 +1,13 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using PD.Domain.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Services;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using PD.Domain.Constants.UsersRoles;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
-using PD.Domain.Models;
-using System;
-using System.Security.Claims;
+using PD.Domain.Constants.UsersRoles;
 
 namespace PD.Web.Controllers.UsersControllers
 {
-    [Authorize(Roles = "Administrator")]
-    [Route("api/[controller]")]
+    [Authorize(Roles = RolesNames.ADMIN)]
+    [Route("api/users")]
     [ApiController]
     public class ElevatedRightsUsersController : Controller
     {
@@ -27,7 +19,6 @@ namespace PD.Web.Controllers.UsersControllers
             _usersService = usersService;
         }
         
-        [ActionName(nameof(GetAllAsync))]
         [Route("all")]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
@@ -42,7 +33,7 @@ namespace PD.Web.Controllers.UsersControllers
             return Ok(await _usersService.GetByIdAsync(id));
         }
 
-        [Route("delete/{id}")]
+        [Route("[action]/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync(long id)
         {

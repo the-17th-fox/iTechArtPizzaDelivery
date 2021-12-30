@@ -8,22 +8,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PD.Domain.Constants.UsersRoles;
 
 namespace PD.Web.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = RolesNames.ADMIN)]
     [Route("api/[controller]")]
     [ApiController]
     public class PromoCodesController : Controller
     {
         private readonly IPromoCodesService _promoCodesService;
-        public PromoCodesController(IPromoCodesService service)
-        {
-            _promoCodesService = service;
-        }
+        public PromoCodesController(IPromoCodesService service) => _promoCodesService = service;
 
         [Route("all")]
-        [ActionName(nameof(GetAllAsync))]
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
@@ -42,7 +39,7 @@ namespace PD.Web.Controllers
         public async Task<IActionResult> AddAsync(AddPromoCodeViewModel promoCodeModel)
         {
             if (!ModelState.IsValid)
-                return new BadRequestObjectResult("Model is invalid");
+                return ValidationProblem();
 
             return Ok(await _promoCodesService.AddAsync(promoCodeModel));
         }
