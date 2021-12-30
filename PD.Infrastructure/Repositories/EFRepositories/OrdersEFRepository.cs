@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PD.Domain.Constants.OrderStatuses;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
@@ -16,12 +17,9 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public OrdersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Order> AddAsync(AddOrderViewModel model)
+        public async Task<Order> AddAsync(Order order)
         {
-            var newOrder = _dbContext.Orders.Add(new Order()
-            {
-                UserId = model.UserId
-            });
+            var newOrder = _dbContext.Orders.Add(order);
 
             await _dbContext.SaveChangesAsync();
             return newOrder.Entity;
@@ -32,12 +30,12 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             Pizza pizza = await _dbContext.Pizzas
                 .Include(i => i.Orders)
                 .Where(i => i.Id == pizzaId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             Order order = await _dbContext.Orders
                 .Include(i => i.Pizzas)
                 .Where(i => i.Id == orderId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             order.Pizzas.Add(pizza);
 
@@ -50,12 +48,12 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             Pizza pizza = await _dbContext.Pizzas
                 .Include(i => i.Orders)
                 .Where(i => i.Id == pizzaId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             Order order = await _dbContext.Orders
                 .Include(i => i.Pizzas)
                 .Where(i => i.Id == orderId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             order.Pizzas.Remove(pizza);
 
@@ -78,7 +76,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return await _dbContext.Orders
                 .Include(o => o.Pizzas)
                 .Where(o => o.Id == id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<List<Order>> GetAllAsync()
@@ -168,6 +166,13 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             await _dbContext.SaveChangesAsync();
 
             return order;
+        }
+
+        public async Task<Order> GetActiveOrderAsync(long userId)
+        {
+            return await _dbContext.Orders
+                .Where(o => o.UserId == userId)
+                .LastOrDefaultAsync();
         }
     }
 }

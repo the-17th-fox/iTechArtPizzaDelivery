@@ -21,7 +21,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             var isTaken = await _dbContext.Users
                 .Where(u => u.PhoneNumber == phoneNumber)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return isTaken != null;
         }

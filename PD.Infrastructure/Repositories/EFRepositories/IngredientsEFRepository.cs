@@ -16,12 +16,9 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public IngredientsEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Ingredient> AddAsync(AddIngredientViewModel model)
+        public async Task<Ingredient> AddAsync(Ingredient ingredient)
         {
-            var newIngredient = _dbContext.Ingredients.Add(new Ingredient()
-            {
-                Name = model.Name
-            });
+            var newIngredient = _dbContext.Ingredients.Add(ingredient);
 
             await _dbContext.SaveChangesAsync();
 
@@ -59,7 +56,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             var ingredient = await _dbContext.Ingredients
                 .Where(p => p.Name == name)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return ingredient != null;
         }

@@ -28,7 +28,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
                 .Where(p => p.Id == id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Pizza> AddAsync(Pizza pizza)
@@ -57,12 +57,12 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             var pizza = await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
                 .Where(p => p.Id == pizzaId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             var ingredient = await _dbContext.Ingredients
                 .Include(i => i.Pizzas)
                 .Where(i => i.Id == ingredientId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             pizza.Ingredients.Add(ingredient);
 
@@ -75,12 +75,12 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             var pizza = await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
                 .Where(p => p.Id == pizzaId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             var ingredient = await _dbContext.Ingredients
                 .Include(i => i.Pizzas)
                 .Where(i => i.Id == ingredientId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             pizza.Ingredients.Remove(ingredient);
 
@@ -92,7 +92,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             var pizza = await _dbContext.Pizzas
                 .Where(p => p.Id == pizzaId)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             pizza.Description = newDescription;
 
@@ -104,7 +104,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             return await _dbContext.Pizzas
                 .Include(p => p.Name == name)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> HasIngredientAsync(long pizzaId, long ingredientId)
@@ -113,7 +113,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .Include(p => 
                     p.Ingredients.Find(i => 
                         i.Id == ingredientId))
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return pizza != null;
         }
@@ -130,7 +130,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             var pizza = await _dbContext.Pizzas
                 .Where(p => p.Name == name)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return pizza != null;
         }

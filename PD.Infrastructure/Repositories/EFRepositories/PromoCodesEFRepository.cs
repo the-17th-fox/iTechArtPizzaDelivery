@@ -45,7 +45,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             return await _dbContext.PromoCodes
                 .Include(p => p.Name == name)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> ExistsAsync(long id)
@@ -60,7 +60,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             var promoCode = await _dbContext.PromoCodes
                 .Where(p => p.Name == name)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
             return promoCode != null;
         }
