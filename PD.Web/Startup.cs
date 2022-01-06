@@ -17,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System;
 using PD.Domain.Constants.AuthOptions;
+using PD.Domain.Constants.UsersRoles;
+using PD.Domain.Middleware;
 
 namespace PD.Domain
 {
@@ -95,8 +97,8 @@ namespace PD.Domain
             //AUTHORIZATION
             services.AddAuthorization(/*options =>
             {
-                options.AddPolicy("DefaultRights", policy =>
-                    policy.RequireRole("User", "Administrator"));
+                options.AddPolicy("ElevatedRights", policy =>
+                    policy.RequireRole(RolesNames.ADMIN));
             }*/);
 
             services.AddControllers();
@@ -153,6 +155,8 @@ namespace PD.Domain
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
