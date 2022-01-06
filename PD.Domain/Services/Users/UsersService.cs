@@ -4,9 +4,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using PD.Domain.Constants;
 using PD.Domain.Constants.AuthOptions;
+using PD.Domain.Constants.Exceptions;
 using PD.Domain.Constants.UsersRoles;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
@@ -51,120 +53,125 @@ namespace PD.Domain.Services
             return claims;
         }
 
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<List<ShortUserViewModel>> GetAllAsync()
         {
             List<User> users = await _repository.GetAllAsync();
             // Checks if there are any users in the database
             if (users.IsNullOrEmpty())
-                return new NotFoundObjectResult($"No users were found");
+                throw new NotFoundException("No users were found");
 
-            return new OkObjectResult(_mapper.Map<List<ShortUserViewModel>>(users));
+            return _mapper.Map<List<ShortUserViewModel>>(users);
         }
 
-        public async Task<IActionResult> GetByIdAsync(long id)
+        public async Task<UserViewModel> GetByIdAsync(long id)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             // Checks if there is any user with the specified ID    
             if (user == null)
-                return new NotFoundObjectResult($"The user was not found");
+                throw new NotFoundException("The user was not found");
 
-            return new OkObjectResult(_mapper.Map<UserViewModel>(user));
+            return _mapper.Map<UserViewModel>(user);
         }
 
-        public async Task<IActionResult> RegisterAsync(RegisterUserModel model)
+        public async Task<ShortUserViewModel> RegisterAsync(RegisterUserModel model)
         {
             var emailTaken = await _userManager.FindByEmailAsync(model.Email.Normalize());
             // Checks if the given email was already taken
             if (emailTaken != null)
-                return new BadRequestObjectResult("The email is taken");
+                throw new BadRequestException("This email has already been taken.");
 
             var phoneTaken = await IsPhoneNumberTakenAsync(model.PhoneNumber);
             // Checks if the given phone number was already taken
             if (phoneTaken)
-                return new BadRequestObjectResult("The phone number is taken");
+                throw new BadRequestException("This phone number has already been taken.");
 
             var user = _mapper.Map<RegisterUserModel, User>(model);
             var identityResult = await _userManager.CreateAsync(user, model.Password);
             // Checks whether the adding was successful
             if (!identityResult.Succeeded)
-                return new ObjectResult($"An error occured while trying to add a user");
+                throw new CreatingFailedException("An error occured during creating the user.");
 
             var result = await _userManager.AddToRoleAsync(user, RolesNames.USER);
             // Checks whether the adding a user to roles was successful
             if (!result.Succeeded)
-                return new ObjectResult($"An error occured while trying to add a user to roles");
+                throw new UpdatingFailedException("An error occured during adding the role to the user");
 
-            return new OkObjectResult(_mapper.Map<ShortUserViewModel>(user));
+            return _mapper.Map<ShortUserViewModel>(user);
         }
 
-        public async Task<IActionResult> LoginAsync(LoginUserModel model)
+        public async Task<LoginResultViewModel> LoginAsync(LoginUserModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email.Normalize());
             // Checks if there is a user with the provided email
             if (user == null)
-                return new NotFoundObjectResult($"The user with the specified email was not found");
+                throw new NotFoundException("The user with the specified Email was not found.");
 
             // Password check
             if (!await _userManager.CheckPasswordAsync(user, model.Password))
-                return new UnauthorizedObjectResult("Invalid email or password");
+                throw new InvalidCredentialsException();
 
             var userRoles = await _userManager.GetRolesAsync(user);
             // Searches for the user's roles (there must be a USER role at least)
             if (userRoles.IsNullOrEmpty())
-                return new NotFoundObjectResult("The user's roles were not found");
+                throw new NotFoundException("There are no roles for this user.");
 
             var authClaims = GetClaims(user, userRoles);
             // Checks if there are any user's claims (there must be two claims at least: userID and USER role)
             if (authClaims.IsNullOrEmpty())
-                return new ObjectResult("An error occured while trying to get user's claims");
+                throw new NotFoundException("There are no claims for this user.");
 
             var token = GetNewToken(authClaims);
             // Checks whether the token has created successfully 
             if (token == null)
-                return new ObjectResult("An error occured while trying to create a token");
+                throw new CreatingFailedException("An error occured during token creation.");
 
-            return new OkObjectResult(new
+            return new LoginResultViewModel
             {
-                roles = userRoles,
-                token = new JwtSecurityTokenHandler()
+                Id = user.Id,
+                Roles = userRoles,
+                Token = new JwtSecurityTokenHandler()
                     .WriteToken(token),
-                expiration = token.ValidTo,
-                id = user.Id
-            });
+                Lifetime = token.ValidTo
+            };
         }
 
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<string> DeleteAsync(long id)
         {
             User user = await _userManager.FindByIdAsync(id.ToString());
             // Checks if there is any user with the specified ID    
-            if(user == null)
-                return new NotFoundObjectResult("The user was not found");
+            if (user == null)
+                throw new NotFoundException("The user with the specified Id was not found.");
 
             var result = await _userManager.DeleteAsync(user);
             // Сhecks whether the action has completed successfully
             if (!result.Succeeded)
-                return new ObjectResult("An error occured while trying to delete the user");
+                throw new DeletionFailedException();
 
-            return new OkObjectResult(_mapper.Map<UserViewModel>(user));
+            return "The user has been deleted successefully.";
         }
 
-        public async Task<IActionResult> AddToRole(long userId, string role)
+        public async Task<UserRolesViewModel> AddToRole(long userId, string role)
         {
             User user = await _userManager.FindByIdAsync(userId.ToString());
             // Checks if there is any user with the specified ID    
             if (user == null)
-                return new NotFoundObjectResult($"The user was not found");
+                throw new NotFoundException("The user with the specified Id was not found.");
 
             // Checks whether the user has the specified role
             if (await _userManager.IsInRoleAsync(user, role))
-                return new BadRequestObjectResult("The user has already in this role");
+                throw new BadRequestException("The user already has this role.");
 
             var result = await _userManager.AddToRoleAsync(user, role);
             // Сhecks whether the action has completed successfully
             if (!result.Succeeded)
-                return new ObjectResult("An error occured while trying to a add user to the role.");
+                throw new UpdatingFailedException("An error occured during adding the user to the role.");
 
-            return new OkObjectResult(user);
+            return new UserRolesViewModel
+            {
+                Id = userId,
+                Email = user.Email,
+                Roles = await _userManager.GetRolesAsync(user)
+            };
         }
 
         public async Task<bool> IsPhoneNumberTakenAsync(string phoneNumber)

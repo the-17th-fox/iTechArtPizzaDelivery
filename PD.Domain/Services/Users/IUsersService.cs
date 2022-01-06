@@ -13,12 +13,12 @@ namespace PD.Domain.Services
     {
         public JwtSecurityToken GetNewToken(List<Claim> authClaims);
         public List<Claim> GetClaims(User user, IList<string> userRoles);
-        public Task<IActionResult> GetAllAsync();
-        public Task<IActionResult> GetByIdAsync(long id);
-        public Task<IActionResult> RegisterAsync(RegisterUserModel model);
-        public Task<IActionResult> LoginAsync(LoginUserModel model);
-        public Task<IActionResult> DeleteAsync(long id);
-        public Task<IActionResult> AddToRole(long userId, string role);
+        public Task<List<ShortUserViewModel>> GetAllAsync();
+        public Task<UserViewModel> GetByIdAsync(long id);
+        public Task<ShortUserViewModel> RegisterAsync(RegisterUserModel model);
+        public Task<LoginResultViewModel> LoginAsync(LoginUserModel model);
+        public Task<string> DeleteAsync(long id);
+        public Task<UserRolesViewModel> AddToRole(long userId, string role);
         public Task<bool> IsPhoneNumberTakenAsync(string phoneNumber);
     }
 }
