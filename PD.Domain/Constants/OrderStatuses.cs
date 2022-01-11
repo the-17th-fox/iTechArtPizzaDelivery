@@ -8,6 +8,9 @@ namespace PD.Domain.Constants.OrderStatuses
 {
     public enum OrderStatuses
     {
+        InProccesOfCreating,
+        IsNotPaid,
+        IsPaid,
         CookingInProgress,
         Delivering,
         Delivered
