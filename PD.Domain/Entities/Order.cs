@@ -14,9 +14,10 @@ namespace PD.Domain.Entities
         public long Id { get; set; }
         public List<Pizza> Pizzas { get; set; }
         public string Adress { get; set; }
-        public bool IsPaid { get; set; } = false;
-        public string DeliveryStatus { get; set; }
-        public string DeliveryMethod { get; set; }
+        public int OrderStatusId { get; set; }
+        public bool IsActive { get; set; } = true;
+        public int DeliveryMethodId { get; set; }
+        public int PaymentMethodId { get; set; }
         public string Description { get; set; }
 
         public long UserId { get; set; }
