@@ -35,16 +35,16 @@ namespace PD.Web.Controllers.PizzasControllers
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IActionResult> AddIngredientAsync(long ingredientId, long pizzaId)
+        public async Task<IActionResult> AddIngredientAsync(long pizzaId, long ingredientId)
         {
-            return Ok(await _pizzasService.AddIngredientAsync(ingredientId, pizzaId));
+            return Ok(await _pizzasService.AddIngredientAsync(pizzaId, ingredientId));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IActionResult> RemoveIngredientAsync(long ingredientId, long pizzaId)
+        public async Task<IActionResult> RemoveIngredientAsync(long pizzaId, long ingredientId)
         {
-            return Ok(await _pizzasService.RemoveIngredientAsync(ingredientId, pizzaId));
+            return Ok(await _pizzasService.RemoveIngredientAsync(pizzaId, ingredientId));
         }
 
         [Route("[action]")]
