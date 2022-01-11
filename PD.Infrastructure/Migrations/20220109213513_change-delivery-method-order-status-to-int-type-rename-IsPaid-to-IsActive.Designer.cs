@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PD.Infrastructure.Context;
 
 namespace PD.Infrastructure.Migrations
 {
     [DbContext(typeof(PizzaDeliveryContext))]
-    partial class PizzaDeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20220109213513_change-delivery-method-order-status-to-int-type-rename-IsPaid-to-IsActive")]
+    partial class changedeliverymethodorderstatustointtyperenameIsPaidtoIsActive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,14 +68,14 @@ namespace PD.Infrastructure.Migrations
                         new
                         {
                             Id = 1L,
-                            ConcurrencyStamp = "9d1abc12-b157-4a61-928e-2e7facd239fc",
+                            ConcurrencyStamp = "2c65f0f9-cd27-4aaf-88c3-3fdf56a89b7a",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
                             Id = 2L,
-                            ConcurrencyStamp = "0dc96337-b650-49f4-9170-6a4506a4b672",
+                            ConcurrencyStamp = "cf5157b3-bd78-47b5-8b7d-da7359deefbe",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -230,9 +232,6 @@ namespace PD.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("OrderStatusId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PaymentMethodId")
                         .HasColumnType("int");
 
                     b.Property<long?>("PromoCodeId")
