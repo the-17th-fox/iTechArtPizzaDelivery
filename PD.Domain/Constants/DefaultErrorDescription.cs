@@ -13,8 +13,8 @@ namespace PD.Domain.Constants.Exceptions
         public const string BAD_REQUEST = "Bad request.";
 
         // Exceptions related to server errors
-        public const string UPDATING_FAILED = "An error occurred during editing.";
-        public const string CREATIONG_FAILED = "An error occurred during adding.";
+        public const string UPDATING_FAILED = "An error occurred during updating the data.";
+        public const string CREATIONG_FAILED = "An error occurred during creation.";
         public const string DELETION_FAILED = "An error occurred during deletion.";
         public const string GETTING_FAILED = "An error occured during getting requested data.";
 
