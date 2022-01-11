@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PD.Domain.Models;
+using PD.Domain.Constants.Exceptions;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
 {
@@ -27,77 +28,79 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             return await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
+                .Include(p => p.Orders)
                 .Where(p => p.Id == id)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Pizza> AddAsync(Pizza pizza)
+        public async Task AddAsync(Pizza pizza)
         {
-            var newPizza = _dbContext.Pizzas.Add(pizza);
+            try
+            {
+                _dbContext.Pizzas.Add(pizza);
 
-            await _dbContext.SaveChangesAsync();
-
-            return newPizza.Entity;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new CreatingFailedException();
+            }
         }
 
-        public async Task<Pizza> DeleteAsync(long id)
+        public async Task DeleteAsync(Pizza pizza)
         {
-            var pizzaToRemove = await _dbContext.Pizzas
-                .FindAsync(id);
+            try
+            {
+                _dbContext.Pizzas.Remove(pizza);
 
-            _dbContext.Pizzas.Remove(pizzaToRemove);
-
-            await _dbContext.SaveChangesAsync();
-
-            return pizzaToRemove;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new DeletionFailedException();
+            }
         }
 
-        public async Task<Pizza> AddIngredientAsync(long pizzaId, long ingredientId)
-        {
-            var pizza = await _dbContext.Pizzas
-                .Include(p => p.Ingredients)
-                .Where(p => p.Id == pizzaId)
-                .FirstOrDefaultAsync();
+        public async Task AddIngredientAsync(Pizza pizza, Ingredient ingredient)
+        {   
+            try
+            {
+                pizza.Ingredients.Add(ingredient);
 
-            var ingredient = await _dbContext.Ingredients
-                .Include(i => i.Pizzas)
-                .Where(i => i.Id == ingredientId)
-                .FirstOrDefaultAsync();
-
-            pizza.Ingredients.Add(ingredient);
-
-            await _dbContext.SaveChangesAsync();
-            return pizza;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Pizza> RemoveIngredientAsync(long pizzaId, long ingredientId)
+        public async Task RemoveIngredientAsync(Pizza pizza, Ingredient ingredient)
         {
-            var pizza = await _dbContext.Pizzas
-                .Include(p => p.Ingredients)
-                .Where(p => p.Id == pizzaId)
-                .FirstOrDefaultAsync();
+            try
+            {
+                pizza.Ingredients.Remove(ingredient);
 
-            var ingredient = await _dbContext.Ingredients
-                .Include(i => i.Pizzas)
-                .Where(i => i.Id == ingredientId)
-                .FirstOrDefaultAsync();
-
-            pizza.Ingredients.Remove(ingredient);
-
-            await _dbContext.SaveChangesAsync();
-            return pizza;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Pizza> ChangeDescriptionAsync(long pizzaId, string newDescription)
+        public async Task ChangeDescriptionAsync(Pizza pizza, string newDescription)
         {
-            var pizza = await _dbContext.Pizzas
-                .Where(p => p.Id == pizzaId)
-                .FirstOrDefaultAsync();
+            try
+            {
+                pizza.Description = newDescription;
 
-            pizza.Description = newDescription;
-
-            await _dbContext.SaveChangesAsync();
-            return pizza;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
         public async Task<Pizza> GetByNameAsync(string name)
@@ -105,17 +108,6 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return await _dbContext.Pizzas
                 .Include(p => p.Name == name)
                 .FirstOrDefaultAsync();
-        }
-
-        public async Task<bool> HasIngredientAsync(long pizzaId, long ingredientId)
-        {
-            var pizza = await _dbContext.Pizzas
-                .Include(p => 
-                    p.Ingredients.Find(i => 
-                        i.Id == ingredientId))
-                .FirstOrDefaultAsync();
-
-            return pizza != null;
         }
 
         public async Task<bool> ExistsAsync(long id)

@@ -9,6 +9,7 @@ using PD.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using PD.Domain.Models;
 using Microsoft.AspNetCore.Identity;
+using PD.Domain.Constants.Exceptions;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
 {
@@ -17,24 +18,33 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PromoCodesEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<PromoCode> AddAsync(PromoCode promoCode)
+        public async Task AddAsync(PromoCode promoCode)
         {
-            var addedPromoCode = _dbContext.PromoCodes.Add(promoCode);
 
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                _dbContext.PromoCodes.Add(promoCode);
 
-            return addedPromoCode.Entity;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new CreatingFailedException();
+            }
         }
 
-        public async Task<PromoCode> DeleteAsync(long id)
+        public async Task DeleteAsync(PromoCode promoCode)
         {
-            var promoCode = await _dbContext.PromoCodes.FindAsync(id);
+            try
+            {
+                _dbContext.PromoCodes.Remove(promoCode);
 
-            _dbContext.PromoCodes.Remove(promoCode);
-
-            await _dbContext.SaveChangesAsync();
-
-            return promoCode;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new DeletionFailedException();
+            }
         }
 
         public async Task<PromoCode> GetByIdAsync(long id) => await _dbContext.PromoCodes.FindAsync(id);

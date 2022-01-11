@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PD.Domain.Constants.Exceptions;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
@@ -16,23 +17,32 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public IngredientsEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Ingredient> AddAsync(Ingredient ingredient)
+        public async Task AddAsync(Ingredient ingredient)
         {
-            var newIngredient = _dbContext.Ingredients.Add(ingredient);
+            try
+            {
+                _dbContext.Ingredients.Add(ingredient);
 
-            await _dbContext.SaveChangesAsync();
-
-            return newIngredient.Entity;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new CreatingFailedException();
+            }
         }
 
-        public async Task<Ingredient> DeleteAsync(long id)
+        public async Task DeleteAsync(Ingredient ingredient)
         {
-            Ingredient ingredientToRemove = await _dbContext.Ingredients.FindAsync(id);
+            try
+            {
+                _dbContext.Ingredients.Remove(ingredient);
 
-            _dbContext.Ingredients.Remove(ingredientToRemove);
-            await _dbContext.SaveChangesAsync();
-
-            return ingredientToRemove;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new DeletionFailedException();
+            }
         }
 
         public async Task<Ingredient> GetByIdAsync(long id) => await _dbContext.Ingredients.FindAsync(id);

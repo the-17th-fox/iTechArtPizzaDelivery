@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PD.Domain.Constants.Exceptions;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
@@ -14,111 +15,123 @@ namespace PD.Domain.Services
 {
     public class PizzasService : IPizzasService
     {
-        private readonly IPizzasRepository _repository;
+        private readonly IPizzasRepository _pizzasRepository;
+        private readonly IIngredientsRepository _ingredientsRepository;
         private readonly IMapper _mapper;
-        public PizzasService(IPizzasRepository repository, IMapper mapper)
+        public PizzasService(IPizzasRepository pizzasRepository,
+            IIngredientsRepository ingredientsRepository, 
+            IMapper mapper)
         {
-            _repository = repository;
+            _pizzasRepository = pizzasRepository;
+            _ingredientsRepository = ingredientsRepository;
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> AddAsync(AddPizzaViewModel model)
+        public async Task<PizzaViewModel> AddAsync(AddPizzaViewModel model)
         {
             // Checks if there is any pizza with the same name
-            if (await _repository.ExistsAsync(model.Name))
-                return new BadRequestObjectResult("There is already a pizza with this name");
+            if (await _pizzasRepository.ExistsAsync(model.Name))
+                throw new BadRequestException("There is already a pizza with this name.");
 
             var pizza = _mapper.Map<AddPizzaViewModel, Pizza>(model);
 
-            var result = await _repository.AddAsync(pizza);
-            // Checks whether the adding was successful
-            if (result == null)
-                return new ObjectResult("An error occured while trying to add a new pizza");
+            await _pizzasRepository.AddAsync(pizza);
 
-            return new OkObjectResult(_mapper.Map<PizzaViewModel>(result));
+            return _mapper.Map<PizzaViewModel>(pizza);
         }
 
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<string> DeleteAsync(long id)
         {
+            var pizza = await _pizzasRepository.GetByIdAsync(id);
             // Checks if the pizza exists
-            if (!await _repository.ExistsAsync(id))
-                return new BadRequestObjectResult("The pizza with the specified ID does not exist");
+            if (pizza == null)
+                throw new BadRequestException("The pizza with the specified id does not exist.");
 
-            var result = await _repository.DeleteAsync(id);
-            // Сhecks whether the action was completed successfully
-            if (result == null)
-                return new ObjectResult("An error occured while trying to delete the pizza");
+            await _pizzasRepository.DeleteAsync(pizza);
 
-            return new OkObjectResult("The pizza has been deleted successfully");
+            return "The pizza has been deleted successfully.";
         }
 
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<List<ShortPizzaViewModel>> GetAllAsync()
         {
-            var pizzas = await _repository.GetAllAsync();
+            var pizzas = await _pizzasRepository.GetAllAsync();
             // Checks if there are any pizzas in the database
             if (pizzas.IsNullOrEmpty())
-                return new NotFoundObjectResult("No pizzas were found");
+                throw new NotFoundException("No pizzas were found.");
 
-            return new OkObjectResult(_mapper.Map<List<ShortPizzaViewModel>>(pizzas));
+            return _mapper.Map<List<ShortPizzaViewModel>>(pizzas);
         }
 
-        public async Task<IActionResult> GetByIdAsync(long id)
+        public async Task<PizzaViewModel> GetByIdAsync(long id)
         {
-            var pizza = await _repository.GetByIdAsync(id);
+            var pizza = await _pizzasRepository.GetByIdAsync(id);
             // Checks if there is any pizza with the specified ID    
             if (pizza == null)
-                return new NotFoundObjectResult("The pizza was not found");
+                throw new NotFoundException("The pizza was not found.");
 
-            return new OkObjectResult(_mapper.Map<UserViewModel>(pizza));
+            return _mapper.Map<PizzaViewModel>(pizza);
         }
 
-        public async Task<IActionResult> AddIngredientAsync(long pizzaId, long ingredientId)
+        public async Task<PizzaIngredientsViewModel> AddIngredientAsync(long pizzaId, long ingredientId)
         {
+            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
             // Checks if the pizza exists
-            if (!await _repository.ExistsAsync(pizzaId))
-                return new BadRequestObjectResult("The pizza with the specified ID does not exist");
+            if (pizza == null)
+                throw new BadRequestException("The pizza with the specified id does not exist.");
+
+            var ingredient = await _ingredientsRepository.GetByIdAsync(ingredientId);
+            // Checks if the pizza exists
+            if (ingredient == null)
+                throw new BadRequestException("The ingredient with the specified id does not exist.");
 
             // Сhecks that the specified pizza does not have the specified ingredient
-            if (await _repository.HasIngredientAsync(pizzaId, ingredientId))
-                return new BadRequestObjectResult("Pizza already has this ingredient");
+            if (HasIngredientAsync(pizza, ingredient))
+                throw new BadRequestException("Pizza has already has this ingredient.");
 
-            var result = await _repository.AddIngredientAsync(pizzaId, ingredientId);
-            // Checks whether the adding was successful
-            if (result == null)
-                return new ObjectResult("An error occured while trying to add a new ingredient to the pizza");
+            await _pizzasRepository.AddIngredientAsync(pizza, ingredient);
 
-            return new OkObjectResult(_mapper.Map<PizzaIngredientsViewModel>(result));
+            return _mapper.Map<PizzaIngredientsViewModel>(pizza);
         }
 
-        public async Task<IActionResult> RemoveIngredientAsync(long pizzaId, long ingredientId)
+        public async Task<PizzaIngredientsViewModel> RemoveIngredientAsync(long pizzaId, long ingredientId)
         {
+            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
             // Checks if the pizza exists
-            if (!await _repository.ExistsAsync(pizzaId))
-                return new BadRequestObjectResult("The pizza with the specified ID does not exist");
+            if (pizza == null)
+                throw new BadRequestException("The pizza with the specified id does not exist.");
 
-            // Сhecks that the specified pizza does not have the specified ingredient
-            if (!await _repository.HasIngredientAsync(pizzaId, ingredientId))
-                return new BadRequestObjectResult("Pizza does not have this ingredient");
+            var ingredient = await _ingredientsRepository.GetByIdAsync(ingredientId);
+            // Checks if the pizza exists
+            if (ingredient == null)
+                throw new BadRequestException("The ingredient with the specified id does not exist.");
 
-            var result = await _repository.RemoveIngredientAsync(pizzaId, ingredientId);
-            // Checks whether the removing was successful
-            if (result == null)
-                return new ObjectResult("An error occured while trying to remove the ingredient from the pizza");
+            // Сhecks that the specified pizza has the specified ingredient
+            if (!HasIngredientAsync(pizza, ingredient))
+                throw new BadRequestException("Pizza already does not have this ingredient.");
 
-            return new OkObjectResult("The ingredient has been removed successfuly");
+            await _pizzasRepository.RemoveIngredientAsync(pizza, ingredient);
+
+            return _mapper.Map<PizzaIngredientsViewModel>(pizza);
         }
 
-        public async Task<IActionResult> ChangeDescriptionAsync(long pizzaId, string newDescription)
+        public async Task<PizzaDescriptionViewModel> ChangeDescriptionAsync(long pizzaId, string newDescription)
         {
+            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
             // Checks if the pizza exists
-            if (!await _repository.ExistsAsync(pizzaId))
-                return new BadRequestObjectResult("The pizza with the specified ID does not exist");
+            if (pizza == null)
+                throw new BadRequestException("The pizza with the specified id does not exist.");
 
-            var result = await _repository.ChangeDescriptionAsync(pizzaId, newDescription);
-            if (result == null)
-                return new ObjectResult("An error occured while trying to change the description of the pizza");
+            await _pizzasRepository.ChangeDescriptionAsync(pizza, newDescription);
 
-            return new OkObjectResult(_mapper.Map<PizzaDescriptionViewModel>(result));
+            return _mapper.Map<PizzaDescriptionViewModel>(pizza);
+        }
+
+        public bool HasIngredientAsync(Pizza pizza, Ingredient ingredient)
+        {
+            if (pizza.Ingredients.Contains(ingredient))
+                return true;
+
+            return false;
         }
     }
 }

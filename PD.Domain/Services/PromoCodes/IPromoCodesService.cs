@@ -11,9 +11,10 @@ namespace PD.Domain.Services
 {
     public interface IPromoCodesService
     {
-        public Task<IActionResult> GetAllAsync();
-        public Task<IActionResult> GetByIdAsync(long id);
-        public Task<IActionResult> AddAsync(AddPromoCodeViewModel promoCodeModel);
-        public Task<IActionResult> DeleteAsync(long id);
+        public Task<List<ShortPromoCodeViewModel>> GetAllAsync();
+        public Task<PromoCodeViewModel> GetByIdAsync(long id);
+        public Task<PromoCodeViewModel> GetByNameAsync(string name);
+        public Task<PromoCodeViewModel> AddAsync(AddPromoCodeViewModel promoCodeModel);
+        public Task<string> DeleteAsync(long id);
     }
 }

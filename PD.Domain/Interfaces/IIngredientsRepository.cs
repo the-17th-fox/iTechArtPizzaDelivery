@@ -12,8 +12,8 @@ namespace PD.Domain.Interfaces
     {
         public Task<List<Ingredient>> GetAllAsync();
         public Task<Ingredient> GetByIdAsync(long id);
-        public Task<Ingredient> AddAsync(Ingredient ingredient);
-        public Task<Ingredient> DeleteAsync(long id);
+        public Task AddAsync(Ingredient ingredient);
+        public Task DeleteAsync(Ingredient ingredient);
 
         /// <summary>
         /// Searchs for the ingredient in the database

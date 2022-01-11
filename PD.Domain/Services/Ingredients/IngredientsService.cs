@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PD.Domain.Constants.Exceptions;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
@@ -14,63 +15,64 @@ namespace PD.Domain.Services
 {
     public class IngredientsService : IIngredientsService
     {
-        private readonly IIngredientsRepository _repository;
+        private readonly IIngredientsRepository _ingredientsRepository;
         private readonly IMapper _mapper;
 
         public IngredientsService(IIngredientsRepository repository, IMapper mapper)
         {
-            _repository = repository;
+            _ingredientsRepository = repository;
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> AddAsync(AddIngredientViewModel model)
+        public async Task<IngredientViewModel> AddAsync(AddIngredientViewModel model)
         {
             // Checks if there is any ingredient with the same name
-            if (await _repository.ExistsAsync(model.Name))
-                return new BadRequestObjectResult("There is already an ingredient with this name");
+            if (await _ingredientsRepository.ExistsAsync(model.Name))
+                throw new BadRequestException("There is already an ingredient with this name.");
 
             var ingredient = _mapper.Map<AddIngredientViewModel, Ingredient>(model);
 
-            var result = await _repository.AddAsync(ingredient);
-            // Checks whether the adding was successful
-            if (result == null)
-                return new ObjectResult("An error occured while trying to add a new ingredient");
+            await _ingredientsRepository.AddAsync(ingredient);
 
-            return new OkObjectResult(_mapper.Map<IngredientViewModel>(result));
+            return _mapper.Map<IngredientViewModel>(ingredient);
         }
 
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<string> DeleteAsync(long id)
         {
+            var ingredient = await _ingredientsRepository.GetByIdAsync(id);
             // Checks if the pizza exists
-            if (await _repository.ExistsAsync(id))
-                return new BadRequestObjectResult("The pizza with the specified ID does not exist");
+            if (ingredient == null)
+                throw new BadRequestException("The ingredient with the specified id does not exist.");
 
-            var result = await _repository.DeleteAsync(id);
-            // Checks whether the adding was successful
-            if (result == null)
-                return new ObjectResult("An error occured while trying to delete the ingredient");
+            await _ingredientsRepository.DeleteAsync(ingredient);
 
-            return new OkObjectResult(_mapper.Map<IngredientViewModel>(result));
+            return "The ingredient has been deleted successfully.";
         }
 
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<List<ShortIngredientViewModel>> GetAllAsync()
         {
-            var ingredients = await _repository.GetAllAsync();
+            var ingredients = await _ingredientsRepository.GetAllAsync();
             // Checks if there are any ingredients in the database
             if (ingredients.IsNullOrEmpty())
-                return new NotFoundObjectResult("No ingredients were found");
+                throw new NotFoundException("No ingredients were found.");
 
-            return new OkObjectResult(_mapper.Map<List<ShortIngredientViewModel>>(ingredients));
+            return _mapper.Map<List<ShortIngredientViewModel>>(ingredients);
         }
 
-        public async Task<IActionResult> GetByIdAsync(long id)
+        public async Task<IngredientViewModel> GetByIdAsync(long id)
         {
-            var ingredient = await _repository.GetByIdAsync(id);
+            var ingredient = await _ingredientsRepository.GetByIdAsync(id);
             // Checks if there is any ingredient with the specified ID    
             if (ingredient == null)
-                return new NotFoundObjectResult("The ingredient was not found");
+                throw new NotFoundException("The ingredient was not found.");
 
-            return new OkObjectResult(_mapper.Map<UserViewModel>(ingredient));
+            return _mapper.Map<IngredientViewModel>(ingredient);
+        }
+
+        public async Task<bool> ExistsAsync(long id)
+        {
+            var ingredient = await _ingredientsRepository.GetByIdAsync(id);
+            return ingredient != null;
         }
     }
 }

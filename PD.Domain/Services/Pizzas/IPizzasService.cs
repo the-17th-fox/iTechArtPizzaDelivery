@@ -11,12 +11,13 @@ namespace PD.Domain.Services
 {
     public interface IPizzasService
     {
-        public Task<IActionResult> GetAllAsync();
-        public Task<IActionResult> GetByIdAsync(long id);
-        public Task<IActionResult> AddAsync(AddPizzaViewModel model);
-        public Task<IActionResult> DeleteAsync(long id);
-        public Task<IActionResult> AddIngredientAsync(long pizzaId, long ingredientId);
-        public Task<IActionResult> RemoveIngredientAsync(long pizzaId, long ingredientId);
-        public Task<IActionResult> ChangeDescriptionAsync(long pizzaId, string newDescription);
+        public Task<List<ShortPizzaViewModel>> GetAllAsync();
+        public Task<PizzaViewModel> GetByIdAsync(long id);
+        public Task<PizzaViewModel> AddAsync(AddPizzaViewModel model);
+        public Task<string> DeleteAsync(long id);
+        public Task<PizzaIngredientsViewModel> AddIngredientAsync(long pizzaId, long ingredientId);
+        public Task<PizzaIngredientsViewModel> RemoveIngredientAsync(long pizzaId, long ingredientId);
+        public Task<PizzaDescriptionViewModel> ChangeDescriptionAsync(long pizzaId, string newDescription);
+        public bool HasIngredientAsync(Pizza pizza, Ingredient ingredient);
     }
 }

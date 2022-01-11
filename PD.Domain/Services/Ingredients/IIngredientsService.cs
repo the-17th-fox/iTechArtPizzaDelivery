@@ -11,13 +11,14 @@ namespace PD.Domain.Services
 {
     public interface IIngredientsService
     {
-        public Task<IActionResult> AddAsync(AddIngredientViewModel model);
+        public Task<IngredientViewModel> AddAsync(AddIngredientViewModel model);
 
-        public Task<IActionResult> DeleteAsync(long id);
+        public Task<string> DeleteAsync(long id);
 
-        public Task<IActionResult> GetAllAsync();
+        public Task<List<ShortIngredientViewModel>> GetAllAsync();
 
-        public Task<IActionResult> GetByIdAsync(long id);
+        public Task<IngredientViewModel> GetByIdAsync(long id);
+        public Task<bool> ExistsAsync(long id);
     }
 }
 

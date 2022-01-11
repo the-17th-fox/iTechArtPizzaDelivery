@@ -13,9 +13,9 @@ namespace PD.Domain.Interfaces
     {
         public Task<List<PromoCode>> GetAllAsync();
         public Task<PromoCode> GetByIdAsync(long id);
-        public Task<PromoCode> AddAsync(PromoCode promoCode);
-        public Task<PromoCode> DeleteAsync(long id);
         public Task<PromoCode> GetByNameAsync(string name);
+        public Task AddAsync(PromoCode promoCode);
+        public Task DeleteAsync(PromoCode promoCode);
 
         /// <summary>
         /// Searchs for the promocode in the database
