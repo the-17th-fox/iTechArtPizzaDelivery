@@ -8,7 +8,7 @@ namespace PD.Domain.Models
     public class ShortOrderViewModel
     {
         public long Id { get; set; }
-        public bool IsPaid { get; set; }
+        public bool IsActive { get; set; }
         public long UserId { get; set; }
     }
 }

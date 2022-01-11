@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace PD.Domain.Models
 {
-    public class OrderIsPaidStatusViewModel
+    public class OrderIsActiveStatusViewModel
     {
         public long Id { get; set; }
-        public bool IsPaid { get; set; }
+        public bool IsActive { get; set; }
     }
 }
