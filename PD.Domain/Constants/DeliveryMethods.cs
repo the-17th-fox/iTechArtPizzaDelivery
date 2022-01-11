@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PD.Domain.Constants
+namespace PD.Domain.Constants.DeliveryMethods
 {
     public enum DeliveryMethods
     {
