@@ -27,7 +27,31 @@ namespace PD.Infrastructure.Context
 
             List<IdentityRole<long>> usersRoles = RolesNames.GetRolesNames();
             modelBuilder.Entity<IdentityRole<long>>().HasData(usersRoles);
-            
+
+            modelBuilder
+                .Entity<Order>()
+                .HasMany(o => o.Pizzas)
+                .WithMany(p => p.Orders)
+                .UsingEntity<PizzaInOrder>
+                (
+                    j => j
+                        .HasOne(pt => pt.Pizza)
+                        .WithMany(t => t.PizzasInOrders)
+                        .HasForeignKey(pt => pt.PizzaId),
+
+                    j => j
+                        .HasOne(pt => pt.Order)
+                        .WithMany(t => t.PizzasInOrders)
+                        .HasForeignKey(pt => pt.OrderId),
+
+                    j =>
+                    {
+                        j.Property(pt => pt.Amount).HasDefaultValue(1);
+                        j.HasKey(t => new { t.OrderId, t.PizzaId });
+                        j.ToTable("PizzasInOrders");
+                    }
+                );
+
         }
     }
 }
