@@ -15,8 +15,8 @@ namespace PD.Domain.Models.Profiles
         {
             CreateMap<Order, OrderViewModel>()
                 .ForMember(
-                    model => model.OrderStatus, 
-                    order => order.MapFrom(src => 
+                    model => model.OrderStatus,
+                    order => order.MapFrom(src =>
                         Enum.GetName(typeof(OrderStatuses), src.OrderStatusId)
                         )
                 )
@@ -26,17 +26,42 @@ namespace PD.Domain.Models.Profiles
                         Enum.GetName(typeof(DeliveryMethods), src.DeliveryMethodId)
                         )
                 )
-                .ReverseMap();
+                .ForMember(
+                    model => model.DiscountAmount,
+                    order => order.MapFrom(src =>
+                        src.PromoCode.DiscountAmount
+                    )
+                );
+
             CreateMap<Order, ShortOrderViewModel>().ReverseMap();
             CreateMap<Order, OrderIdOnlyViewModel>().ReverseMap();
 
             CreateMap<Order, OrderPizzasViewModel>().ReverseMap();
-            CreateMap<Order, OrderPromoCodeViewModel>().ReverseMap();
+            CreateMap<Order, OrderPromoCodeViewModel>()
+                .ForMember(
+                    model => model.OrderId,
+                    order => order.MapFrom(src => src.Id))
+                .ForMember(
+                    model => model.DiscountAmount,
+                    order => order.MapFrom(src => src.PromoCode.DiscountAmount));
 
             CreateMap<Order, OrderAdressViewModel>().ReverseMap();
-            CreateMap<Order, OrderIsActiveStatusViewModel>().ReverseMap();
-            CreateMap<Order, OrderDeliveryMethodViewModel>().ReverseMap();
-            CreateMap<Order, OrderDeliveryStatusViewModel>().ReverseMap();
+            CreateMap<Order, OrderIsActiveStatusViewModel>();                
+            CreateMap<Order, OrderDeliveryMethodViewModel>()
+                .ForMember(
+                    model => model.DeliveryMethod,
+                    order => order.MapFrom(src =>
+                        Enum.GetName(typeof(DeliveryMethods), src.DeliveryMethodId)
+                        )
+                );
+
+            CreateMap<Order, OrderStatusViewModel>()
+                .ForMember(
+                    model => model.OrderStatus,
+                    order => order.MapFrom(src =>
+                        Enum.GetName(typeof(OrderStatuses), src.OrderStatusId)
+                        )
+                );
             CreateMap<Order, OrderDescriptionViewModel>().ReverseMap();
         }
     }

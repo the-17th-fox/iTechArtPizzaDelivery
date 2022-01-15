@@ -7,7 +7,7 @@ namespace PD.Domain.Models
 {
     public class OrderPromoCodeViewModel
     {
-        public long Id { get; set; }
+        public long OrderId { get; set; }
         public long? PromoCodeId { get; set; }
         public float DiscountAmount { get; set; }
     }

@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 namespace PD.Domain.Models
 {
-    public class OrderDeliveryStatusViewModel
+    public class OrderStatusViewModel
     {
         public long Id { get; set; }
-        public string DeliveryStatus { get; set; }
+        public string OrderStatus { get; set; }
     }
 }
