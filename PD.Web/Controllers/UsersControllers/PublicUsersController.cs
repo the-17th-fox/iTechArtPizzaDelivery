@@ -58,27 +58,5 @@ namespace PD.Web.Controllers.UsersControllers
 
             return Ok(await _usersService.GetByIdAsync(long.Parse(userId)));
         }
-
-        /// METHODS BELLOW WILL BE REMOVED IN THE END
-
-        [AllowAnonymous]
-        [Route("[action]")]
-        [HttpGet]
-        public async Task<IActionResult> DebugAdminAutoLoginAsync()
-        {
-            LoginUserModel userModel = new LoginUserModel { Email = "admin@example.com", Password = "adminadmin" };
-
-            return Ok(await _usersService.LoginAsync(userModel));
-        }
-
-        [AllowAnonymous]
-        [Route("[action]")]
-        [HttpGet]
-        public async Task<IActionResult> DebugUserAutoLoginAsync()
-        {
-            LoginUserModel userModel = new LoginUserModel { Email = "user@example.com", Password = "useruser" };
-
-            return Ok(await _usersService.LoginAsync(userModel));
-        }
     }
 }
