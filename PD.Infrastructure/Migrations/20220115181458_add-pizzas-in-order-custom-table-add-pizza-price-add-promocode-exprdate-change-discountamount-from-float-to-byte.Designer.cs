@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PD.Infrastructure.Context;
 
 namespace PD.Infrastructure.Migrations
 {
     [DbContext(typeof(PizzaDeliveryContext))]
-    partial class PizzaDeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20220115181458_add-pizzas-in-order-custom-table-add-pizza-price-add-promocode-exprdate-change-discountamount-from-float-to-byte")]
+    partial class addpizzasinordercustomtableaddpizzapriceaddpromocodeexprdatechangediscountamountfromfloattobyte
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
