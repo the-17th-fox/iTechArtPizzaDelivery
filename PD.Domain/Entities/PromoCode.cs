@@ -12,8 +12,8 @@ namespace PD.Domain.Entities
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public float DiscountAmount { get; set; }
-        //public DATAtype Lifetime { get; set; }
+        public byte DiscountAmount { get; set; } // 0% - 100%
+        public DateTime ExpirationDate { get; set; }
         public List<Order> Orders { get; set; }
     }
 }

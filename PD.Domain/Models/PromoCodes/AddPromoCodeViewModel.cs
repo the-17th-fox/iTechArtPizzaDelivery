@@ -16,6 +16,11 @@ namespace PD.Domain.Models
         [Range(0, 100.0, ErrorMessage = "The value must be in the range from 0 to 100")]
         public float DiscountAmount { get; set; }
 
+
+        [Required(ErrorMessage = "Lifetime is Required")]
+        [Range(1, double.MaxValue, ErrorMessage = "The value must be at least 1 hour")]
+        public double LifetimeInHours { get; set; }
+
         [StringLength(maximumLength: 150, ErrorMessage = "The length of the string must not be more than 150 characters")]
         public string Description { get; set; }
         

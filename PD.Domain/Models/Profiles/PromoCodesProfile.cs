@@ -12,9 +12,13 @@ namespace PD.Domain.Models
         public PromoCodesProfile()
         {
             CreateMap<PromoCode, PromoCodeViewModel>().ReverseMap();
+
             CreateMap<PromoCode, ShortPromoCodeViewModel>().ReverseMap();
 
-            CreateMap<PromoCode, AddPromoCodeViewModel>().ReverseMap();
+            CreateMap<AddPromoCodeViewModel, PromoCode>()
+                .ForMember(
+                    p => p.ExpirationDate, 
+                    m => m.MapFrom(src => DateTime.UtcNow.Add(TimeSpan.FromHours(src.LifetimeInHours))));
         }
     }
 }

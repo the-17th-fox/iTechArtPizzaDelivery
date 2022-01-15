@@ -11,6 +11,7 @@ namespace PD.Domain.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public float DiscountAmount { get; set; }
+        public DateTime ExpirationDate { get; set; }
         public List<ShortOrderViewModel> Orders { get; set; }
     }
 }
