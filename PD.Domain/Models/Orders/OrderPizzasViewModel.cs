@@ -8,6 +8,6 @@ namespace PD.Domain.Models
     public class OrderPizzasViewModel
     {
         public long Id { get; set; }
-        public List<ShortPizzaViewModel> Pizzas { get; set; }
+        public List<PizzaInOrderViewModel> Pizzas { get; set; }
     }
 }
