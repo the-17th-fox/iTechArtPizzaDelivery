@@ -1,4 +1,5 @@
-﻿using PD.Domain.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using PD.Domain.Entities;
 using PD.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -11,21 +12,26 @@ namespace PD.Domain.Services
     public interface IOrdersService
     {
         public Task<List<ShortOrderViewModel>> GetAllAsync();
-        public Task<OrderViewModel> GetByIdAsync(long id);
-        public Task<OrderViewModel> AddAsync(AddOrderViewModel model);
-        public Task<OrderViewModel> DeleteAsync(long id);
-        public Task<OrderIsPaidStatusViewModel> ChangeIsPaidStatusAsync(int orderId, bool isPaid);
-        public Task<OrderDeliveryStatusViewModel> ChangeDeliveryStatusAsync(int orderId, string status);
-        public Task<OrderDeliveryMethodViewModel> ChangeDeliveryMethodAsync(int orderId, string method);
-        public Task<OrderDescriptionViewModel> ChangeDescriptionAsync(int orderId, string newDescription);
+        public Task<OrderViewModel> GetByIdAsync(long orderId);
+        public Task<OrderViewModel> GetUsersActiveOrderAsync(long userId);
 
-        public Task<OrderPizzasViewModel> AddPizzaAsync(long pizzaId, long orderId);
-        public Task<OrderPizzasViewModel> RemovePizzaAsync(long pizzaId, long orderId);
+        public float GetPriceWithDiscount(Order order);
 
-        public Task<OrderPromoCodeViewModel> AddPromoCodeAsync(long promoCodeId, long orderId);
-        public Task<OrderPromoCodeViewModel> RemovePromoCodeAsync(long orderId);
+        public Task<OrderViewModel> AddAsync(long userId);
+        public Task<string> DeleteActiveOrderAsync(long userId);
+        public Task<string> DeleteAnyAsync(long orderId);
+        
+        public Task<OrderIsActiveStatusViewModel> UpdateIsActiveStatusAsync(long userId, bool status);
+        public Task<OrderStatusViewModel> UpdateOrderStatusAsync(long userId, int statusId);
+        public Task<OrderDeliveryMethodViewModel> UpdateDeliveryMethodAsync(long userId, int methodId);
+        public Task<OrderDescriptionViewModel> UpdateDescriptionAsync(long userId, string newDescription);
+        public Task<OrderPromoCodeViewModel> UpdatePromoCodeAsync(long userId, string promoCodeName);
+        public Task<OrderAdressViewModel> UpdateAdressAsync(long userId, string adress);
 
-        public Task<OrderAdressViewModel> AddAdressAsync(string adress, long orderId);
-        public Task<OrderAdressViewModel> RemoveAdressAsync(long orderId);
+        public Task<OrderPizzasViewModel> AddPizzaAsync(long userId, long pizzaId, int numOfPizzasToAdd = 1);
+        public Task<OrderPizzasViewModel> RemovePizzaAsync(long userId, long pizzaId, int numOfPizzasToRemove = 1);
+
+        public bool IsDeliveryMethodExists(int methodId);
+        public bool IsOrderStatusExists(int statusId);
     }
 }
