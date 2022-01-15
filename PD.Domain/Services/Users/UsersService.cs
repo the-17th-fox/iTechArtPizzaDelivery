@@ -18,12 +18,14 @@ namespace PD.Domain.Services
 {
     public class UsersService : IUsersService
     {
-        private readonly IUsersRepository _repository;
+        private readonly IUsersRepository _usersRepository;
+        private readonly IOrdersRepository _ordersRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
-        public UsersService(IUsersRepository repository, IMapper mapper, UserManager<User> userManager)
+        public UsersService(IUsersRepository usersRepository, IOrdersRepository ordersRepository, IMapper mapper, UserManager<User> userManager)
         {
-            _repository = repository;
+            _usersRepository = usersRepository;
+            _ordersRepository = ordersRepository;
             _mapper = mapper;
             _userManager = userManager;
         }
@@ -55,7 +57,7 @@ namespace PD.Domain.Services
 
         public async Task<List<ShortUserViewModel>> GetAllAsync()
         {
-            List<User> users = await _repository.GetAllAsync();
+            List<User> users = await _usersRepository.GetAllAsync();
             // Checks if there are any users in the database
             if (users.IsNullOrEmpty())
                 throw new NotFoundException("No users were found");
@@ -69,6 +71,13 @@ namespace PD.Domain.Services
             // Checks if there is any user with the specified ID    
             if (user == null)
                 throw new NotFoundException("The user was not found");
+
+            var userOrders = await _ordersRepository.GetAllFromUserAsync(user.Id);
+            // Checks if there is any orders from user
+            if (userOrders == null)
+                throw new NotFoundException("The user does not have any ordes.");
+
+            user.Orders = userOrders;
 
             return _mapper.Map<UserViewModel>(user);
         }
@@ -176,7 +185,7 @@ namespace PD.Domain.Services
 
         public async Task<bool> IsPhoneNumberTakenAsync(string phoneNumber)
         {
-            return await _repository.IsPhoneTakenAsync(phoneNumber);
+            return await _usersRepository.IsPhoneTakenAsync(phoneNumber);
         }
     }
 }
