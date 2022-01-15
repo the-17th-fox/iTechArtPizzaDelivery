@@ -54,7 +54,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<PromoCode> GetByNameAsync(string name)
         {
             return await _dbContext.PromoCodes
-                .Include(p => p.Name == name)
+                .Where(pr => pr.Name == name)
                 .FirstOrDefaultAsync();
         }
 
