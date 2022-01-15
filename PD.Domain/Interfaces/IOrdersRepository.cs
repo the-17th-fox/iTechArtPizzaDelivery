@@ -13,20 +13,23 @@ namespace PD.Domain.Interfaces
     {
         public Task<List<Order>> GetAllAsync();
         public Task<Order> GetByIdAsync(long id);
-        public Task<Order> AddAsync(AddOrderViewModel model);
-        public Task<Order> DeleteAsync(long id);
-        public Task<Order> ChangeIsPaidStatusAsync(long orderId, bool isPaid);
-        public Task<Order> ChangeDeliveryStatusAsync(long orderId, string status);
-        public Task<Order> ChangeDeliveryMethodAsync(long orderId, string method);
-        public Task<Order> ChangeDescriptionAsync(long orderId, string newDescription);
+        public Task<Order> GetUsersActiveOrderAsync(long userId);
+        public Task<Order> GetEditingReadyAsync(long userId);
+        public Task<List<Order>> GetAllFromUserAsync(long userId);
 
-        public Task<Order> AddPizzaAsync(long pizzaId, long orderId);
-        public Task<Order> RemovePizzaAsync(long pizzaId, long orderId);
+        public Task AddAsync(Order order);
+        public Task DeleteAsync(Order order);
 
-        public Task<Order> AddPromoCodeAsync(long promoCodeId, long orderId);
-        public Task<Order> RemovePromoCodeAsync(long orderId);
+        public Task UpdateIsActiveStatusAsync(Order order, bool status);
+        public Task UpdateOrderStatusAsync(Order order, int statusId);
+        public Task UpdateDeliveryMethodAsync(Order order, int methodId);
+        public Task UpdateDescriptionAsync(Order order, string newDescription);
+        public Task UpdatePromoCodeAsync(Order order, PromoCode promoCode);
+        public Task UpdateAdressAsync(Order order, string adress);
 
-        public Task<Order> AddAdressAsync(string adress, long orderId);
-        public Task<Order> RemoveAdressAsync(long orderId);
+        public Task AddPizzaAsync(Order order, Pizza pizza, int numOfPizzasToAdd = 1);
+        public Task RemovePizzaAsync(Order order, Pizza pizza, int numOfPizzasToRemove = 1);
+
+        public int GetSpecifiedPizzaAmount(Order order, Pizza pizza);
     }
 }

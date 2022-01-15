@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PD.Domain.Constants.Exceptions;
 using PD.Domain.Constants.OrderStatuses;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
@@ -17,64 +18,74 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public OrdersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<Order> AddAsync(Order order)
+        public async Task AddAsync(Order order)
         {
-            var newOrder = _dbContext.Orders.Add(order);
+            try
+            {
+                _dbContext.Orders.Add(order);
 
-            await _dbContext.SaveChangesAsync();
-            return newOrder.Entity;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new CreatingFailedException();
+            }
         }
 
-        public async Task<Order> AddPizzaAsync(long pizzaId, long orderId)
+        public async Task AddPizzaAsync(Order order, Pizza pizza, int numOfPizzasToAdd = 1)
         {
-            Pizza pizza = await _dbContext.Pizzas
-                .Include(i => i.Orders)
-                .Where(i => i.Id == pizzaId)
-                .FirstOrDefaultAsync();
+            try
+            {
+                if (order.Pizzas.Contains(pizza))
+                    order.PizzasInOrders
+                        .Find(po => po.Order == order)
+                        .Amount += numOfPizzasToAdd;
 
-            Order order = await _dbContext.Orders
-                .Include(i => i.Pizzas)
-                .Where(i => i.Id == orderId)
-                .FirstOrDefaultAsync();
-
-            order.Pizzas.Add(pizza);
-
-            await _dbContext.SaveChangesAsync();
-            return order;
+                else 
+                    order.PizzasInOrders
+                        .Add(new PizzaOrder { Pizza = pizza, Amount = numOfPizzasToAdd });
+                
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Order> RemovePizzaAsync(long pizzaId, long orderId)
+        public async Task RemovePizzaAsync(Order order, Pizza pizza, int numOfPizzasToRemove = 1)
         {
-            Pizza pizza = await _dbContext.Pizzas
-                .Include(i => i.Orders)
-                .Where(i => i.Id == pizzaId)
-                .FirstOrDefaultAsync();
+            try
+            {
+                order.PizzasInOrders.Find(po => po.Pizza == pizza).Amount -= numOfPizzasToRemove;
 
-            Order order = await _dbContext.Orders
-                .Include(i => i.Pizzas)
-                .Where(i => i.Id == orderId)
-                .FirstOrDefaultAsync();
-
-            order.Pizzas.Remove(pizza);
-
-            await _dbContext.SaveChangesAsync();
-            return order;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Order> DeleteAsync(long id)
+        public async Task DeleteAsync(Order order)
         {
-            Order orderToRemove = await _dbContext.Orders.FindAsync(id);
+            try
+            {
+                _dbContext.Orders.Remove(order);
 
-            _dbContext.Orders.Remove(orderToRemove);
-
-            await _dbContext.SaveChangesAsync();
-            return orderToRemove;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new DeletionFailedException();
+            }
         }
 
         public async Task<Order> GetByIdAsync(long id)
         {
             return await _dbContext.Orders
                 .Include(o => o.Pizzas)
+                .Include(o => o.PizzasInOrders)
                 .Where(o => o.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -86,93 +97,121 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 .ToListAsync();
         }
 
-        public async Task<Order> AddPromoCodeAsync(long promoCodeId, long orderId)
-        { 
-            Order order = await _dbContext.Orders.FindAsync(orderId);
-            PromoCode promoCode = await _dbContext.PromoCodes.FindAsync(promoCodeId);
-
-            order.PromoCode = promoCode;
-
-            await _dbContext.SaveChangesAsync();
-            return order;
-        }
-
-        public async Task<Order> RemovePromoCodeAsync(long orderId)
-        {   
-            Order order = await _dbContext.Orders.FindAsync(orderId);
-            PromoCode promoCode = order.PromoCode;
-
-            promoCode.Orders.Remove(order);
-
-            await _dbContext.SaveChangesAsync();
-            return order;
-        }
-
-        public async Task<Order> AddAdressAsync(string adress, long orderId)
+        public async Task UpdatePromoCodeAsync(Order order, PromoCode promoCode)
         {
-            Order order = await _dbContext.Orders.FindAsync(orderId);
+            try
+            {
+                order.PromoCode = promoCode;
 
-            order.Adress = adress;
-            await _dbContext.SaveChangesAsync();
-
-            return order;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Order> RemoveAdressAsync(long orderId)
+        public async Task UpdateOrderStatusAsync(Order order, int statusId)
         {
-            Order order = await _dbContext.Orders.FindAsync(orderId);
+            try
+            {
+                order.OrderStatusId = statusId;
 
-            order.Adress = string.Empty;
-            await _dbContext.SaveChangesAsync();
-
-            return order;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Order> ChangeIsPaidStatusAsync(long orderId, bool isPaid)
+        public async Task UpdateDeliveryMethodAsync(Order order, int methodId)
         {
-            Order order = await _dbContext.Orders.FindAsync(orderId);
+            try
+            {
+                order.DeliveryMethodId = methodId;
 
-            order.IsPaid = isPaid;
-            await _dbContext.SaveChangesAsync();
-
-            return order;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Order> ChangeDeliveryStatusAsync(long orderId, string status)
+        public async Task UpdateDescriptionAsync(Order order, string newDescription)
         {
-            Order order = await _dbContext.Orders.FindAsync(orderId);
+            try
+            {
+                order.Description = newDescription;
 
-            order.DeliveryStatus = status;
-            await _dbContext.SaveChangesAsync();
-
-            return order;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Order> ChangeDeliveryMethodAsync(long orderId, string method)
+        public async Task UpdateAdressAsync(Order order, string adress)
         {
-            Order order = await _dbContext.Orders.FindAsync(orderId);
+            try
+            {
+                order.Adress = adress;
 
-            order.DeliveryMethod = method;
-            await _dbContext.SaveChangesAsync();
-
-            return order;
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
         }
 
-        public async Task<Order> ChangeDescriptionAsync(long orderId, string newDescription)
+        public async Task<Order> GetUsersActiveOrderAsync(long userId)
         {
-            Order order = await _dbContext.Orders.FindAsync(orderId);
-
-            order.Description = newDescription;
-            await _dbContext.SaveChangesAsync();
-
-            return order;
+            return await _dbContext.Orders
+                .Include(o => o.Pizzas)
+                .Include(o => o.PromoCode)
+                .Where(o => o.UserId == userId)
+                .Where(o => o.IsActive == true)
+                .FirstOrDefaultAsync();
         }
 
-        public async Task<Order> GetActiveOrderAsync(long userId)
+        public async Task<Order> GetEditingReadyAsync(long userId)
+        {
+            return await _dbContext.Orders
+                .Include(o => o.Pizzas)
+                .Include(o => o.PizzasInOrders)
+                .Where(o => o.UserId == userId)
+                .Where(o => o.IsActive == true)
+                .Where(o => o.OrderStatusId == (int)OrderStatuses.InProccesOfCreating)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateIsActiveStatusAsync(Order order, bool status)
+        {
+            try
+            {
+                order.IsActive = status;
+
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
+        }
+
+        public int GetSpecifiedPizzaAmount(Order order, Pizza pizza)
+        {
+            return order.PizzasInOrders.Find(po => po.Pizza == pizza).Amount;
+        }
+
+        public async Task<List<Order>> GetAllFromUserAsync(long userId)
         {
             return await _dbContext.Orders
                 .Where(o => o.UserId == userId)
-                .LastOrDefaultAsync();
+                .ToListAsync();
         }
     }
 }
