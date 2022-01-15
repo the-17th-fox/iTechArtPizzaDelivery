@@ -11,14 +11,13 @@ namespace PD.Domain.Models.Profiles
     {
         public UsersProfile()
         {
-            CreateMap<User, UserViewModel>().ReverseMap();
+            CreateMap<User, UserViewModel>();
             CreateMap<User, ShortUserViewModel>().ReverseMap();
 
-            CreateMap<User, LoginUserModel>().ReverseMap();
+            CreateMap<LoginUserModel, User>();
 
-            CreateMap<User, RegisterUserModel>()
-                .ForMember(u => u.FirstName, (o => o.MapFrom(src => src.UserName)))
-                .ReverseMap();
+            CreateMap<RegisterUserModel, User>()
+                .ForMember(u => u.UserName, m => m.MapFrom(src => src.FirstName));
         }
     }
 }
