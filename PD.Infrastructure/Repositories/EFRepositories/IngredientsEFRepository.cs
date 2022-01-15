@@ -45,12 +45,20 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task<Ingredient> GetByIdAsync(long id) => await _dbContext.Ingredients.FindAsync(id);
+        public async Task<Ingredient> GetByIdAsync(long id)
+        {
+            return await _dbContext.Ingredients
+                .Include(i => i.Pizzas)
+                .Include(i => i.IngredientInPizzas)
+                .Where(i => i.Id == id)
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<List<Ingredient>> GetAllAsync()
         {
             return await _dbContext.Ingredients
                 .Include(i => i.Pizzas)
+                .Include(i => i.IngredientInPizzas)
                 .ToListAsync();
         }
 

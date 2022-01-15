@@ -29,6 +29,8 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
                 .Include(p => p.Orders)
+                .Include(p => p.IngredientsInPizza)
+                .Include(p => p.PizzaInOrders)
                 .Where(p => p.Id == id)
                 .FirstOrDefaultAsync();
         }
