@@ -15,77 +15,99 @@ namespace PD.Web.Controllers.OrdersControllers
     public class PublicOrdersController : Controller
     {
         private readonly IOrdersService _ordersService;
-        public PublicOrdersController(IOrdersService service, IMapper mapper) => _ordersService = service;
-
-        [Route("current")]
-        [HttpGet]
-        public async Task<IActionResult> GetActiveOrder()
+        public PublicOrdersController(IOrdersService service)
         {
-            //var r = User.Claims
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _ordersService = service;
+        }
 
-            return Ok(await _ordersService.GetActiveAsync(long.Parse(userId)));
+        [Route("active")]
+        [HttpGet]
+        public async Task<IActionResult> GetUsersActiveOrderAsync()
+        {
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(await _ordersService.GetUsersActiveOrderAsync(userId));
         }
 
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> AddAsync(AddOrderViewModel model)
+        public async Task<IActionResult> AddAsync()
         {
-            if (!ModelState.IsValid)
-                return ValidationProblem();
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return Ok(await _ordersService.AddAsync(model));
+            return Ok(await _ordersService.AddAsync(userId));
         }
 
         [Route("[action]")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<IActionResult> DeleteAsync()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return Ok(await _ordersService.DeleteActiveAsync(long.Parse(userId)));
+            return Ok(await _ordersService.DeleteActiveOrderAsync(userId));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IActionResult> AddPizzaAsync(long userId, long pizzaId)
+        public async Task<IActionResult> AddPizzaAsync(long pizzaId, int numOfPizzasToAdd = 1)
         {
-            return Ok(await _ordersService.AddPizzaAsync(userId, pizzaId));
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(await _ordersService.AddPizzaAsync(userId, pizzaId, numOfPizzasToAdd));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IActionResult> RemovePizzaAsync(long userId, long pizzaId)
+        public async Task<IActionResult> RemovePizzaAsync(long pizzaId, int numOfPizzasToRemove = 1)
         {
-            return Ok(await _ordersService.RemovePizzaAsync(userId, pizzaId));
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(await _ordersService.RemovePizzaAsync(userId, pizzaId, numOfPizzasToRemove));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IActionResult> AddPromoCodeAsync(long userId, long promoCodeId)
+        public async Task<IActionResult> UpdateDeliveryMethodAsync(int methodId)
         {
-            return Ok(await _ordersService.AddPromoCodeAsync(userId, promoCodeId));
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(await _ordersService.UpdateDeliveryMethodAsync(userId, methodId));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IActionResult> RemovePromoCodeAsync(long orderId)
+        public async Task<IActionResult> UpdateDescriptionAsync(string newDescription)
         {
-            return Ok(await _ordersService.RemovePromoCodeAsync(orderId));
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(await _ordersService.UpdateDescriptionAsync(userId, newDescription));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IActionResult> AddAdressAsync(long userId, string adress)
+        public async Task<IActionResult> UpdatePromoCodeAsync(string promoCodeName)
         {
-            return Ok(await _ordersService.AddAdressAsync(userId, adress));
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(await _ordersService.UpdatePromoCodeAsync(userId, promoCodeName));
         }
 
         [Route("[action]")]
         [HttpPut()]
-        public async Task<IActionResult> RemoveAdressAsync(long userId)
+        public async Task<IActionResult> UpdateAdressAsync(string adress)
         {
-            return Ok(await _ordersService.RemoveAdressAsync(userId));
+            long userId = long.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return Ok(await _ordersService.UpdateAdressAsync(userId, adress));
         }
     }
 }

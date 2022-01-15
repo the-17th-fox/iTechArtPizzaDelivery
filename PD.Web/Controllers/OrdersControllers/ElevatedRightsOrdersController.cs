@@ -15,7 +15,7 @@ namespace PD.Web.Controllers.OrdersControllers
     public class ElevatedRightsOrdersController : Controller
     {
         private readonly IOrdersService _ordersService;
-        public ElevatedRightsOrdersController(IOrdersService service, IMapper mapper)
+        public ElevatedRightsOrdersController(IOrdersService service)
         {
             _ordersService = service;
         }
@@ -36,16 +36,23 @@ namespace PD.Web.Controllers.OrdersControllers
 
         [Route("[action]/{id}")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync(long id)
+        public async Task<IActionResult> DeleteAsync(long orderId)
         {
-            return Ok(await _ordersService.DeleteAsync(id));
+            return Ok(await _ordersService.DeleteAnyAsync(orderId));
         }
 
         [Route("[action]")]
         [HttpPut]
-        public async Task<IActionResult> ChangeIsPaidStatusAsync(long orderId, bool isPaid)
+        public async Task<IActionResult> UpdateIsActiveStatusAsync(long orderId, bool status)
         {
-            return Ok(await _ordersService.ChangeIsPaidStatusAsync(orderId, isPaid));
+            return Ok(await _ordersService.UpdateIsActiveStatusAsync(orderId, status));
+        }
+
+        [Route("[action]")]
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrderStatusAsync(long orderId, int statusId)
+        {
+            return Ok(await _ordersService.UpdateOrderStatusAsync(orderId, statusId));
         }
     }
 }
