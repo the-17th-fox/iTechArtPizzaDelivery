@@ -16,6 +16,7 @@ namespace PD.Domain.Entities
         public List<Ingredient> Ingredients { get; set; }
         //public /*Image*/ Image { get; set; }
         public List<Order> Orders { get; set; }
+        public List<PizzaOrder> PizzaInOrders { get; set; }
 
     }
 }

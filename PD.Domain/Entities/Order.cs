@@ -23,6 +23,8 @@ namespace PD.Domain.Entities
         public long UserId { get; set; }
         public User User { get; set; }
 
+        public List<PizzaOrder> PizzasInOrders { get; set; }
+
         public long? PromoCodeId { get; set; }
         public PromoCode PromoCode { get; set; }
     }
