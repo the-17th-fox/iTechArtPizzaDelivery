@@ -13,5 +13,6 @@ namespace PD.Domain.Entities
         public long Id { get; set; }
         public string Name { get; set; }
         public List<Pizza> Pizzas { get; set; }
+        public List<IngredientPizza> IngredientInPizzas { get; set; }
     }
 }
