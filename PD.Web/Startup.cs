@@ -53,7 +53,8 @@ namespace PD.Domain
                 typeof(IngredientsProfile), 
                 typeof(OrdersProfile),
                 typeof(IngredientsProfile),
-                typeof(UsersProfile)
+                typeof(UsersProfile),
+                typeof(PageProfile)
             );
 
             //DBCONTEXT SETTINGS

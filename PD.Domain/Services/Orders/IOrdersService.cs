@@ -11,7 +11,7 @@ namespace PD.Domain.Services
 {
     public interface IOrdersService
     {
-        public Task<List<ShortOrderViewModel>> GetAllAsync();
+        public Task<PageViewModel<ShortOrderViewModel>> GetAllAsync(PageSettingsViewModel pageSettings);
         public Task<OrderViewModel> GetByIdAsync(long orderId);
         public Task<OrderViewModel> GetUsersActiveOrderAsync(long userId);
 

@@ -10,6 +10,7 @@ using PD.Domain.Constants.Exceptions;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
+using PD.Domain.Services.Pagination;
 
 namespace PD.Domain.Services
 {
@@ -52,14 +53,16 @@ namespace PD.Domain.Services
             return "The pizza has been deleted successfully.";
         }
 
-        public async Task<List<ShortPizzaViewModel>> GetAllAsync()
+        public async Task<PageViewModel<ShortPizzaViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
         {
             var pizzas = await _pizzasRepository.GetAllAsync();
             // Checks if there are any pizzas in the database
             if (pizzas.IsNullOrEmpty())
                 throw new NotFoundException("No pizzas were found.");
 
-            return _mapper.Map<List<ShortPizzaViewModel>>(pizzas);
+            var pagedList = PagedList<Pizza>.ToPagedList(pizzas, pageSettings.PageNumber, pageSettings.PageSize);
+
+            return _mapper.Map<PagedList<Pizza>, PageViewModel<ShortPizzaViewModel>>(pagedList);
         }
 
         public async Task<PizzaViewModel> GetByIdAsync(long id)

@@ -13,7 +13,7 @@ namespace PD.Domain.Services
     {
         public JwtSecurityToken GetNewToken(List<Claim> authClaims);
         public List<Claim> GetClaims(User user, IList<string> userRoles);
-        public Task<List<ShortUserViewModel>> GetAllAsync();
+        public Task<PageViewModel<ShortUserViewModel>> GetAllAsync(PageSettingsViewModel pageSettings);
         public Task<UserViewModel> GetByIdAsync(long id);
         public Task<ShortUserViewModel> RegisterAsync(RegisterUserModel model);
         public Task<LoginResultViewModel> LoginAsync(LoginUserModel model);

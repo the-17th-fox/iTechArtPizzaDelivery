@@ -15,16 +15,16 @@ namespace PD.Web.Controllers.OrdersControllers
     public class ElevatedRightsOrdersController : Controller
     {
         private readonly IOrdersService _ordersService;
-        public ElevatedRightsOrdersController(IOrdersService service)
-        {
-            _ordersService = service;
-        }
+        public ElevatedRightsOrdersController(IOrdersService service) => _ordersService = service;
 
         [Route("all")]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
-        { 
-            return Ok(await _ordersService.GetAllAsync());
+        public async Task<IActionResult> GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
+        {
+            if (!ModelState.IsValid)
+                return ValidationProblem();
+
+            return Ok(await _ordersService.GetAllAsync(pageSettings));
         }
 
         [Route("{id}")]

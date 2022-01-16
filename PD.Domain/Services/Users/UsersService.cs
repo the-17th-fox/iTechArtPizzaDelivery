@@ -13,6 +13,7 @@ using PD.Domain.Constants.UsersRoles;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
+using PD.Domain.Services.Pagination;
 
 namespace PD.Domain.Services
 {
@@ -55,14 +56,16 @@ namespace PD.Domain.Services
             return claims;
         }
 
-        public async Task<List<ShortUserViewModel>> GetAllAsync()
+        public async Task<PageViewModel<ShortUserViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
         {
             List<User> users = await _usersRepository.GetAllAsync();
             // Checks if there are any users in the database
             if (users.IsNullOrEmpty())
                 throw new NotFoundException("No users were found");
 
-            return _mapper.Map<List<ShortUserViewModel>>(users);
+            var pagedList = PagedList<User>.ToPagedList(users, pageSettings.PageNumber, pageSettings.PageSize);
+
+            return _mapper.Map<PagedList<User>, PageViewModel<ShortUserViewModel>>(pagedList);
         }
 
         public async Task<UserViewModel> GetByIdAsync(long id)

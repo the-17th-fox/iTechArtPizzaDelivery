@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using PD.Domain.Constants.UsersRoles;
+using PD.Domain.Models;
 
 namespace PD.Web.Controllers.PizzasControllers
 {
@@ -13,15 +14,15 @@ namespace PD.Web.Controllers.PizzasControllers
     {		
         private readonly IPizzasService _pizzasService;
 
-        public PublicPizzasController(IPizzasService service)
-        {
-            _pizzasService = service;
-        }
+        public PublicPizzasController(IPizzasService service) => _pizzasService = service;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
         {
-            return Ok(await _pizzasService.GetAllAsync());
+            if (!ModelState.IsValid)
+                return ValidationProblem();
+
+            return Ok(await _pizzasService.GetAllAsync(pageSettings));
         }
 
         [Route("{id}")]

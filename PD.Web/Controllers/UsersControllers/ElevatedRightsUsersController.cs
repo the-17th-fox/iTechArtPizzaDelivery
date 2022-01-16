@@ -3,6 +3,7 @@ using PD.Domain.Services;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using PD.Domain.Constants.UsersRoles;
+using PD.Domain.Models;
 
 namespace PD.Web.Controllers.UsersControllers
 {
@@ -14,16 +15,16 @@ namespace PD.Web.Controllers.UsersControllers
         
         private readonly IUsersService _usersService;
         
-        public ElevatedRightsUsersController(IUsersService usersService)
-        {
-            _usersService = usersService;
-        }
-        
+        public ElevatedRightsUsersController(IUsersService usersService) => _usersService = usersService;
+
         [Route("all")]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
         {
-            return Ok(await _usersService.GetAllAsync());
+            if (!ModelState.IsValid)
+                return ValidationProblem();
+
+            return Ok(await _usersService.GetAllAsync(pageSettings));
         }
 
         [Route("{id}")]

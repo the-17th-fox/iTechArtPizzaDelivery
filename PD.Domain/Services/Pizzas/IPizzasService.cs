@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PD.Domain.Entities;
 using PD.Domain.Models;
+using PD.Domain.Services.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace PD.Domain.Services
 {
     public interface IPizzasService
     {
-        public Task<List<ShortPizzaViewModel>> GetAllAsync();
+        public Task<PageViewModel<ShortPizzaViewModel>> GetAllAsync(PageSettingsViewModel pageSettings);
         public Task<PizzaViewModel> GetByIdAsync(long id);
         public Task<PizzaViewModel> AddAsync(AddPizzaViewModel model);
         public Task<string> DeleteAsync(long id);

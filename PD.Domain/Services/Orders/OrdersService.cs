@@ -8,6 +8,7 @@ using PD.Domain.Constants.PaymentMethods;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
+using PD.Domain.Services.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,14 +32,16 @@ namespace PD.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<List<ShortOrderViewModel>> GetAllAsync()
+        public async Task<PageViewModel<ShortOrderViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
         {
             var orders = await _ordersRepository.GetAllAsync();
             // Checks if there are any orders in the database
             if (orders.IsNullOrEmpty())
                 throw new NotFoundException("No orders were found.");
 
-            return _mapper.Map<List<ShortOrderViewModel>>(orders);
+            var pagedList = PagedList<Order>.ToPagedList(orders, pageSettings.PageNumber, pageSettings.PageSize);
+
+            return _mapper.Map<PagedList<Order>, PageViewModel<ShortOrderViewModel>>(pagedList);
         }
 
         public async Task<OrderViewModel> GetByIdAsync(long orderId)
