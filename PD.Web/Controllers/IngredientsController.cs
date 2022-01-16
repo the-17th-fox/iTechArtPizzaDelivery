@@ -24,7 +24,7 @@ namespace iTechArtIngredientDelivery.Web.Controllers
 
         [Route("{id}")]
         [HttpGet]
-        public async Task<IActionResult> GetAsync(long id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
             return Ok(await _ingredientsService.GetByIdAsync(id));
         }
