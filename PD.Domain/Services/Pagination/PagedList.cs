@@ -9,15 +9,7 @@ namespace PD.Domain.Services.Pagination
 {
     public class PagedList<T> : List<T>
     {
-        private int _currentPage;
-        public int CurrentPage
-        {
-            get => _currentPage;
-            private set
-            {
-                _currentPage = (value > TotalPages) ? TotalPages : value;
-            }
-        }
+        public int CurrentPage { get; private set; }
         public int TotalPages { get; private set; }
         public int PageSize { get; private set; }
         public int TotalItemsCount { get; private set; }
