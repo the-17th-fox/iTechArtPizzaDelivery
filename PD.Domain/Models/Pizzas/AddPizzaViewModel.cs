@@ -9,11 +9,14 @@ namespace PD.Domain.Models
 {
     public class AddPizzaViewModel
     {
-        [Required(ErrorMessage = "Name is Required")]
-        [StringLength(maximumLength: 20, ErrorMessage = "The length of the string must not be more than 20 characters")]
+        [Required(ErrorMessage = "Name is required.")]
+        [StringLength(maximumLength: 20, ErrorMessage = "The length of the string must not be more than 20 characters.")]
         public string Name { get; set; }
 
-        [StringLength(maximumLength: 150, ErrorMessage = "The length of the string must not be more than 150 characters")]
+        [StringLength(maximumLength: 150, ErrorMessage = "The length of the string must not be more than 150 characters.")]
         public string Description { get; set; }
+
+        [Required(ErrorMessage = "Image is required.")]
+        public string ImageName { get; set; }
     }
 }
