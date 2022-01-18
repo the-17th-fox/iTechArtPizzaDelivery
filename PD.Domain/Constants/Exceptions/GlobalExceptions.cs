@@ -40,4 +40,9 @@ namespace PD.Domain.Constants.Exceptions
     {
         public GettingFailedException(string message = DefaultErrorDescription.GETTING_FAILED) : base(message) { }
     }
+
+    public class FileOpeningException : Exception
+    {
+        public FileOpeningException(string message = DefaultErrorDescription.FILE_OPENING_FAILED) : base(message) { }
+    }
 }
