@@ -18,13 +18,16 @@ namespace PD.Domain.Services
     {
         private readonly IPizzasRepository _pizzasRepository;
         private readonly IIngredientsRepository _ingredientsRepository;
+        private readonly IFilesService _filesService;
         private readonly IMapper _mapper;
         public PizzasService(IPizzasRepository pizzasRepository,
-            IIngredientsRepository ingredientsRepository, 
+            IIngredientsRepository ingredientsRepository,
+            IFilesService filesService,
             IMapper mapper)
         {
             _pizzasRepository = pizzasRepository;
             _ingredientsRepository = ingredientsRepository;
+            _filesService = filesService;
             _mapper = mapper;
         }
 
@@ -36,6 +39,8 @@ namespace PD.Domain.Services
 
             var pizza = _mapper.Map<AddPizzaViewModel, Pizza>(model);
 
+            var fileModel = await _filesService.LoadFileAsync(model.ImageName);
+            pizza.ImagePath = fileModel.FilePath;
             await _pizzasRepository.AddAsync(pizza);
 
             return _mapper.Map<PizzaViewModel>(pizza);

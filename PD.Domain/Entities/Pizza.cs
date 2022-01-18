@@ -14,8 +14,8 @@ namespace PD.Domain.Entities
         public string Name { get; set; }
         public float Price { get; set; }
         public string Description { get; set; }
+        public string ImagePath { get; set; }
         public List<Ingredient> Ingredients { get; set; }
-        //public /*Image*/ Image { get; set; }
         public List<Order> Orders { get; set; }
         public List<PizzaOrder> PizzaInOrders { get; set; }
         public List<IngredientPizza> IngredientsInPizza { get; set; }
