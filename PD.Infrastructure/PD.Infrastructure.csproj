@@ -20,4 +20,8 @@
     <ProjectReference Include="..\PD.Domain\PD.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Files\" />
+  </ItemGroup>
+
 </Project>

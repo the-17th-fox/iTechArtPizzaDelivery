@@ -12,11 +12,14 @@ namespace PD.Domain.Constants.Exceptions
         public const string NOT_FOUND = "The requested data was not found.";
         public const string BAD_REQUEST = "Bad request.";
 
-        // Exceptions related to server errors
+        // Exceptions related to database/files errors
         public const string UPDATING_FAILED = "An error occurred during updating the data.";
         public const string CREATIONG_FAILED = "An error occurred during creation.";
         public const string DELETION_FAILED = "An error occurred during deletion.";
         public const string GETTING_FAILED = "An error occured during getting requested data.";
+        public const string FILE_OPENING_FAILED = "An error occured while opening the file.";
+
+
 
         public const string INVALID_CREDENTIALS = "The provided password or email is incorrect.";
 

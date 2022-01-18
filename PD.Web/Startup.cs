@@ -17,7 +17,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System;
 using PD.Domain.Constants.AuthOptions;
-using PD.Domain.Constants.UsersRoles;
 using PD.Domain.Middleware;
 
 namespace PD.Domain
@@ -39,6 +38,7 @@ namespace PD.Domain
             services.AddScoped<IOrdersService, OrdersService>();
             services.AddScoped<IPromoCodesService, PromoCodesService>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IFilesService, FilesService>();
 
             //INFRASTRUCTURE
             services.AddScoped<IPizzasRepository, PizzasEFRepository>();
