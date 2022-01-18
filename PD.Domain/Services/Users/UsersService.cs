@@ -59,9 +59,6 @@ namespace PD.Domain.Services
         public async Task<PageViewModel<ShortUserViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
         {
             List<User> users = await _usersRepository.GetAllAsync();
-            // Checks if there are any users in the database
-            if (users.IsNullOrEmpty())
-                throw new NotFoundException("No users were found");
 
             var pagedList = PagedList<User>.ToPagedList(users, pageSettings.PageNumber, pageSettings.PageSize);
 

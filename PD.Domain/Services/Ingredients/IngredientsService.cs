@@ -52,9 +52,6 @@ namespace PD.Domain.Services
         public async Task<List<ShortIngredientViewModel>> GetAllAsync()
         {
             var ingredients = await _ingredientsRepository.GetAllAsync();
-            // Checks if there are any ingredients in the database
-            if (ingredients.IsNullOrEmpty())
-                throw new NotFoundException("No ingredients were found.");
 
             return _mapper.Map<List<ShortIngredientViewModel>>(ingredients);
         }

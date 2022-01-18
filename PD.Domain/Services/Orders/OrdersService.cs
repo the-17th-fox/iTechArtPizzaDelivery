@@ -35,9 +35,6 @@ namespace PD.Domain.Services
         public async Task<PageViewModel<ShortOrderViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
         {
             var orders = await _ordersRepository.GetAllAsync();
-            // Checks if there are any orders in the database
-            if (orders.IsNullOrEmpty())
-                throw new NotFoundException("No orders were found.");
 
             var pagedList = PagedList<Order>.ToPagedList(orders, pageSettings.PageNumber, pageSettings.PageSize);
 

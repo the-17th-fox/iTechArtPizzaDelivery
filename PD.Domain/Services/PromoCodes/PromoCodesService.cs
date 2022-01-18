@@ -26,9 +26,6 @@ namespace PD.Domain.Services
         public async Task<List<ShortPromoCodeViewModel>> GetAllAsync()
         {
             var promoCodes = await _repository.GetAllAsync();
-            // Checks if there is any promocodes 
-            if (promoCodes.IsNullOrEmpty())
-                throw new NotFoundException("No promocodes were found.");
 
             return _mapper.Map<List<ShortPromoCodeViewModel>>(promoCodes);
         }

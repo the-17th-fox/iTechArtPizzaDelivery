@@ -56,9 +56,6 @@ namespace PD.Domain.Services
         public async Task<PageViewModel<ShortPizzaViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
         {
             var pizzas = await _pizzasRepository.GetAllAsync();
-            // Checks if there are any pizzas in the database
-            if (pizzas.IsNullOrEmpty())
-                throw new NotFoundException("No pizzas were found.");
 
             var pagedList = PagedList<Pizza>.ToPagedList(pizzas, pageSettings.PageNumber, pageSettings.PageSize);
 
