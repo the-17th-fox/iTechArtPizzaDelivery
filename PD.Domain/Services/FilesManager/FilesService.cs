@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PD.Domain.Constants;
+﻿using PD.Domain.Constants;
 using PD.Domain.Constants.Exceptions;
 using PD.Domain.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,36 +10,46 @@ using System.Threading.Tasks;
 namespace PD.Domain.Services
 {
     public class FilesService : IFilesService
-    {
-        public async Task<string> DeleteFileAsync(string fileName)
+    { 
+        public string GetFilesStorage()
         {
-            var path = Path.Combine(FilesConstants.RootFilesPath, fileName);
+            return Path.Combine(
+                Directory.GetParent(Directory.GetCurrentDirectory()).ToString(),
+                FilesStorageConstants.FilesStoragePath);
+        }
 
-            if (File.Exists(path))
+        public string DeleteFileAsync(string fileName)
+        {
+            var filePath = Path.Combine(GetFilesStorage(), fileName);
+
+            if (File.Exists(filePath))
                 throw new NotFoundException("The file was not found.");
 
             try
             {
-                File.Delete(path);
+                File.Delete(filePath);
             }
             catch (Exception)
             {
                 throw new DeletionFailedException();
             }
 
-            return $"The file '{path}' was successfully deleted.";
+            return $"The file '{filePath}' was successfully deleted.";
         }
 
-        public async Task<FileViewModel> LoadFileAsync(string fileName)
+        public FileViewModel LoadFileAsync(string fileName)
         {
-            var path = Path.Combine(FilesConstants.RootFilesPath, fileName);
+            var filePath = Path.Combine(GetFilesStorage(), fileName);
 
-            if (!File.Exists(path))
-                throw new NotFoundException("The file was not found.");
+            var extension = Path.GetExtension(fileName);
 
+            if (!File.Exists(filePath))
+                throw new NotFoundException($"The file '{filePath}' was not found.");
+
+            FileStream fileStream;
             try
             {
-                var fileStream = File.Open(path, FileMode.Open);
+                fileStream = File.OpenRead(filePath);
             }
             catch (Exception)
             {
@@ -50,8 +58,8 @@ namespace PD.Domain.Services
 
             return new FileViewModel
             {
-                FilePath = path,
-                FileType = FilesConstants.ImageFileType
+                FileStream = fileStream,
+                Extension = extension
             };
         }
     }
