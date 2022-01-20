@@ -9,7 +9,7 @@ namespace PD.Domain.Models
 {
     public class FileViewModel
     {
-        public string FilePath { get; set; }
-        public string FileType { get; set; }
+        public FileStream FileStream { get; set; }
+        public string Extension { get; set; }
     }
 }
