@@ -39,8 +39,9 @@ namespace PD.Domain.Services
 
             var pizza = _mapper.Map<AddPizzaViewModel, Pizza>(model);
 
-            var fileModel = await _filesService.LoadFileAsync(model.ImageName);
-            pizza.ImagePath = fileModel.FilePath;
+            var fileModel = _filesService.LoadFileAsync(model.ImageName);
+            pizza.ImagePath = fileModel.FileStream.Name;
+
             await _pizzasRepository.AddAsync(pizza);
 
             return _mapper.Map<PizzaViewModel>(pizza);
