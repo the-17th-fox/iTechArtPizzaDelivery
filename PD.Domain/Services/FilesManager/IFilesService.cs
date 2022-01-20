@@ -2,6 +2,7 @@
 using PD.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace PD.Domain.Services
 {
     public interface IFilesService
     {
-        public Task<FileViewModel> LoadFileAsync(string fileName);
-        public Task<string> DeleteFileAsync(string fileName);
+        public FileViewModel LoadFileAsync(string fileName);
+        public string DeleteFileAsync(string fileName);
     }
 }
