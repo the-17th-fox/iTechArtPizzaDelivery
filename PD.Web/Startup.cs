@@ -19,7 +19,7 @@ using System;
 using PD.Domain.Constants.AuthOptions;
 using PD.Domain.Middleware;
 
-namespace PD.Domain
+namespace PD.Web
 {
     public class Startup
     {
