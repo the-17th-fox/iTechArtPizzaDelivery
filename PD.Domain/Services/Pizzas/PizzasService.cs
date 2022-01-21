@@ -18,13 +18,16 @@ namespace PD.Domain.Services
     {
         private readonly IPizzasRepository _pizzasRepository;
         private readonly IIngredientsRepository _ingredientsRepository;
+        private readonly IFilesService _filesService;
         private readonly IMapper _mapper;
         public PizzasService(IPizzasRepository pizzasRepository,
-            IIngredientsRepository ingredientsRepository, 
+            IIngredientsRepository ingredientsRepository,
+            IFilesService filesService,
             IMapper mapper)
         {
             _pizzasRepository = pizzasRepository;
             _ingredientsRepository = ingredientsRepository;
+            _filesService = filesService;
             _mapper = mapper;
         }
 
@@ -35,6 +38,9 @@ namespace PD.Domain.Services
                 throw new BadRequestException("There is already a pizza with this name.");
 
             var pizza = _mapper.Map<AddPizzaViewModel, Pizza>(model);
+
+            var fileModel = _filesService.LoadFileAsync(model.ImageName);
+            pizza.ImagePath = fileModel.FileStream.Name;
 
             await _pizzasRepository.AddAsync(pizza);
 
