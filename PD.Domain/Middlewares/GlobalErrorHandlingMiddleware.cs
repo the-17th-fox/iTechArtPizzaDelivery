@@ -41,22 +41,6 @@ namespace PD.Domain.Middleware
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
 
-                    case UpdatingFailedException:
-                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        break;
-
-                    case CreatingFailedException:
-                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        break;
-
-                    case DeletionFailedException:
-                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        break;
-
-                    case GettingFailedException:
-                        response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                        break;
-
                     case InvalidCredentialsException:
                         response.StatusCode = (int)HttpStatusCode.BadRequest;
                         break;
