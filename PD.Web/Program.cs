@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PD.Domain
+namespace PD.Web
 {
     public class Program
     {
