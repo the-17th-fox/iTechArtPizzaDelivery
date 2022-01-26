@@ -228,11 +228,6 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public int GetSpecifiedPizzaAmount(Order order, Pizza pizza)
-        {
-            return order.PizzasInOrders.Find(po => po.Pizza == pizza).Amount;
-        }
-
         public async Task<List<Order>> GetAllFromUserAsync(long userId)
         {
             return await _dbContext.Orders

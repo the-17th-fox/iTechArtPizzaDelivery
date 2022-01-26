@@ -30,7 +30,5 @@ namespace PD.Domain.Interfaces
         public Task<Order> AddNotIncludedPizzaAsync(Order order, Pizza pizza, int numOfPizzasToAdd = 1);
         public Task<Order> AddIncludedPizza(Order order, Pizza pizza, int numOfPizzasToAdd = 1);
         public Task<Order> RemovePizzaAsync(Order order, Pizza pizza, int numOfPizzasToRemove = 1);
-
-        public int GetSpecifiedPizzaAmount(Order order, Pizza pizza);
     }
 }
