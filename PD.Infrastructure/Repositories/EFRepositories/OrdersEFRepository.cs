@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PD.Domain.Constants.DeliveryMethods;
 using PD.Domain.Constants.Exceptions;
 using PD.Domain.Constants.OrderStatuses;
+using PD.Domain.Constants.PaymentMethods;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
@@ -18,13 +20,22 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public OrdersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task AddAsync(Order order)
+        public async Task<Order> AddAsync(long userId)
         {
             try
             {
-                _dbContext.Orders.Add(order);
+                var order = new Order()
+                {
+                    UserId = userId,
+                    OrderStatusId = (int)OrderStatuses.InProccesOfCreating,
+                    DeliveryMethodId = (int)DeliveryMethods.Delivery,
+                    PaymentMethodId = (int)PaymentMethods.Cash,
+                    PizzasInOrders = new List<PizzaOrder>()
+                };
 
+                _dbContext.Orders.Add(order);
                 await _dbContext.SaveChangesAsync();
+                return order;
             }
             catch (DbUpdateException)
             {
@@ -32,20 +43,15 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task AddPizzaAsync(Order order, Pizza pizza, int numOfPizzasToAdd = 1)
+        public async Task<Order> AddNotIncludedPizzaAsync(Order order, Pizza pizza, int numOfPizzasToAdd = 1)
         {
             try
             {
-                if (order.Pizzas.Contains(pizza))
-                    order.PizzasInOrders
-                        .Find(po => po.Order == order)
-                        .Amount += numOfPizzasToAdd;
+                order.PizzasInOrders.Add(
+                    new PizzaOrder { Order = order, OrderId = order.Id, Pizza = pizza, PizzaId = pizza.Id, Amount = numOfPizzasToAdd });
 
-                else 
-                    order.PizzasInOrders
-                        .Add(new PizzaOrder { Pizza = pizza, Amount = numOfPizzasToAdd });
-                
                 await _dbContext.SaveChangesAsync();
+                return order;
             }
             catch (DbUpdateException)
             {
@@ -53,13 +59,33 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task RemovePizzaAsync(Order order, Pizza pizza, int numOfPizzasToRemove = 1)
+        public async Task<Order> AddIncludedPizza(Order order, Pizza pizza, int numOfPizzasToAdd = 1)
         {
             try
             {
-                order.PizzasInOrders.Find(po => po.Pizza == pizza).Amount -= numOfPizzasToRemove;
+                order.PizzasInOrders
+                    .Find(po => po.PizzaId == pizza.Id)
+                    .Amount += numOfPizzasToAdd;
 
                 await _dbContext.SaveChangesAsync();
+                return order;
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
+        }
+
+        public async Task<Order> RemovePizzaAsync(Order order, Pizza pizza, int numOfPizzasToRemove = 1)
+        {
+            try
+            {
+                order.PizzasInOrders
+                    .Find(po => po.Pizza == pizza)
+                    .Amount -= numOfPizzasToRemove;
+
+                await _dbContext.SaveChangesAsync();
+                return order;
             }
             catch (DbUpdateException)
             {
@@ -111,13 +137,13 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task UpdateOrderStatusAsync(Order order, int statusId)
+        public async Task<Order> UpdateOrderStatusAsync(Order order, int statusId)
         {
             try
             {
                 order.OrderStatusId = statusId;
-
                 await _dbContext.SaveChangesAsync();
+                return order;
             }
             catch (DbUpdateException)
             {
