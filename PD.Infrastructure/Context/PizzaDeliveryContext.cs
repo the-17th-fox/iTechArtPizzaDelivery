@@ -21,8 +21,6 @@ namespace PD.Infrastructure.Context
         public DbSet<Ingredient> Ingredients { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<IngredientPizza> IngredientsPizzas {get;set;}
-        public DbSet<PizzaOrder> PizzasOrders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
