@@ -18,11 +18,11 @@ namespace PD.Domain.Services
         public float GetPriceWithDiscount(Order order);
 
         public Task<OrderViewModel> AddAsync(long userId);
-        public Task<string> DeleteActiveOrderAsync(long userId);
-        public Task<string> DeleteAnyAsync(long orderId);
-        
-        public Task<OrderIsActiveStatusViewModel> UpdateIsActiveStatusAsync(long userId, bool status);
-        public Task<OrderStatusViewModel> UpdateOrderStatusAsync(long userId, int statusId);
+        public Task<ShortOrderViewModel> DeleteActiveOrderAsync(long userId);
+        public Task<ShortOrderViewModel> DeleteAnyAsync(long orderId);
+
+        public Task<OrderIsActiveStatusViewModel> UpdateIsActiveStatusAsync(long orderId, bool status);
+        public Task<OrderStatusViewModel> UpdateOrderStatusAsync(long orderId, int statusId);
         public Task<OrderDeliveryMethodViewModel> UpdateDeliveryMethodAsync(long userId, int methodId);
         public Task<OrderDescriptionViewModel> UpdateDescriptionAsync(long userId, string newDescription);
         public Task<OrderPromoCodeViewModel> UpdatePromoCodeAsync(long userId, string promoCodeName);
@@ -33,5 +33,12 @@ namespace PD.Domain.Services
 
         public bool IsDeliveryMethodExists(int methodId);
         public bool IsOrderStatusExists(int statusId);
+        public int GetSpecifiedPizzaAmount(Order order, Pizza pizza);
+
+        public Task<Order> GetAndCheckOrderAsync(long orderId);
+        public Task<Order> GetAndCheckEditingReadyOrderAsync(long userId);
+        public Task<Order> GetAndCheckActiveOrderByIdAsync(long orderId);
+        public Task<Order> GetAndCheckActiveOrderByUserId(long userId);
+        public Task<Pizza> GetAndCheckPizzaAsync(long pizzaId);
     }
 }
