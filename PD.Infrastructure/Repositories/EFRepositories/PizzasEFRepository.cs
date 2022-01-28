@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PD.Domain.Models;
 using PD.Domain.Constants.Exceptions;
+using PD.Domain.Services.Pagination;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
 {
@@ -17,16 +18,16 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public PizzasEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task<List<Pizza>> GetAllAsync()
+        public PagedList<Pizza> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            return await _dbContext.Pizzas
-                .Include(p => p.Ingredients)
-                .ToListAsync();
+            IQueryable<Pizza> pizzasIQuer = _dbContext.Pizzas;
+            return PagedList<Pizza>.ToPagedList(pizzasIQuer, pageSettings.PageNumber, pageSettings.PageSize);
         }
 
         public async Task<Pizza> GetByIdAsync(long id)
         {
             return await _dbContext.Pizzas
+                .AsNoTracking()
                 .Include(p => p.Ingredients)
                 .Include(p => p.Orders)
                 .Include(p => p.IngredientsInPizza)
@@ -108,6 +109,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Pizza> GetByNameAsync(string name)
         {
             return await _dbContext.Pizzas
+                .AsNoTracking()
                 .Include(p => p.Name == name)
                 .FirstOrDefaultAsync();
         }
@@ -115,7 +117,9 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<bool> ExistsAsync(long id)
         {
             var pizza = await _dbContext.Pizzas
-                .FindAsync(id);
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .FirstOrDefaultAsync();
 
             return pizza != null; 
         }
@@ -123,6 +127,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<bool> ExistsAsync(string name)
         {
             var pizza = await _dbContext.Pizzas
+                .AsNoTracking()
                 .Where(p => p.Name == name)
                 .FirstOrDefaultAsync();
 

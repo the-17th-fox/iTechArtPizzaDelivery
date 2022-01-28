@@ -27,17 +27,16 @@ namespace PD.Domain.Services.Pagination
             AddRange(items);
         }
 
-        public static PagedList<T> ToPagedList(List<T> list, int pageNumber, int pageSize)
+        public static PagedList<T> ToPagedList(IQueryable<T> query, int pageNumber, int pageSize)
         {
-            var itemsCount = list.Count();
+            var itemsCount = query.Count();
 
             int totalPages = (int)Math.Ceiling(itemsCount / (double)pageSize);
             pageNumber = (pageNumber > totalPages) ? totalPages : pageNumber;
 
-            var items = list
+            var items = query
                 .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+                .Take(pageSize).ToList();
 
             return new PagedList<T>(items, totalPages, itemsCount, pageNumber, pageSize);
         }

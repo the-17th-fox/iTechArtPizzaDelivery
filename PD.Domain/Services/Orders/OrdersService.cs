@@ -32,13 +32,11 @@ namespace PD.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<PageViewModel<ShortOrderViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
+        public PageViewModel<ShortOrderViewModel> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            var orders = await _ordersRepository.GetAllAsync();
+            var orders = _ordersRepository.GetAllAsync(pageSettings);
 
-            var pagedList = PagedList<Order>.ToPagedList(orders, pageSettings.PageNumber, pageSettings.PageSize);
-
-            return _mapper.Map<PagedList<Order>, PageViewModel<ShortOrderViewModel>>(pagedList);
+            return _mapper.Map<PagedList<Order>, PageViewModel<ShortOrderViewModel>>(orders);
         }
 
         public async Task<OrderViewModel> GetByIdAsync(long orderId)

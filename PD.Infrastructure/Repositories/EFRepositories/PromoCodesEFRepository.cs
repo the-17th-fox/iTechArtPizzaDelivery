@@ -47,13 +47,20 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task<PromoCode> GetByIdAsync(long id) => await _dbContext.PromoCodes.FindAsync(id);
+        public async Task<PromoCode> GetByIdAsync(long id)
+        {
+            return await _dbContext.PromoCodes
+                .AsNoTracking()
+                .Where(pc => pc.Id == id)
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<List<PromoCode>> GetAllAsync() => await _dbContext.PromoCodes.ToListAsync();
 
         public async Task<PromoCode> GetByNameAsync(string name)
         {
             return await _dbContext.PromoCodes
+                .AsNoTracking()
                 .Where(pr => pr.Name == name)
                 .FirstOrDefaultAsync();
         }
@@ -61,7 +68,9 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<bool> ExistsAsync(long id)
         {
             var promoCode = await _dbContext.PromoCodes
-                .FindAsync(id);
+                .AsNoTracking()
+                .Where(pc => pc.Id == id)
+                .FirstOrDefaultAsync();
 
             return promoCode != null;
         }
@@ -69,6 +78,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<bool> ExistsAsync(string name)
         {
             var promoCode = await _dbContext.PromoCodes
+                .AsNoTracking()
                 .Where(p => p.Name == name)
                 .FirstOrDefaultAsync();
 

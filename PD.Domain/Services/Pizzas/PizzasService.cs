@@ -59,13 +59,11 @@ namespace PD.Domain.Services
             return "The pizza has been deleted successfully.";
         }
 
-        public async Task<PageViewModel<ShortPizzaViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
+        public PageViewModel<ShortPizzaViewModel> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            var pizzas = await _pizzasRepository.GetAllAsync();
+            var pizzas = _pizzasRepository.GetAllAsync(pageSettings);
 
-            var pagedList = PagedList<Pizza>.ToPagedList(pizzas, pageSettings.PageNumber, pageSettings.PageSize);
-
-            return _mapper.Map<PagedList<Pizza>, PageViewModel<ShortPizzaViewModel>>(pagedList);
+            return _mapper.Map<PagedList<Pizza>, PageViewModel<ShortPizzaViewModel>>(pizzas);
         }
 
         public async Task<PizzaViewModel> GetByIdAsync(long id)
