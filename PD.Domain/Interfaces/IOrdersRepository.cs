@@ -1,5 +1,6 @@
 ﻿using PD.Domain.Entities;
 using PD.Domain.Models;
+using PD.Domain.Services.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace PD.Domain.Interfaces
 {
     public interface IOrdersRepository
     {
-        public Task<List<Order>> GetAllAsync();
+        public PagedList<Order> GetAllAsync(PageSettingsViewModel pageSettings);
         public Task<Order> GetByIdAsync(long id);
         public Task<Order> GetUsersActiveOrderAsync(long userId);
         public Task<Order> GetEditingReadyAsync(long userId);

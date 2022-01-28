@@ -12,7 +12,7 @@ namespace PD.Domain.Services
 {
     public interface IPizzasService
     {
-        public Task<PageViewModel<ShortPizzaViewModel>> GetAllAsync(PageSettingsViewModel pageSettings);
+        public PageViewModel<ShortPizzaViewModel> GetAllAsync(PageSettingsViewModel pageSettings);
         public Task<PizzaViewModel> GetByIdAsync(long id);
         public Task<PizzaViewModel> AddAsync(AddPizzaViewModel model);
         public Task<string> DeleteAsync(long id);

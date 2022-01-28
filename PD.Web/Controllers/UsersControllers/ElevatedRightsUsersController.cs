@@ -19,12 +19,12 @@ namespace PD.Web.Controllers.UsersControllers
 
         [Route("all")]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
+        public IActionResult GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem();
 
-            return Ok(await _usersService.GetAllAsync(pageSettings));
+            return Ok(_usersService.GetAllAsync(pageSettings));
         }
 
         [Route("{id}")]

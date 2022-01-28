@@ -56,13 +56,11 @@ namespace PD.Domain.Services
             return claims;
         }
 
-        public async Task<PageViewModel<ShortUserViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
+        public PageViewModel<ShortUserViewModel> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            List<User> users = await _usersRepository.GetAllAsync();
+            var users = _usersRepository.GetAllAsync(pageSettings);
 
-            var pagedList = PagedList<User>.ToPagedList(users, pageSettings.PageNumber, pageSettings.PageSize);
-
-            return _mapper.Map<PagedList<User>, PageViewModel<ShortUserViewModel>>(pagedList);
+            return _mapper.Map<PagedList<User>, PageViewModel<ShortUserViewModel>>(users);
         }
 
         public async Task<UserViewModel> GetByIdAsync(long id)

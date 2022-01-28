@@ -48,6 +48,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Ingredient> GetByIdAsync(long id)
         {
             return await _dbContext.Ingredients
+                .AsNoTracking()
                 .Include(i => i.Pizzas)
                 .Include(i => i.IngredientInPizzas)
                 .Where(i => i.Id == id)
@@ -57,6 +58,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<List<Ingredient>> GetAllAsync()
         {
             return await _dbContext.Ingredients
+                .AsNoTracking()
                 .Include(i => i.Pizzas)
                 .Include(i => i.IngredientInPizzas)
                 .ToListAsync();
@@ -65,7 +67,9 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<bool> ExistsAsync(long id)
         {
             var ingredient = await _dbContext.Ingredients
-                .FindAsync(id);
+                .AsNoTracking()
+                .Where(i => i.Id == id)
+                .FirstOrDefaultAsync();
 
             return ingredient != null;
         }
@@ -73,6 +77,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<bool> ExistsAsync(string name)
         {
             var ingredient = await _dbContext.Ingredients
+                .AsNoTracking()
                 .Where(p => p.Name == name)
                 .FirstOrDefaultAsync();
 

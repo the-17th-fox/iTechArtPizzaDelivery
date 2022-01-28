@@ -6,6 +6,7 @@ using PD.Domain.Constants.PaymentMethods;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
+using PD.Domain.Services.Pagination;
 using PD.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,14 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             try
             {
                 order.PizzasInOrders.Add(
-                    new PizzaOrder { Order = order, OrderId = order.Id, Pizza = pizza, PizzaId = pizza.Id, Amount = numOfPizzasToAdd });
+                    new PizzaOrder 
+                    { 
+                        Order = order, 
+                        OrderId = order.Id, 
+                        Pizza = pizza, 
+                        PizzaId = pizza.Id, 
+                        Amount = numOfPizzasToAdd 
+                    });
 
                 await _dbContext.SaveChangesAsync();
                 return order;
@@ -110,17 +118,20 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Order> GetByIdAsync(long id)
         {
             return await _dbContext.Orders
+                .AsNoTracking()
                 .Include(o => o.Pizzas)
                 .Include(o => o.PizzasInOrders)
                 .Where(o => o.Id == id)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<Order>> GetAllAsync()
+        public PagedList<Order> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            return await _dbContext.Orders
-                .Include(o => o.Pizzas)
-                .ToListAsync();
+            IQueryable<Order> ordersIQuer = _dbContext.Orders
+                .AsNoTracking()
+                .Include(o => o.Pizzas);
+
+            return PagedList<Order>.ToPagedList(ordersIQuer, pageSettings.PageNumber, pageSettings.PageSize);
         }
 
         public async Task UpdatePromoCodeAsync(Order order, PromoCode promoCode)
@@ -196,6 +207,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Order> GetUsersActiveOrderAsync(long userId)
         {
             return await _dbContext.Orders
+                .AsNoTracking()
                 .Include(o => o.Pizzas)
                 .Include(o => o.PromoCode)
                 .Where(o => o.UserId == userId)
@@ -206,6 +218,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Order> GetEditingReadyAsync(long userId)
         {
             return await _dbContext.Orders
+                .AsNoTracking()
                 .Include(o => o.Pizzas)
                 .Include(o => o.PizzasInOrders)
                 .Where(o => o.UserId == userId)
@@ -231,6 +244,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<List<Order>> GetAllFromUserAsync(long userId)
         {
             return await _dbContext.Orders
+                .AsNoTracking()
                 .Where(o => o.UserId == userId)
                 .ToListAsync();
         }
