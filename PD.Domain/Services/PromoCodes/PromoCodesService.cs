@@ -32,29 +32,21 @@ namespace PD.Domain.Services
 
         public async Task<PromoCodeViewModel> GetByIdAsync(long id)
         {
-            var promoCode = await _repository.GetByIdAsync(id);
-            // Checks if there is any promocode with the specified ID    
-            if (promoCode == null)
-                throw new NotFoundException("The promocode was not found.");
+            var promoCode = await GetAndCheckByIdAsync(id);
 
             return _mapper.Map<PromoCodeViewModel>(promoCode);
         }
 
         public async Task<PromoCodeViewModel> GetByNameAsync(string name)
         {
-            var promoCode = await _repository.GetByNameAsync(name);
-            // Checks if there is any promocode with the specified name    
-            if (promoCode == null)
-                throw new NotFoundException("The promocode was not found.");
+            var promoCode = await GetAndCheckByNameAsync(name);
 
             return _mapper.Map<PromoCodeViewModel>(promoCode);
         }
 
         public async Task<PromoCodeViewModel> AddAsync(AddPromoCodeViewModel model)
         {
-            // Checks if there is any promocode with the same name
-            if (await _repository.ExistsAsync(model.Name))
-                throw new BadRequestException("There is already a promocode with this name.");
+            await ExistsAsync(model.Name);
 
             var promoCode = _mapper.Map<AddPromoCodeViewModel, PromoCode>(model);
 
@@ -65,14 +57,33 @@ namespace PD.Domain.Services
 
         public async Task<string> DeleteAsync(long id)
         {
-            var promoCode = await _repository.GetByIdAsync(id);
-            // Checks if there is any promocode with the specified ID
-            if (promoCode == null)
-                throw new BadRequestException("The promocode with the specified id does not exist.");
+            var promoCode = await GetAndCheckByIdAsync(id);
 
             await _repository.DeleteAsync(promoCode);
 
             return "The promocode has been deleted successfully";
+        }
+
+        public async Task<PromoCode> GetAndCheckByIdAsync(long id)
+        {
+            var promoCode = await _repository.GetByIdAsync(id);
+            if (promoCode == null)
+                throw new NotFoundException("The ingredient with the specified id was not found.");
+            return promoCode;
+        }
+
+        public async Task<PromoCode> GetAndCheckByNameAsync(string name)
+        {
+            var promoCode = await _repository.GetByNameAsync(name);
+            if (promoCode == null)
+                throw new NotFoundException("The ingredient with the specified name was not found.");
+            return promoCode;
+        }
+
+        public async Task ExistsAsync(string name)
+        {
+            if(await _repository.ExistsAsync(name))
+                throw new BadRequestException("There is already a promocode with this name.");
         }
     }
 }

@@ -16,5 +16,8 @@ namespace PD.Domain.Services
         public Task<PromoCodeViewModel> GetByNameAsync(string name);
         public Task<PromoCodeViewModel> AddAsync(AddPromoCodeViewModel promoCodeModel);
         public Task<string> DeleteAsync(long id);
+        public Task<PromoCode> GetAndCheckByIdAsync(long id);
+        public Task<PromoCode> GetAndCheckByNameAsync(string name);
+        public Task ExistsAsync(string name);
     }
 }
