@@ -48,14 +48,14 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             try
             {
-                order.PizzasInOrders.Add(
-                    new PizzaOrder 
-                    { 
-                        Order = order, 
-                        OrderId = order.Id, 
-                        Pizza = pizza, 
-                        PizzaId = pizza.Id, 
-                        Amount = numOfPizzasToAdd 
+                order.Pizzas.Add(pizza);
+                order.PizzasInOrders.Add(new PizzaOrder()
+                    {
+                        Order = order,
+                        OrderId = order.Id,
+                        Pizza = pizza,
+                        PizzaId = pizza.Id,
+                        Amount = numOfPizzasToAdd
                     });
 
                 await _dbContext.SaveChangesAsync();
@@ -74,6 +74,23 @@ namespace PD.Infrastructure.Repositories.EFRepositories
                 order.PizzasInOrders
                     .Find(po => po.PizzaId == pizza.Id)
                     .Amount += numOfPizzasToAdd;
+
+                await _dbContext.SaveChangesAsync();
+                return order;
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
+        }
+
+        public async Task<Order> RemoveAllPizzasOfType(Order order, Pizza pizza)
+        {
+            try
+            {
+                var pizzaOrder = order.PizzasInOrders.Find(po => po.Pizza == pizza);
+                order.PizzasInOrders.Remove(pizzaOrder);
+                order.Pizzas.Remove(pizza);
 
                 await _dbContext.SaveChangesAsync();
                 return order;
@@ -115,10 +132,20 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task<Order> GetByIdAsync(long id)
+        public async Task<Order> GetByIdWithoutTrackingAsync(long id)
         {
             return await _dbContext.Orders
                 .AsNoTracking()
+                .Include(o => o.Pizzas)
+                .Include(o => o.PizzasInOrders)
+                .Where(o => o.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Order> GetByIdAsync(long id)
+        {
+            return await _dbContext.Orders
+                .Include(o => o.PromoCode)
                 .Include(o => o.Pizzas)
                 .Include(o => o.PizzasInOrders)
                 .Where(o => o.Id == id)
@@ -204,12 +231,13 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task<Order> GetUsersActiveOrderAsync(long userId)
+        public async Task<Order> GetActiveOrderAsync(long userId)
         {
             return await _dbContext.Orders
-                .AsNoTracking()
                 .Include(o => o.Pizzas)
                 .Include(o => o.PromoCode)
+                .Include(o => o.PizzasInOrders)
+                    .ThenInclude(p => p.Pizza)
                 .Where(o => o.UserId == userId)
                 .Where(o => o.IsActive == true)
                 .FirstOrDefaultAsync();
@@ -218,7 +246,6 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         public async Task<Order> GetEditingReadyAsync(long userId)
         {
             return await _dbContext.Orders
-                .AsNoTracking()
                 .Include(o => o.Pizzas)
                 .Include(o => o.PizzasInOrders)
                 .Where(o => o.UserId == userId)
@@ -241,7 +268,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task<List<Order>> GetAllFromUserAsync(long userId)
+        public async Task<List<Order>> GetAllFromUserWithoutTrackingAsync(long userId)
         {
             return await _dbContext.Orders
                 .AsNoTracking()
