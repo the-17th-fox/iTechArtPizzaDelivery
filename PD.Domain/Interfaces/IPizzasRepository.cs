@@ -12,6 +12,7 @@ namespace PD.Domain.Interfaces
     public interface IPizzasRepository
     {
         public PagedList<Pizza> GetAllAsync(PageSettingsViewModel pageSettings);
+        public Task<Pizza> GetByIdWithoutTrackingAsync(long id);
         public Task<Pizza> GetByIdAsync(long id);
         public Task AddAsync(Pizza pizza);
         public Task DeleteAsync(Pizza pizza);

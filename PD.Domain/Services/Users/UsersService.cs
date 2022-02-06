@@ -70,7 +70,7 @@ namespace PD.Domain.Services
             if (user == null)
                 throw new NotFoundException("The user was not found");
 
-            var userOrders = await _ordersRepository.GetAllFromUserAsync(user.Id);
+            var userOrders = await _ordersRepository.GetAllFromUserWithoutTrackingAsync(user.Id);
             // Checks if there is any orders from user
             if (userOrders == null)
                 throw new NotFoundException("The user does not have any ordes.");

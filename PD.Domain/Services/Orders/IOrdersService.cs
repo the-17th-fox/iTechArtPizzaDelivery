@@ -35,10 +35,11 @@ namespace PD.Domain.Services
         public bool IsOrderStatusExists(int statusId);
         public int GetSpecifiedPizzaAmount(Order order, Pizza pizza);
 
-        public Task<Order> GetAndCheckOrderAsync(long orderId);
-        public Task<Order> GetAndCheckEditingReadyOrderAsync(long userId);
-        public Task<Order> GetAndCheckActiveOrderByIdAsync(long orderId);
-        public Task<Order> GetAndCheckActiveOrderByUserId(long userId);
+        public Task<Order> GetAndCheckAsync(long orderId);
+        public Task<Order> GetAndCheckWithoutTrackingAsync(long orderId);
+        public Task<Order> GetAndCheckEditingReadyAsync(long userId);
+        public Task<Order> GetAndCheckActiveAsync(long orderId);
+        public Task<Order> GetAndCheckActiveByUserIdAsync(long userId);
         public Task<Pizza> GetAndCheckPizzaAsync(long pizzaId);
     }
 }

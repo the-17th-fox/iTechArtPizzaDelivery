@@ -20,5 +20,8 @@ namespace PD.Domain.Services
         public Task<PizzaIngredientsViewModel> RemoveIngredientAsync(long pizzaId, long ingredientId);
         public Task<PizzaDescriptionViewModel> ChangeDescriptionAsync(long pizzaId, string newDescription);
         public bool HasIngredientAsync(Pizza pizza, Ingredient ingredient);
+        public Task ExistsAsync(string name);
+        public Task<Pizza> GetAndCheckByIdAsync(long id);
+        public Task<Pizza> GetAndCheckByIdWithoutTrackingAsync(long id);
     }
 }
