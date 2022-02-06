@@ -24,10 +24,21 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             return PagedList<Pizza>.ToPagedList(pizzasIQuer, pageSettings.PageNumber, pageSettings.PageSize);
         }
 
-        public async Task<Pizza> GetByIdAsync(long id)
+        public async Task<Pizza> GetByIdWithoutTrackingAsync(long id)
         {
             return await _dbContext.Pizzas
                 .AsNoTracking()
+                .Include(p => p.Ingredients)
+                .Include(p => p.Orders)
+                .Include(p => p.IngredientsInPizza)
+                .Include(p => p.PizzaInOrders)
+                .Where(p => p.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Pizza> GetByIdAsync(long id)
+        {
+            return await _dbContext.Pizzas
                 .Include(p => p.Ingredients)
                 .Include(p => p.Orders)
                 .Include(p => p.IngredientsInPizza)
@@ -104,14 +115,6 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             {
                 throw new UpdatingFailedException();
             }
-        }
-
-        public async Task<Pizza> GetByNameAsync(string name)
-        {
-            return await _dbContext.Pizzas
-                .AsNoTracking()
-                .Include(p => p.Name == name)
-                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> ExistsAsync(long id)
