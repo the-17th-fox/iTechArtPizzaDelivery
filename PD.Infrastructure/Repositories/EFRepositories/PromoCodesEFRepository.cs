@@ -51,6 +51,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             return await _dbContext.PromoCodes
                 .AsNoTracking()
+                .Include(pc => pc.Orders)
                 .Where(pc => pc.Id == id)
                 .FirstOrDefaultAsync();
         }
@@ -61,7 +62,8 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             return await _dbContext.PromoCodes
                 .AsNoTracking()
-                .Where(pr => pr.Name == name)
+                .Include(pc => pc.Orders)
+                .Where(pc => pc.Name == name)
                 .FirstOrDefaultAsync();
         }
 
@@ -79,7 +81,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         {
             var promoCode = await _dbContext.PromoCodes
                 .AsNoTracking()
-                .Where(p => p.Name == name)
+                .Where(pc => pc.Name == name)
                 .FirstOrDefaultAsync();
 
             return promoCode != null;
