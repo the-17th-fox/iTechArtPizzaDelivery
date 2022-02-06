@@ -74,7 +74,7 @@ namespace PD.UnitTests
             Assert.True(result != null);
             Assert.True(result.Id == EntitesMocks.EditingReadyOrderId);
             Assert.True(result.Pizzas.Find(p =>
-                p.Id == EntitesMocks.ExistingPizzaId).Amount == 0);
+                p.Id == EntitesMocks.ExistingPizzaId).Amount == 2);
         }
     }
 }
