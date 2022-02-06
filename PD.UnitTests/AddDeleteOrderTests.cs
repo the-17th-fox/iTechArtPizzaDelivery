@@ -15,7 +15,7 @@ namespace PD.UnitTests
         {
             MockConfiguration servicesConfig = new MockConfiguration();
             servicesConfig.ordersRepositoryMock.Setup(rep =>
-                rep.GetUsersActiveOrderAsync(EntitesMocks.UserWithAnActiveOrderId).Result).Returns(EntitesMocks.ActiveOrder);
+                rep.GetActiveOrderAsync(EntitesMocks.UserWithAnActiveOrderId).Result).Returns(EntitesMocks.ActiveOrder);
 
             var exception = await Assert.ThrowsAsync<BadRequestException>(() =>
                     servicesConfig.fakeOrdersService
@@ -30,7 +30,7 @@ namespace PD.UnitTests
         { 
             MockConfiguration servicesConfig = new MockConfiguration();
             servicesConfig.ordersRepositoryMock.Setup(rep =>
-                rep.GetUsersActiveOrderAsync(EntitesMocks.UserWithoutAnActiveOrderId).Result);
+                rep.GetActiveOrderAsync(EntitesMocks.UserWithoutAnActiveOrderId).Result);
 
             servicesConfig.ordersRepositoryMock.Setup(rep =>
                 rep.AddAsync(EntitesMocks.UserWithoutAnActiveOrderId).Result)

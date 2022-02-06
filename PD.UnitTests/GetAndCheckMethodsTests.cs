@@ -33,7 +33,7 @@ namespace PD.UnitTests
             servicesConfig.ordersRepositoryMock.Setup(rep =>
                 rep.GetByIdAsync(EntitesMocks.ActiveOrderId).Result).Returns(EntitesMocks.ActiveOrder);
 
-            var result = await servicesConfig.fakeOrdersService.GetByIdAsync(EntitesMocks.ActiveOrderId);
+            var result = await servicesConfig.fakeOrdersService.GetAndCheckAsync(EntitesMocks.ActiveOrderId);
             Assert.True(result != null);
         }
 
@@ -46,9 +46,9 @@ namespace PD.UnitTests
 
             var exception = await Assert.ThrowsAsync<NotFoundException>(() =>
                     servicesConfig.fakeOrdersService
-                        .GetAndCheckEditingReadyOrderAsync(EntitesMocks.UserWithAnActiveOrderId));
+                        .GetAndCheckEditingReadyAsync(EntitesMocks.UserWithAnActiveOrderId));
 
-            Assert.Equal("The user does not have an active order or the order can not be edited anymore.", exception.Message);
+            Assert.Equal("The user does not have an active order or an order can not be edited anymore.", exception.Message);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace PD.UnitTests
             servicesConfig.ordersRepositoryMock.Setup(rep =>
                 rep.GetEditingReadyAsync(EntitesMocks.UserWithAnEditingReadyOrderId).Result).Returns(EntitesMocks.EditingReadyOrder);
 
-            var result = await servicesConfig.fakeOrdersService.GetAndCheckEditingReadyOrderAsync(EntitesMocks.UserWithAnEditingReadyOrderId);
+            var result = await servicesConfig.fakeOrdersService.GetAndCheckEditingReadyAsync(EntitesMocks.UserWithAnEditingReadyOrderId);
             Assert.True(result != null);
         }
 
@@ -71,7 +71,7 @@ namespace PD.UnitTests
 
             var exception = await Assert.ThrowsAsync<NotFoundException>(() =>
                     servicesConfig.fakeOrdersService
-                        .GetAndCheckActiveOrderByIdAsync(EntitesMocks.NonExistingOrderId));
+                        .GetAndCheckActiveAsync(EntitesMocks.NonExistingOrderId));
 
             Assert.Equal("The order is not active anymore or it does not exist.", exception.Message);
         }
@@ -83,7 +83,7 @@ namespace PD.UnitTests
             servicesConfig.ordersRepositoryMock.Setup(rep =>
                 rep.GetByIdAsync(EntitesMocks.ActiveOrderId).Result).Returns(EntitesMocks.ActiveOrder);
 
-            var result = await servicesConfig.fakeOrdersService.GetAndCheckActiveOrderByIdAsync(EntitesMocks.ActiveOrderId);
+            var result = await servicesConfig.fakeOrdersService.GetAndCheckActiveAsync(EntitesMocks.ActiveOrderId);
             Assert.True(result != null);
         }
 
@@ -92,11 +92,11 @@ namespace PD.UnitTests
         {
             MockConfiguration servicesConfig = new MockConfiguration();
             servicesConfig.ordersRepositoryMock.Setup(rep =>
-                rep.GetUsersActiveOrderAsync(EntitesMocks.UserWithoutAnActiveOrderId).Result);
+                rep.GetActiveOrderAsync(EntitesMocks.UserWithoutAnActiveOrderId).Result);
 
             var exception = await Assert.ThrowsAsync<NotFoundException>(() =>
                     servicesConfig.fakeOrdersService
-                        .GetAndCheckActiveOrderByUserId(EntitesMocks.UserWithoutAnActiveOrderId));
+                        .GetAndCheckActiveByUserIdAsync(EntitesMocks.UserWithoutAnActiveOrderId));
 
             Assert.Equal("The order is not active anymore or it does not exist.", exception.Message);
         }
@@ -106,9 +106,9 @@ namespace PD.UnitTests
         {
             MockConfiguration servicesConfig = new MockConfiguration();
             servicesConfig.ordersRepositoryMock.Setup(rep =>
-                rep.GetUsersActiveOrderAsync(EntitesMocks.UserWithAnActiveOrderId).Result).Returns(EntitesMocks.ActiveOrder);
+                rep.GetActiveOrderAsync(EntitesMocks.UserWithAnActiveOrderId).Result).Returns(EntitesMocks.ActiveOrder);
 
-            var result = await servicesConfig.fakeOrdersService.GetAndCheckActiveOrderByUserId(EntitesMocks.UserWithAnActiveOrderId);
+            var result = await servicesConfig.fakeOrdersService.GetAndCheckActiveByUserIdAsync(EntitesMocks.UserWithAnActiveOrderId);
             Assert.True(result != null);
         }
 
