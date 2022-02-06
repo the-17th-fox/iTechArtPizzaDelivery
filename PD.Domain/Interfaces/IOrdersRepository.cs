@@ -13,10 +13,11 @@ namespace PD.Domain.Interfaces
     public interface IOrdersRepository
     {
         public PagedList<Order> GetAllAsync(PageSettingsViewModel pageSettings);
+        public Task<Order> GetByIdWithoutTrackingAsync(long id);
         public Task<Order> GetByIdAsync(long id);
-        public Task<Order> GetUsersActiveOrderAsync(long userId);
+        public Task<Order> GetActiveOrderAsync(long userId);
         public Task<Order> GetEditingReadyAsync(long userId);
-        public Task<List<Order>> GetAllFromUserAsync(long userId);
+        public Task<List<Order>> GetAllFromUserWithoutTrackingAsync(long userId);
 
         public Task<Order> AddAsync(long userId);
         public Task DeleteAsync(Order order);
@@ -31,5 +32,6 @@ namespace PD.Domain.Interfaces
         public Task<Order> AddNotIncludedPizzaAsync(Order order, Pizza pizza, int numOfPizzasToAdd = 1);
         public Task<Order> AddIncludedPizza(Order order, Pizza pizza, int numOfPizzasToAdd = 1);
         public Task<Order> RemovePizzaAsync(Order order, Pizza pizza, int numOfPizzasToRemove = 1);
+        public Task<Order> RemoveAllPizzasOfType(Order order, Pizza pizza);
     }
 }
