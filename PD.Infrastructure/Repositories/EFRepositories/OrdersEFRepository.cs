@@ -154,9 +154,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
 
         public PagedList<Order> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            IQueryable<Order> ordersIQuer = _dbContext.Orders
-                .AsNoTracking()
-                .Include(o => o.Pizzas);
+            IQueryable<Order> ordersIQuer = _dbContext.Orders.AsNoTracking();
 
             return PagedList<Order>.ToPagedList(ordersIQuer, pageSettings.PageNumber, pageSettings.PageSize);
         }

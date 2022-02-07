@@ -19,7 +19,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         
         public PagedList<User> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            IQueryable<User> usersIQuer = _dbContext.Users;
+            IQueryable<User> usersIQuer = _dbContext.Users.AsNoTracking();
             return PagedList<User>.ToPagedList(usersIQuer, pageSettings.PageNumber, pageSettings.PageSize);
         }
 
