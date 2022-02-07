@@ -20,7 +20,7 @@ namespace PD.Infrastructure.Repositories.EFRepositories
 
         public PagedList<Pizza> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            IQueryable<Pizza> pizzasIQuer = _dbContext.Pizzas;
+            IQueryable<Pizza> pizzasIQuer = _dbContext.Pizzas.AsNoTracking();
             return PagedList<Pizza>.ToPagedList(pizzasIQuer, pageSettings.PageNumber, pageSettings.PageSize);
         }
 
