@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PD.Domain.Constants.Exceptions;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
@@ -16,7 +17,26 @@ namespace PD.Infrastructure.Repositories.EFRepositories
     {
         private readonly PizzaDeliveryContext _dbContext;
         public UsersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
-        
+
+        public async Task<User> ChangeNamesAsync(User user, ChangeNamesViewModel model)
+        {
+            try
+            {
+                if(model.FirstName != null)
+                    user.FirstName = model.FirstName;
+
+                if(model.LastName != null)
+                    user.LastName = model.LastName;
+
+                await _dbContext.SaveChangesAsync();
+                return user;
+            }
+            catch (Exception)
+            {
+                throw new UpdatingFailedException();
+            }
+        }
+
         public PagedList<User> GetAllAsync(PageSettingsViewModel pageSettings)
         {
             IQueryable<User> usersIQuer = _dbContext.Users.AsNoTracking();

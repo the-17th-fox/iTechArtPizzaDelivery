@@ -18,6 +18,8 @@ namespace PD.Domain.Models.Profiles
 
             CreateMap<RegisterUserModel, User>()
                 .ForMember(u => u.UserName, m => m.MapFrom(src => src.FirstName));
+
+            CreateMap<User, UserNamesViewModel>();
         }
     }
 }

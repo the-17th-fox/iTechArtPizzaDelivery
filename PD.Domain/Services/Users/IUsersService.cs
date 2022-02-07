@@ -20,5 +20,7 @@ namespace PD.Domain.Services
         public Task<string> DeleteAsync(long id);
         public Task<UserRolesViewModel> AddToRole(long userId, string role);
         public Task<bool> IsPhoneNumberTakenAsync(string phoneNumber);
+        public Task<UserNamesViewModel> ChangeNamesAsync(long userId, ChangeNamesViewModel model);
+        public Task<string> ChangePasswordAsync(long userId, ChangePasswordViewModel model);
     }
 }

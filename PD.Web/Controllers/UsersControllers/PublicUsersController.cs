@@ -52,11 +52,31 @@ namespace PD.Web.Controllers.UsersControllers
         [Authorize(Roles = RolesNames.USER)]
         [Route("im")]
         [HttpGet]
-        public async Task<IActionResult> GetCurrentUser()
+        public async Task<IActionResult> GetCurrentUserAsync()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             return Ok(await _usersService.GetByIdAsync(long.Parse(userId)));
+        }
+
+        [Authorize(Roles = RolesNames.USER)]
+        [Route("[action]")]
+        [HttpPut]
+        public async Task<IActionResult> ChangeNamesAsync(ChangeNamesViewModel model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return Ok(await _usersService.ChangeNamesAsync(long.Parse(userId), model));
+        }
+
+        [Authorize(Roles = RolesNames.USER)]
+        [Route("[action]")]
+        [HttpPut]
+        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordViewModel model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return Ok(await _usersService.ChangePasswordAsync(long.Parse(userId), model));
         }
     }
 }

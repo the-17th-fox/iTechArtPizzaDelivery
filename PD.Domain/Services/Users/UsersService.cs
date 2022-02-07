@@ -185,5 +185,40 @@ namespace PD.Domain.Services
         {
             return await _usersRepository.IsPhoneTakenAsync(phoneNumber);
         }
+
+        public async Task<UserNamesViewModel> ChangeNamesAsync(long userId, ChangeNamesViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if(user == null)
+                throw new NotFoundException("The user with the specified Id was not found.");
+
+            if(model.FirstName != string.Empty
+                && model.LastName != string.Empty)
+            {
+                user = await _usersRepository.ChangeNamesAsync(user, model);
+            }
+            
+            return _mapper.Map<UserNamesViewModel>(user);
+        }
+
+        public async Task<string> ChangePasswordAsync(long userId, ChangePasswordViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                throw new NotFoundException("The user with the specified Id was not found.");
+
+            if (model.Email != user.Email)
+                throw new InvalidCredentialsException();
+
+            if (!await _userManager.CheckPasswordAsync(user, model.OldPassword))
+                throw new InvalidCredentialsException();
+
+            if (model.NewPassword != model.ConfirmNewPassword)
+                throw new BadRequestException("New password does not equal to the confirmation password.");
+
+            await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+
+            return "Password was changed successfully.";
+        }
     }
 }

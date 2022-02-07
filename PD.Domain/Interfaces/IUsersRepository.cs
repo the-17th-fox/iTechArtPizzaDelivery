@@ -13,5 +13,6 @@ namespace PD.Domain.Interfaces
     {
         public PagedList<User> GetAllAsync(PageSettingsViewModel pageSettings);
         public Task<bool> IsPhoneTakenAsync(string phoneNumber);
+        public Task<User> ChangeNamesAsync(User user, ChangeNamesViewModel model);
     }
 }
