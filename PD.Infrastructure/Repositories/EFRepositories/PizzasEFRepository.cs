@@ -10,13 +10,21 @@ using System.Threading.Tasks;
 using PD.Domain.Models;
 using PD.Domain.Constants.Exceptions;
 using PD.Domain.Services.Pagination;
+using PD.Domain.Services;
+using System.IO;
+using System.Transactions;
 
 namespace PD.Infrastructure.Repositories.EFRepositories
 {
     public class PizzasEFRepository : IPizzasRepository
     {
         private readonly PizzaDeliveryContext _dbContext;
-        public PizzasEFRepository(PizzaDeliveryContext context) => _dbContext = context;
+        private readonly IFilesService _filesService;
+        public PizzasEFRepository(PizzaDeliveryContext context, IFilesService filesService)
+        {
+            _dbContext = context;
+            _filesService = filesService;
+        }
 
         public PagedList<Pizza> GetAllAsync(PageSettingsViewModel pageSettings)
         {
@@ -63,14 +71,20 @@ namespace PD.Infrastructure.Repositories.EFRepositories
 
         public async Task DeleteAsync(Pizza pizza)
         {
+            using var transaction = _dbContext.Database.BeginTransaction();
             try
             {
-                _dbContext.Pizzas.Remove(pizza);
-
+                 _dbContext.Pizzas.Remove(pizza);
                 await _dbContext.SaveChangesAsync();
+
+                var filename = Path.GetFileName(pizza.ImagePath);
+                _filesService.DeleteFileAsync(filename);
+
+                await transaction.CommitAsync();
             }
-            catch (DbUpdateException)
+            catch (Exception)
             {
+                await transaction.RollbackAsync();
                 throw new DeletionFailedException();
             }
         }
