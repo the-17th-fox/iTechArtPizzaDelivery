@@ -11,6 +11,7 @@ namespace PD.Domain.Interfaces
     public interface IIngredientsRepository
     {
         public Task<List<Ingredient>> GetAllAsync();
+        public Task<Ingredient> GetByIdWithoutTrackingAsync(long id);
         public Task<Ingredient> GetByIdAsync(long id);
         public Task AddAsync(Ingredient ingredient);
         public Task DeleteAsync(Ingredient ingredient);

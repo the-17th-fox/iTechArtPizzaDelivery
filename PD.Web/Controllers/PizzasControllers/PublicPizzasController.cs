@@ -17,12 +17,12 @@ namespace PD.Web.Controllers.PizzasControllers
         public PublicPizzasController(IPizzasService service) => _pizzasService = service;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
+        public IActionResult GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem();
 
-            return Ok(await _pizzasService.GetAllAsync(pageSettings));
+            return Ok(_pizzasService.GetAllAsync(pageSettings));
         }
 
         [Route("{id}")]

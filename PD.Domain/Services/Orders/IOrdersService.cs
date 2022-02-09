@@ -11,18 +11,18 @@ namespace PD.Domain.Services
 {
     public interface IOrdersService
     {
-        public Task<PageViewModel<ShortOrderViewModel>> GetAllAsync(PageSettingsViewModel pageSettings);
+        public PageViewModel<ShortOrderViewModel> GetAllAsync(PageSettingsViewModel pageSettings);
         public Task<OrderViewModel> GetByIdAsync(long orderId);
         public Task<OrderViewModel> GetUsersActiveOrderAsync(long userId);
 
         public float GetPriceWithDiscount(Order order);
 
         public Task<OrderViewModel> AddAsync(long userId);
-        public Task<string> DeleteActiveOrderAsync(long userId);
-        public Task<string> DeleteAnyAsync(long orderId);
-        
-        public Task<OrderIsActiveStatusViewModel> UpdateIsActiveStatusAsync(long userId, bool status);
-        public Task<OrderStatusViewModel> UpdateOrderStatusAsync(long userId, int statusId);
+        public Task<ShortOrderViewModel> DeleteActiveOrderAsync(long userId);
+        public Task<ShortOrderViewModel> DeleteAnyAsync(long orderId);
+
+        public Task<OrderIsActiveStatusViewModel> UpdateIsActiveStatusAsync(long orderId, bool status);
+        public Task<OrderStatusViewModel> UpdateOrderStatusAsync(long orderId, int statusId);
         public Task<OrderDeliveryMethodViewModel> UpdateDeliveryMethodAsync(long userId, int methodId);
         public Task<OrderDescriptionViewModel> UpdateDescriptionAsync(long userId, string newDescription);
         public Task<OrderPromoCodeViewModel> UpdatePromoCodeAsync(long userId, string promoCodeName);
@@ -33,5 +33,13 @@ namespace PD.Domain.Services
 
         public bool IsDeliveryMethodExists(int methodId);
         public bool IsOrderStatusExists(int statusId);
+        public int GetSpecifiedPizzaAmount(Order order, Pizza pizza);
+
+        public Task<Order> GetAndCheckAsync(long orderId);
+        public Task<Order> GetAndCheckWithoutTrackingAsync(long orderId);
+        public Task<Order> GetAndCheckEditingReadyAsync(long userId);
+        public Task<Order> GetAndCheckActiveAsync(long orderId);
+        public Task<Order> GetAndCheckActiveByUserIdAsync(long userId);
+        public Task<Pizza> GetAndCheckPizzaAsync(long pizzaId);
     }
 }

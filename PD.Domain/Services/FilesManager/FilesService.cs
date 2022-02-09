@@ -22,7 +22,7 @@ namespace PD.Domain.Services
         {
             var filePath = Path.Combine(GetFilesStorage(), fileName);
 
-            if (File.Exists(filePath))
+            if (!File.Exists(filePath))
                 throw new NotFoundException("The file was not found.");
 
             try

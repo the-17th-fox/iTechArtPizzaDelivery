@@ -32,21 +32,16 @@ namespace PD.Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<PageViewModel<ShortOrderViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
+        public PageViewModel<ShortOrderViewModel> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            var orders = await _ordersRepository.GetAllAsync();
+            var orders = _ordersRepository.GetAllAsync(pageSettings);
 
-            var pagedList = PagedList<Order>.ToPagedList(orders, pageSettings.PageNumber, pageSettings.PageSize);
-
-            return _mapper.Map<PagedList<Order>, PageViewModel<ShortOrderViewModel>>(pagedList);
+            return _mapper.Map<PagedList<Order>, PageViewModel<ShortOrderViewModel>>(orders);
         }
 
         public async Task<OrderViewModel> GetByIdAsync(long orderId)
         {
-            var order = await _ordersRepository.GetByIdAsync(orderId);
-            // Checks if there is any order with the specified ID    
-            if (order == null)
-                throw new NotFoundException("The order was not found.");
+            var order = await GetAndCheckWithoutTrackingAsync(orderId);
 
             var orderModel = _mapper.Map<OrderViewModel>(order);
             orderModel.TotalPrice = GetPriceWithDiscount(order);
@@ -55,10 +50,7 @@ namespace PD.Domain.Services
 
         public async Task<OrderViewModel> GetUsersActiveOrderAsync(long userId)
         {
-            var order = await _ordersRepository.GetUsersActiveOrderAsync(userId);
-            // Checks if the user has any active order
-            if (order == null)
-                throw new NotFoundException("The user has no orders.");
+            var order = await GetAndCheckActiveByUserIdAsync(userId);
 
             var orderModel = _mapper.Map<OrderViewModel>(order);
             orderModel.TotalPrice = GetPriceWithDiscount(order);
@@ -68,93 +60,70 @@ namespace PD.Domain.Services
         public async Task<OrderViewModel> AddAsync(long userId)
         {
             // Checks if the user has any active order (last order)
-            if (await _ordersRepository.GetUsersActiveOrderAsync(userId) != null)
+            if (await _ordersRepository.GetActiveOrderAsync(userId) != null)
                 throw new BadRequestException("The user already has an active order.");
 
-            var order = new Order()
-            {
-                UserId = userId,
-                OrderStatusId = (int)OrderStatuses.InProccesOfCreating,
-                DeliveryMethodId = (int)DeliveryMethods.Delivery,
-                PaymentMethodId = (int)PaymentMethods.Cash,
-                PizzasInOrders = new List<PizzaOrder>()
-            };
-
-            await _ordersRepository.AddAsync(order);
+            var order = await _ordersRepository.AddAsync(userId);
 
             return _mapper.Map<OrderViewModel>(order);
         }
 
         public async Task<OrderPizzasViewModel> AddPizzaAsync(long userId, long pizzaId, int numOfPizzasToAdd = 1)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited 
-            if (order == null)
-                throw new BadRequestException("The user does not have an active order.");
+            var order = await GetAndCheckEditingReadyAsync(userId);
 
-            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
-            // Checks if the pizza exists
-            if (pizza == null)
-                throw new BadRequestException("The pizza with the specified id does not exist.");
+            var pizza = await GetAndCheckPizzaAsync(pizzaId);
 
-            await _ordersRepository.AddPizzaAsync(order, pizza, numOfPizzasToAdd);
+            if (order.Pizzas.Contains(pizza))
+                order = await _ordersRepository.AddIncludedPizza(order, pizza, numOfPizzasToAdd);
+            else
+                order = await _ordersRepository.AddNotIncludedPizzaAsync(order, pizza, numOfPizzasToAdd);
 
             return _mapper.Map<OrderPizzasViewModel>(order);
         }
 
         public async Task<OrderPizzasViewModel> RemovePizzaAsync(long userId, long pizzaId, int numOfPizzasToRemove = 1)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited
-            if (order == null)
-                throw new NotFoundException("The user does not have an active order.");
+            var order = await GetAndCheckEditingReadyAsync(userId);
 
-            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
-            // Checks if the pizza exists
-            if (pizza == null)// Checks whether the deletion was successfull
-                throw new BadRequestException("The pizza with the specified id does not exist.");
+            var pizza = await GetAndCheckPizzaAsync(pizzaId);
 
             if (!order.Pizzas.Contains(pizza))
-                throw new BadRequestException("The specified order does not contain the specified pizza.");
+                throw new NotFoundException("The specified order does not contain the specified pizza.");
 
-            if (_ordersRepository.GetSpecifiedPizzaAmount(order, pizza) < numOfPizzasToRemove)
-                throw new BadRequestException("The number of pizzas to remove is greater than pizzas amount in the order");
+            if (GetSpecifiedPizzaAmount(order, pizza) < numOfPizzasToRemove)
+                throw new BadRequestException("The number of pizzas to remove is greater than pizzas amount in the order.");
 
-            await _ordersRepository.RemovePizzaAsync(order, pizza);
+
+            if (GetSpecifiedPizzaAmount(order, pizza) == numOfPizzasToRemove)
+                order = await _ordersRepository.RemoveAllPizzasOfType(order, pizza);
+            else
+                order = await _ordersRepository.RemovePizzaAsync(order, pizza, numOfPizzasToRemove);
 
             return _mapper.Map<OrderPizzasViewModel>(order);
         }
 
-        public async Task<string> DeleteActiveOrderAsync(long userId)
+        public async Task<ShortOrderViewModel> DeleteActiveOrderAsync(long userId)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited
-            if (order == null)
-                throw new BadRequestException("The user does not have an active order.");
+            var order = await GetAndCheckEditingReadyAsync(userId);
 
             await _ordersRepository.DeleteAsync(order);
 
-            return "Order has been deleted successfully.";
+            return _mapper.Map<ShortOrderViewModel>(order);
         }
 
-        public async Task<string> DeleteAnyAsync(long orderId)
+        public async Task<ShortOrderViewModel> DeleteAnyAsync(long orderId)
         {
-            var order = await _ordersRepository.GetByIdAsync(orderId);
-            // Checks if there is any order with the specified ID    
-            if (order == null)
-                throw new NotFoundException("The order was not found.");
+            var order = await GetAndCheckAsync(orderId);
 
             await _ordersRepository.DeleteAsync(order);
 
-            return "Order has been deleted successfully.";
+            return _mapper.Map<ShortOrderViewModel>(order);
         }
 
         public async Task<OrderAdressViewModel> UpdateAdressAsync(long userId, string adress)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited
-            if (order == null)
-                throw new BadRequestException("The user does not have an active order.");
+            var order = await GetAndCheckEditingReadyAsync(userId);
 
             await _ordersRepository.UpdateAdressAsync(order, adress);
 
@@ -163,10 +132,7 @@ namespace PD.Domain.Services
 
         public async Task<OrderDeliveryMethodViewModel> UpdateDeliveryMethodAsync(long userId, int methodId)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited
-            if (order == null)
-                throw new BadRequestException("The user does not have an active order.");
+            var order = await GetAndCheckEditingReadyAsync(userId);
 
             if (!IsDeliveryMethodExists(methodId))
                 throw new BadRequestException("There is no delivery method with the specified Id.");
@@ -176,15 +142,12 @@ namespace PD.Domain.Services
             return _mapper.Map<OrderDeliveryMethodViewModel>(order);
         }
 
-        public async Task<OrderStatusViewModel> UpdateOrderStatusAsync(long userId, int statusId)
+        public async Task<OrderStatusViewModel> UpdateOrderStatusAsync(long orderId, int statusId)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited
-            if (order == null)
-                throw new BadRequestException("The user does not have an active order.");
+            var order = await GetAndCheckActiveAsync(orderId);
 
-            if (IsOrderStatusExists(statusId))
-                throw new BadRequestException("There is no order status with the specified Id.");
+            if (!IsOrderStatusExists(statusId))
+                throw new NotFoundException("There is no order status with the specified Id.");
 
             await _ordersRepository.UpdateOrderStatusAsync(order, statusId);
 
@@ -193,10 +156,7 @@ namespace PD.Domain.Services
 
         public async Task<OrderDescriptionViewModel> UpdateDescriptionAsync(long userId, string newDescription)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited
-            if (order == null)
-                throw new BadRequestException("The user does not have an active order.");
+            var order = await GetAndCheckEditingReadyAsync(userId);
 
             await _ordersRepository.UpdateDescriptionAsync(order, newDescription);
 
@@ -205,10 +165,7 @@ namespace PD.Domain.Services
 
         public async Task<OrderPromoCodeViewModel> UpdatePromoCodeAsync(long userId, string promoCodeName)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited
-            if (order == null)
-                throw new BadRequestException("The user does not have an active order.");
+            var order = await GetAndCheckEditingReadyAsync(userId);
 
             var promoCode = await _promoCodesRepository.GetByNameAsync(promoCodeName);
             // Checks if the promocode is expired
@@ -220,12 +177,9 @@ namespace PD.Domain.Services
             return _mapper.Map<OrderPromoCodeViewModel>(order);
         }
 
-        public async Task<OrderIsActiveStatusViewModel> UpdateIsActiveStatusAsync(long userId, bool status)
+        public async Task<OrderIsActiveStatusViewModel> UpdateIsActiveStatusAsync(long orderId, bool status)
         {
-            var order = await _ordersRepository.GetEditingReadyAsync(userId);
-            // Checks if the user has any order that can be edited
-            if (order == null)
-                throw new BadRequestException("The user does not have an active order.");
+            var order = await GetAndCheckAsync(orderId);
 
             await _ordersRepository.UpdateIsActiveStatusAsync(order, status);
 
@@ -242,17 +196,74 @@ namespace PD.Domain.Services
             return Enum.IsDefined(typeof(OrderStatuses), statusId);
         }
 
+        public int GetSpecifiedPizzaAmount(Order order, Pizza pizza)
+        {
+            return order.PizzasInOrders.Find(po => po.PizzaId == pizza.Id).Amount;
+        }
+
         public float GetPriceWithDiscount(Order order)
         {
+            if (order.Pizzas.Count == 0)
+                return 0;
+
             var pizzasPrice = order.PizzasInOrders
                 .Where(po => po.Order == order)
                 .Select(po => po.Pizza.Price * po.Amount)
                 .Sum();
-                
 
-            var discount = (pizzasPrice * order.PromoCode.DiscountAmount) / 100;
+            var promoCodeDiscount = order.PromoCode == null ? 0 : order.PromoCode.DiscountAmount;
+
+            var discount = (pizzasPrice * promoCodeDiscount) / 100;
 
             return pizzasPrice - discount;
+        }
+
+        public async Task<Order> GetAndCheckAsync(long orderId)
+        {
+            var order = await _ordersRepository.GetByIdAsync(orderId);
+            if (order == null)
+                throw new NotFoundException("The order with the specified id does not exist.");
+            return order;
+        }
+
+        public async Task<Order> GetAndCheckWithoutTrackingAsync(long orderId)
+        {
+            var order = await _ordersRepository.GetByIdWithoutTrackingAsync(orderId);
+            if (order == null)
+                throw new NotFoundException("The order with the specified id does not exist.");
+            return order;
+        }
+
+        public async Task<Order> GetAndCheckEditingReadyAsync(long userId)
+        {
+            var order = await _ordersRepository.GetEditingReadyAsync(userId);
+            if (order == null || order.IsActive == false)
+                throw new NotFoundException("The user does not have an active order or an order can not be edited anymore.");
+            return order;
+        }
+
+        public async Task<Order> GetAndCheckActiveAsync(long orderId)
+        {
+            var order = await _ordersRepository.GetByIdAsync(orderId);
+            if (order == null || order.IsActive == false)
+                throw new NotFoundException("The order is not active anymore or it does not exist.");
+            return order;
+        }
+
+        public async Task<Order> GetAndCheckActiveByUserIdAsync(long userId)
+        {
+            var order = await _ordersRepository.GetActiveOrderAsync(userId);
+            if (order == null || order.IsActive == false)
+                throw new NotFoundException("The order is not active anymore or it does not exist.");
+            return order;
+        }
+
+        public async Task<Pizza> GetAndCheckPizzaAsync(long pizzaId)
+        {
+            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
+            if(pizza == null)
+                throw new NotFoundException("The pizza with the specified id does not exist.");
+            return pizza;
         }
     }
 }

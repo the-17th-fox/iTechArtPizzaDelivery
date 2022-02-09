@@ -27,8 +27,7 @@ namespace PD.Domain.Services
         public async Task<IngredientViewModel> AddAsync(AddIngredientViewModel model)
         {
             // Checks if there is any ingredient with the same name
-            if (await _ingredientsRepository.ExistsAsync(model.Name))
-                throw new BadRequestException("There is already an ingredient with this name.");
+            await ExistsAsync(model.Name);
 
             var ingredient = _mapper.Map<AddIngredientViewModel, Ingredient>(model);
 
@@ -39,10 +38,7 @@ namespace PD.Domain.Services
 
         public async Task<string> DeleteAsync(long id)
         {
-            var ingredient = await _ingredientsRepository.GetByIdAsync(id);
-            // Checks if the pizza exists
-            if (ingredient == null)
-                throw new BadRequestException("The ingredient with the specified id does not exist.");
+            var ingredient = await GetAndCheckByIdAsync(id);
 
             await _ingredientsRepository.DeleteAsync(ingredient);
 
@@ -58,18 +54,31 @@ namespace PD.Domain.Services
 
         public async Task<IngredientViewModel> GetByIdAsync(long id)
         {
-            var ingredient = await _ingredientsRepository.GetByIdAsync(id);
-            // Checks if there is any ingredient with the specified ID    
-            if (ingredient == null)
-                throw new NotFoundException("The ingredient was not found.");
+            var ingredient = await GetAndCheckByIdWithoutTrackingAsync(id);
 
             return _mapper.Map<IngredientViewModel>(ingredient);
         }
 
-        public async Task<bool> ExistsAsync(long id)
+        public async Task ExistsAsync(string name)
+        {
+            if(await _ingredientsRepository.ExistsAsync(name))
+                throw new BadRequestException("There is already an ingredient with this name.");
+        }
+
+        public async Task<Ingredient> GetAndCheckByIdAsync(long id)
         {
             var ingredient = await _ingredientsRepository.GetByIdAsync(id);
-            return ingredient != null;
+            if (ingredient == null)
+                throw new NotFoundException("The ingredient with the specified id does not exist.");
+            return ingredient;
+        }
+
+        public async Task<Ingredient> GetAndCheckByIdWithoutTrackingAsync(long id)
+        {
+            var ingredient = await _ingredientsRepository.GetByIdWithoutTrackingAsync(id);
+            if (ingredient == null)
+                throw new NotFoundException("The ingredient with the specified id does not exist.");
+            return ingredient;
         }
     }
 }

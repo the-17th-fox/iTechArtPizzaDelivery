@@ -56,13 +56,11 @@ namespace PD.Domain.Services
             return claims;
         }
 
-        public async Task<PageViewModel<ShortUserViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
+        public PageViewModel<ShortUserViewModel> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            List<User> users = await _usersRepository.GetAllAsync();
+            var users = _usersRepository.GetAllAsync(pageSettings);
 
-            var pagedList = PagedList<User>.ToPagedList(users, pageSettings.PageNumber, pageSettings.PageSize);
-
-            return _mapper.Map<PagedList<User>, PageViewModel<ShortUserViewModel>>(pagedList);
+            return _mapper.Map<PagedList<User>, PageViewModel<ShortUserViewModel>>(users);
         }
 
         public async Task<UserViewModel> GetByIdAsync(long id)
@@ -72,7 +70,7 @@ namespace PD.Domain.Services
             if (user == null)
                 throw new NotFoundException("The user was not found");
 
-            var userOrders = await _ordersRepository.GetAllFromUserAsync(user.Id);
+            var userOrders = await _ordersRepository.GetAllFromUserWithoutTrackingAsync(user.Id);
             // Checks if there is any orders from user
             if (userOrders == null)
                 throw new NotFoundException("The user does not have any ordes.");

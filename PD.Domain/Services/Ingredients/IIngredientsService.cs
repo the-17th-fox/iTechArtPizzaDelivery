@@ -18,7 +18,9 @@ namespace PD.Domain.Services
         public Task<List<ShortIngredientViewModel>> GetAllAsync();
 
         public Task<IngredientViewModel> GetByIdAsync(long id);
-        public Task<bool> ExistsAsync(long id);
+        public Task ExistsAsync(string name);
+        public Task<Ingredient> GetAndCheckByIdAsync(long id);
+        public Task<Ingredient> GetAndCheckByIdWithoutTrackingAsync(long id);
     }
 }
 

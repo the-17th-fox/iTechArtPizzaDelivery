@@ -19,12 +19,12 @@ namespace PD.Web.Controllers.OrdersControllers
 
         [Route("all")]
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
+        public IActionResult GetAllAsync([FromQuery] PageSettingsViewModel pageSettings)
         {
             if (!ModelState.IsValid)
                 return ValidationProblem();
 
-            return Ok(await _ordersService.GetAllAsync(pageSettings));
+            return Ok(_ordersService.GetAllAsync(pageSettings));
         }
 
         [Route("{id}")]

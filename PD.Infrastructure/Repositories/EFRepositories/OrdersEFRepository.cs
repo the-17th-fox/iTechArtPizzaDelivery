@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PD.Domain.Constants.DeliveryMethods;
 using PD.Domain.Constants.Exceptions;
 using PD.Domain.Constants.OrderStatuses;
+using PD.Domain.Constants.PaymentMethods;
 using PD.Domain.Entities;
 using PD.Domain.Interfaces;
 using PD.Domain.Models;
+using PD.Domain.Services.Pagination;
 using PD.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
@@ -18,13 +21,22 @@ namespace PD.Infrastructure.Repositories.EFRepositories
         private readonly PizzaDeliveryContext _dbContext;
         public OrdersEFRepository(PizzaDeliveryContext context) => _dbContext = context;
 
-        public async Task AddAsync(Order order)
+        public async Task<Order> AddAsync(long userId)
         {
             try
             {
-                _dbContext.Orders.Add(order);
+                var order = new Order()
+                {
+                    UserId = userId,
+                    OrderStatusId = (int)OrderStatuses.InProccesOfCreating,
+                    DeliveryMethodId = (int)DeliveryMethods.Delivery,
+                    PaymentMethodId = (int)PaymentMethods.Cash,
+                    PizzasInOrders = new List<PizzaOrder>()
+                };
 
+                _dbContext.Orders.Add(order);
                 await _dbContext.SaveChangesAsync();
+                return order;
             }
             catch (DbUpdateException)
             {
@@ -32,20 +44,22 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task AddPizzaAsync(Order order, Pizza pizza, int numOfPizzasToAdd = 1)
+        public async Task<Order> AddNotIncludedPizzaAsync(Order order, Pizza pizza, int numOfPizzasToAdd = 1)
         {
             try
             {
-                if (order.Pizzas.Contains(pizza))
-                    order.PizzasInOrders
-                        .Find(po => po.Order == order)
-                        .Amount += numOfPizzasToAdd;
+                order.Pizzas.Add(pizza);
+                order.PizzasInOrders.Add(new PizzaOrder()
+                    {
+                        Order = order,
+                        OrderId = order.Id,
+                        Pizza = pizza,
+                        PizzaId = pizza.Id,
+                        Amount = numOfPizzasToAdd
+                    });
 
-                else 
-                    order.PizzasInOrders
-                        .Add(new PizzaOrder { Pizza = pizza, Amount = numOfPizzasToAdd });
-                
                 await _dbContext.SaveChangesAsync();
+                return order;
             }
             catch (DbUpdateException)
             {
@@ -53,13 +67,50 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task RemovePizzaAsync(Order order, Pizza pizza, int numOfPizzasToRemove = 1)
+        public async Task<Order> AddIncludedPizza(Order order, Pizza pizza, int numOfPizzasToAdd = 1)
         {
             try
             {
-                order.PizzasInOrders.Find(po => po.Pizza == pizza).Amount -= numOfPizzasToRemove;
+                order.PizzasInOrders
+                    .Find(po => po.PizzaId == pizza.Id)
+                    .Amount += numOfPizzasToAdd;
 
                 await _dbContext.SaveChangesAsync();
+                return order;
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
+        }
+
+        public async Task<Order> RemoveAllPizzasOfType(Order order, Pizza pizza)
+        {
+            try
+            {
+                var pizzaOrder = order.PizzasInOrders.Find(po => po.Pizza == pizza);
+                order.PizzasInOrders.Remove(pizzaOrder);
+                order.Pizzas.Remove(pizza);
+
+                await _dbContext.SaveChangesAsync();
+                return order;
+            }
+            catch (DbUpdateException)
+            {
+                throw new UpdatingFailedException();
+            }
+        }
+
+        public async Task<Order> RemovePizzaAsync(Order order, Pizza pizza, int numOfPizzasToRemove = 1)
+        {
+            try
+            {
+                order.PizzasInOrders
+                    .Find(po => po.Pizza == pizza)
+                    .Amount -= numOfPizzasToRemove;
+
+                await _dbContext.SaveChangesAsync();
+                return order;
             }
             catch (DbUpdateException)
             {
@@ -81,20 +132,31 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task<Order> GetByIdAsync(long id)
+        public async Task<Order> GetByIdWithoutTrackingAsync(long id)
         {
             return await _dbContext.Orders
+                .AsNoTracking()
                 .Include(o => o.Pizzas)
                 .Include(o => o.PizzasInOrders)
                 .Where(o => o.Id == id)
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<List<Order>> GetAllAsync()
+        public async Task<Order> GetByIdAsync(long id)
         {
             return await _dbContext.Orders
+                .Include(o => o.PromoCode)
                 .Include(o => o.Pizzas)
-                .ToListAsync();
+                .Include(o => o.PizzasInOrders)
+                .Where(o => o.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public PagedList<Order> GetAllAsync(PageSettingsViewModel pageSettings)
+        {
+            IQueryable<Order> ordersIQuer = _dbContext.Orders.AsNoTracking();
+
+            return PagedList<Order>.ToPagedList(ordersIQuer, pageSettings.PageNumber, pageSettings.PageSize);
         }
 
         public async Task UpdatePromoCodeAsync(Order order, PromoCode promoCode)
@@ -111,13 +173,13 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task UpdateOrderStatusAsync(Order order, int statusId)
+        public async Task<Order> UpdateOrderStatusAsync(Order order, int statusId)
         {
             try
             {
                 order.OrderStatusId = statusId;
-
                 await _dbContext.SaveChangesAsync();
+                return order;
             }
             catch (DbUpdateException)
             {
@@ -167,11 +229,13 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public async Task<Order> GetUsersActiveOrderAsync(long userId)
+        public async Task<Order> GetActiveOrderAsync(long userId)
         {
             return await _dbContext.Orders
                 .Include(o => o.Pizzas)
                 .Include(o => o.PromoCode)
+                .Include(o => o.PizzasInOrders)
+                    .ThenInclude(p => p.Pizza)
                 .Where(o => o.UserId == userId)
                 .Where(o => o.IsActive == true)
                 .FirstOrDefaultAsync();
@@ -202,14 +266,10 @@ namespace PD.Infrastructure.Repositories.EFRepositories
             }
         }
 
-        public int GetSpecifiedPizzaAmount(Order order, Pizza pizza)
-        {
-            return order.PizzasInOrders.Find(po => po.Pizza == pizza).Amount;
-        }
-
-        public async Task<List<Order>> GetAllFromUserAsync(long userId)
+        public async Task<List<Order>> GetAllFromUserWithoutTrackingAsync(long userId)
         {
             return await _dbContext.Orders
+                .AsNoTracking()
                 .Where(o => o.UserId == userId)
                 .ToListAsync();
         }

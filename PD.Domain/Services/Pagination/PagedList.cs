@@ -13,9 +13,29 @@ namespace PD.Domain.Services.Pagination
         public int TotalPages { get; private set; }
         public int PageSize { get; private set; }
         public int TotalItemsCount { get; private set; }
+        public bool HasPreviousPage
+        {
+            get
+            {
+                if (TotalPages != 0
+                        && CurrentPage > 1
+                        && CurrentPage <= TotalPages) 
+                    return true;
 
-        public bool HasPreviousPage => CurrentPage > 1;
-        public bool HasNextPage => CurrentPage < TotalPages;
+                else return false;
+            }
+        }
+        public bool HasNextPage
+        {
+            get
+            {
+                if (TotalPages != 0 
+                        && CurrentPage < TotalPages) 
+                    return true;
+
+                else return false;
+            }
+        }
 
         public PagedList(List<T> items, int totalPages, int itemsCount, int pageNumber, int pageSize)
         {
@@ -27,17 +47,15 @@ namespace PD.Domain.Services.Pagination
             AddRange(items);
         }
 
-        public static PagedList<T> ToPagedList(List<T> list, int pageNumber, int pageSize)
+        public static PagedList<T> ToPagedList(IQueryable<T> query, int pageNumber, int pageSize)
         {
-            var itemsCount = list.Count();
+            var itemsCount = query.Count();
 
             int totalPages = (int)Math.Ceiling(itemsCount / (double)pageSize);
-            pageNumber = (pageNumber > totalPages) ? totalPages : pageNumber;
 
-            var items = list
+            var items = query
                 .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+                .Take(pageSize).ToList();
 
             return new PagedList<T>(items, totalPages, itemsCount, pageNumber, pageSize);
         }

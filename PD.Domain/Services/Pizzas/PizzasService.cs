@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,16 +17,16 @@ namespace PD.Domain.Services
     public class PizzasService : IPizzasService
     {
         private readonly IPizzasRepository _pizzasRepository;
-        private readonly IIngredientsRepository _ingredientsRepository;
+        private readonly IIngredientsService _ingredientsService;
         private readonly IFilesService _filesService;
         private readonly IMapper _mapper;
         public PizzasService(IPizzasRepository pizzasRepository,
-            IIngredientsRepository ingredientsRepository,
+            IIngredientsService ingredientsService,
             IFilesService filesService,
             IMapper mapper)
         {
             _pizzasRepository = pizzasRepository;
-            _ingredientsRepository = ingredientsRepository;
+            _ingredientsService = ingredientsService;
             _filesService = filesService;
             _mapper = mapper;
         }
@@ -34,8 +34,7 @@ namespace PD.Domain.Services
         public async Task<PizzaViewModel> AddAsync(AddPizzaViewModel model)
         {
             // Checks if there is any pizza with the same name
-            if (await _pizzasRepository.ExistsAsync(model.Name))
-                throw new BadRequestException("There is already a pizza with this name.");
+            await ExistsAsync(model.Name);
 
             var pizza = _mapper.Map<AddPizzaViewModel, Pizza>(model);
 
@@ -49,46 +48,32 @@ namespace PD.Domain.Services
 
         public async Task<string> DeleteAsync(long id)
         {
-            var pizza = await _pizzasRepository.GetByIdAsync(id);
-            // Checks if the pizza exists
-            if (pizza == null)
-                throw new BadRequestException("The pizza with the specified id does not exist.");
+            var pizza = await GetAndCheckByIdAsync(id);
 
             await _pizzasRepository.DeleteAsync(pizza);
 
             return "The pizza has been deleted successfully.";
         }
 
-        public async Task<PageViewModel<ShortPizzaViewModel>> GetAllAsync(PageSettingsViewModel pageSettings)
+        public PageViewModel<ShortPizzaViewModel> GetAllAsync(PageSettingsViewModel pageSettings)
         {
-            var pizzas = await _pizzasRepository.GetAllAsync();
+            var pizzas = _pizzasRepository.GetAllAsync(pageSettings);
 
-            var pagedList = PagedList<Pizza>.ToPagedList(pizzas, pageSettings.PageNumber, pageSettings.PageSize);
-
-            return _mapper.Map<PagedList<Pizza>, PageViewModel<ShortPizzaViewModel>>(pagedList);
+            return _mapper.Map<PagedList<Pizza>, PageViewModel<ShortPizzaViewModel>>(pizzas);
         }
 
         public async Task<PizzaViewModel> GetByIdAsync(long id)
         {
-            var pizza = await _pizzasRepository.GetByIdAsync(id);
-            // Checks if there is any pizza with the specified ID    
-            if (pizza == null)
-                throw new NotFoundException("The pizza was not found.");
+            var pizza = await GetAndCheckByIdWithoutTrackingAsync(id);
 
             return _mapper.Map<PizzaViewModel>(pizza);
         }
 
         public async Task<PizzaIngredientsViewModel> AddIngredientAsync(long pizzaId, long ingredientId)
         {
-            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
-            // Checks if the pizza exists
-            if (pizza == null)
-                throw new BadRequestException("The pizza with the specified id does not exist.");
+            var pizza = await GetAndCheckByIdAsync(pizzaId);
 
-            var ingredient = await _ingredientsRepository.GetByIdAsync(ingredientId);
-            // Checks if the pizza exists
-            if (ingredient == null)
-                throw new BadRequestException("The ingredient with the specified id does not exist.");
+            var ingredient = await _ingredientsService.GetAndCheckByIdAsync(ingredientId);
 
             // Сhecks that the specified pizza does not have the specified ingredient
             if (HasIngredientAsync(pizza, ingredient))
@@ -101,19 +86,12 @@ namespace PD.Domain.Services
 
         public async Task<PizzaIngredientsViewModel> RemoveIngredientAsync(long pizzaId, long ingredientId)
         {
-            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
-            // Checks if the pizza exists
-            if (pizza == null)
-                throw new BadRequestException("The pizza with the specified id does not exist.");
+            var pizza = await GetAndCheckByIdAsync(pizzaId);
 
-            var ingredient = await _ingredientsRepository.GetByIdAsync(ingredientId);
-            // Checks if the pizza exists
-            if (ingredient == null)
-                throw new BadRequestException("The ingredient with the specified id does not exist.");
+            var ingredient = await _ingredientsService.GetAndCheckByIdAsync(ingredientId);
 
-            // Сhecks that the specified pizza has the specified ingredient
             if (!HasIngredientAsync(pizza, ingredient))
-                throw new BadRequestException("Pizza already does not have this ingredient.");
+                throw new BadRequestException("Pizza does not have this ingredient.");
 
             await _pizzasRepository.RemoveIngredientAsync(pizza, ingredient);
 
@@ -122,10 +100,7 @@ namespace PD.Domain.Services
 
         public async Task<PizzaDescriptionViewModel> ChangeDescriptionAsync(long pizzaId, string newDescription)
         {
-            var pizza = await _pizzasRepository.GetByIdAsync(pizzaId);
-            // Checks if the pizza exists
-            if (pizza == null)
-                throw new BadRequestException("The pizza with the specified id does not exist.");
+            var pizza = await GetAndCheckByIdAsync(pizzaId);
 
             await _pizzasRepository.ChangeDescriptionAsync(pizza, newDescription);
 
@@ -138,6 +113,28 @@ namespace PD.Domain.Services
                 return true;
 
             return false;
+        }
+
+        public async Task ExistsAsync(string name)
+        {
+            if (await _pizzasRepository.ExistsAsync(name))
+                throw new BadRequestException("There is already a pizza with this name.");
+        }
+
+        public async Task<Pizza> GetAndCheckByIdAsync(long id)
+        {
+            var pizza = await _pizzasRepository.GetByIdAsync(id);
+            if (pizza == null)
+                throw new NotFoundException("The pizza with the specified id does not exist.");
+            return pizza;
+        }
+
+        public async Task<Pizza> GetAndCheckByIdWithoutTrackingAsync(long id)
+        {
+            var pizza = await _pizzasRepository.GetByIdWithoutTrackingAsync(id);
+            if (pizza == null)
+                throw new NotFoundException("The pizza with the specified id does not exist.");
+            return pizza;
         }
     }
 }
